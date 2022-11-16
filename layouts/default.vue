@@ -73,6 +73,9 @@ export default {
     this.$axios.get('https://rent21.ru:4439/apiv2/user/listname').then((item) => {
       this.$store.commit('main/setusers', item.data);
     });
+    this.$axios.get('/api/test').then((item) => {
+      console.log(item)
+    });
 
     /*
     window.onload = function () {

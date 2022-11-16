@@ -1,16 +1,13 @@
 export default {
   // Disable server-side rendering: https://go.nuxtjs.dev/ssr-mode
   ssr: false,
-  generate: {
-    dir: 'C:\\OpenServer\\domains\\rieltor.firsovpro.online\\test\\',
-    subFolders: false,
-  },
-  static: {
-    prefix: true,
-  },
-  router: {
-    base: '/test/',
-  },
+//  generate: {
+//    dir: 'C:\\OpenServer\\domains\\rieltor.firsovpro.online\\test\\',
+//    subFolders: false,
+//  },
+//  router: {
+//    base: '/',
+//  },
   server: {
     port: 3022, // default: 3000
     host: '0.0.0.0'
@@ -69,12 +66,22 @@ export default {
     less: [],
     stylus: [],
   },
-
+  serverMiddleware: {
+    '/api': '~/api'
+  },
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
     babel: {
       compact: true,
     },
+    extend (config, { isDev, isClient }) {
+      config.node = {
+        fs: "empty",
+
+        net: 'empty'
+      }
+    },
+
     extractCSS: true,
   },
 };
