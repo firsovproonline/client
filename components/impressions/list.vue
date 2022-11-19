@@ -15,7 +15,7 @@
         </div>
       </div>
       <div class="card-body" style="overflow: auto;margin-bottom: 20px;padding-top: 0px">
-        <item v-for="(item,index) in items" :key="index" :item="item" style="border-bottom: 1px dotted" />
+        <impressionsItem v-for="(ob, index) in itemslist" :key="index" :value="ob" style="border-bottom: 1px dotted" />
       </div>
     </div>
   </div>
@@ -23,17 +23,16 @@
 </template>
 
 <script>
-import Item from '~/components/impressions/item'
+import impressionsItemItem from '~/components/impressions/item'
 export default {
   name: 'list',
-  components: { Item },
+  components: { impressionsItemItem },
   data: () => ({
-    items: []
+    itemslist: []
   }),
   mounted () {
-    this.$axios.get('https://rent21.ru:4439/apiv2/impressions/list').then((item) => {
-      window.console.log(item.data);
-      this.items = item.data;
+    this.$axios.get('/api/impressions/list').then((item) => {
+      this.itemslist = item.data;
     });
   }
 

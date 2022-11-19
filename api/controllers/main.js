@@ -3,9 +3,12 @@ const MD5 = require("crypto-js/md5");
 const Sequelize = require('sequelize')
 const db = require("../models");
 
+exports.user = (req, res) => {
+  res.json(req.user)
+}
 
 exports.test = (req, res) => {
-
+/*
   db.sequelizePg.query(`SELECT impressions.id,impressions.title,impressions.fields,substring( json_extract_path(json_extract_path(json_extract_path(impressions.fields,'TEL'),'0'),'val')::text,2,12) as phone,
                 callzvons.client_number as callphone, callzvons.start_time
                     FROM impressions
@@ -17,8 +20,10 @@ exports.test = (req, res) => {
                 LIMIT 40`, {
     raw: true, //если для таблицы, к которой происходит обращение, не определена модель
   }).then((items) => {
+    console.error('============')
     res.json(items)
   })
 
-
+ */
+  res.json(req.user)
 }

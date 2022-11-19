@@ -31,7 +31,7 @@ export default {
     items: []
   }),
   mounted () {
-    this.$axios.get('https://rent21.ru:4439/apiv2/recentcalls').then((item) => {
+    this.$axios.get('/api/recentcalls/list').then((item) => {
       window.console.log(item.data);
       this.items = item.data;
     });
@@ -40,6 +40,6 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 
 </style>

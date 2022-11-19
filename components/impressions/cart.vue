@@ -21,7 +21,9 @@
             </select>
           </div>
           <r21input v-if="item" field="FIO" :item="item.fields" title="Контактное лицо:" />
-
+          <hr>
+          <phones v-if="item" :value="JSON.stringify(item.fields.TEL)" field="TEL" :db="item.fields" ></phones>
+          <hr>
         </div>
       </div>
     </div>
@@ -82,21 +84,35 @@
 <script>
 import R21input from '@/components/rent21/ui/r21input'
 import ComboNoSpr from '@/components/rent21/ui/comboNotSpr'
+import Phones from '@/components/rent21/ui/phones'
 export default {
   name: 'cart',
-  components: { ComboNoSpr, R21input },
+  components: { Phones, ComboNoSpr, R21input },
   mounted () {
     this.$axios.get('https://rent21.ru:4439/apiv2/impressions/'+this.$route.params.id).then(item=>{
       this.$store.commit('main/setitem', item.data);
       console.log(item.data)
+      this.$store.dispatch('main/save_component', () => import('@/components/rent21/ui/r21save'))
+
     })
   },
   computed: {
+    globalMessage(){
+      return this.$store.getters['main/globalMessage'];
+    },
     item(){
       return this.$store.getters['main/item'];
     },
     spruser(){
       return this.$store.getters['main/combo_users'];
+    }
+  },
+  watch:{
+    globalMessage(val){
+      if(val){
+        console.log(val)
+        this.$store.dispatch('main/globalMessage',null)
+      }
     }
   },
   methods:{
