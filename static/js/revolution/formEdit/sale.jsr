@@ -1,0 +1,958 @@
+item.form21 = new dhtmlXForm($(item)[0], [{
+                            type: "settings",
+                            //inputWidth: 300,
+                            inputHeight: 25,
+                            position: "label-top"
+                        }, {
+                            type: "hidden",
+                            name: "field_SOBST",
+                            value: ''
+                        }, {
+                            type: "hidden",
+                            name: "field_UID",
+                            value: generateUID()
+                        }, {
+                            type: "block",
+                            blockOffset: 0,
+                            list: [{
+                                type: "button",
+                                name: "b1",
+                                value: "Основной",
+                                hidden: true,
+
+                            }, {
+                                type: "newcolumn"
+                            }, {
+                                type: "button",
+                                name: "b2",
+                                value: "Файлы",
+                                hidden: true,
+                            }, {
+                                type: "newcolumn"
+                            }, {
+                                type: "button",
+                                name: "b3",
+                                value: "Соственики",
+                                hidden: true
+                            }, {
+                                type: "newcolumn"
+                            }, {
+                                type: "button",
+                                name: "b4",
+                                value: "Арендаторы",
+                                hidden: true,
+                            }, {
+                                type: "newcolumn"
+                            }, {
+                                type: "button",
+                                name: "b5",
+                                hidden: true,
+
+                                value: "Показы"
+                            }]
+                        }, {
+                            type: "block",
+                            name: "blFoto",
+                            blockOffset: 0,
+                            offsetLeft: 12,
+                            hidden: true,
+                            list: []
+
+                        }, {
+                            type: "block",
+                            name: "blGL",
+                            blockOffset: 0,
+                            offsetLeft: 12,
+                            list: [{
+                                    type: "block",
+                                    blockOffset: 0,
+                                    offsetLeft: 0,
+                                    list: [{
+                                        type: "checkbox",
+                                        label: "Архив",
+                                        position: "label-left",
+                                        name: "field_ARHIV",
+                                        checked: false
+                                    },
+                                    {
+                                        type: "input",
+                                        label: "Изменён",
+                                        position: "label-left",
+                                        name: "field_DATAP",
+                                        inputHeight:22,
+                                        inputWidth: 90,
+                                        readonly:true
+                                    }, {
+                                        type: "select",
+                                        label: "Ответственный",
+                                        name: "field_IMPORTANT",
+                                        position: "label-left",
+                                        offsetLeft: 30,
+                                        inputWidth: 200,
+                                        filtering: true,
+                                        options: window['listUser']
+                                    }, /*important*/ ]
+                                }, {
+                                    type: "MultyCian",
+                                    name: "field_OPP",
+                                    position: "label-left",
+                                    label: "Операция *",
+                                    multi: false,
+                                    // inputWidth: 510,
+                                    options: [{
+                                        text: "Аренда",
+                                        value: "Аренда"
+                                    }, {
+                                        text: "Продажа",
+                                        value: "Продажа"
+                                    }]
+                                }, {
+                type: "MultyCian",
+                name: "field_OPPTIP",
+                position: "label-left",
+                label: "Тип недвижимости *",
+                multi: false,
+                // inputWidth: 510,
+                options: [{
+                    text: "Коммерческая",
+                    value: "Коммерческая"
+                }, {
+                    text: "Жилая",
+                    value: "Жилая"
+                }, {
+                    text: "Загородная",
+                    value: "Загородная"
+                }]
+            }, {
+                                    type: "MultyCian",
+                                    name: "field_TIP",
+                                    position: "label-left",
+                                    label: "Тип",
+                                    labelWidth: 160,
+                                    // inputWidth: 510,
+                                    multi: false,
+                                    options: [{
+                                        text: "Квартира",
+                                        value: "Квартира"
+                                    },{
+                                        text: "Офис",
+                                        value: "Офис"
+                                    }, {
+                                        text: "Склад",
+                                        value: "Склад"
+                                    }, {
+                                        text: "Торговая площадь",
+                                        value: "Торговая площадь"
+                                    }, {
+                                        text: "Помещение свободного назначения",
+                                        value: "Помещение свободного назначения"
+                                    }, {
+                                        text: "Здание",
+                                        value: "Здание"
+                                    }, {
+                                        text: "Гараж",
+                                        value: "Гараж"
+                                    }, {
+                                        text: "Готовый бизнес",
+                                        value: "Готовый бизнес"
+                                    }, {
+                                        text: "Производство",
+                                        value: "Производство"
+                                    }, {
+                                        text: "Коммерческая земля",
+                                        value: "Коммерческая земля"
+                                    }]
+                                }, {
+                                    type: 'block',
+                                    id: 'loadField',
+                                    list: []
+                                }, {
+                                    type: "MultyCian",
+                                    name: "field_ETAG",
+                                    position: "label-left",
+                                    label: "Этаж",
+                                    multi: false,
+                                    labelWidth: 160,
+                                    // inputWidth: 510,
+                                    options: [{
+                                            text: "Мансардный",
+                                            value: "Мансардный"
+                                        }, {
+                                            text: "Цокольный",
+                                            value: "Цокольный"
+                                        }, {
+                                            text: "Подвальный",
+                                            value: "Подвальный"
+                                        }, {
+                                            text: "Антресольный",
+                                            value: "Антресольный"
+                                        }, {
+                                            text: "1",
+                                            value: "1",
+                                        }, {
+                                            text: "2",
+                                            value: "2"
+                                        }, {
+                                            text: "3",
+                                            value: "3"
+                                        }, {
+                                            text: "4",
+                                            value: "4"
+                                        }, {
+                                            text: "5",
+                                            value: "5"
+                                        }, {
+                                            text: "6",
+                                            value: "6"
+                                        }, {
+                                            text: "7",
+                                            value: "7"
+                                        }, {
+                                            text: "8",
+                                            value: "8"
+                                        }, {
+                                            text: "9",
+                                            value: "9"
+                                        }, {
+                                            text: "10",
+                                            value: "10"
+                                        }, {
+                                            text: "11",
+                                            value: "11"
+                                        }
+
+
+                                    ]
+                                }, {
+                                    type: "MultyCian",
+                                    name: "field_TIPP",
+                                    position: "label-left",
+                                    label: "Назначение",
+                                    labelWidth: 160,
+                                    // inputWidth: 510,
+                                    multi: true,
+                                    //hidden: true,
+                                    options: [{
+                                        text: "Офис",
+                                        value: "Офис"
+                                    }, {
+                                        text: "Склад",
+                                        value: "Склад"
+                                    }, {
+                                        text: "Магазин",
+                                        value: "Магазин"
+                                    }, {
+                                        text: "ПСН",
+                                        value: "ПСН"
+                                    }]
+                                },
+                                // блок площадей
+                                {
+                                    type: "block",
+                                    offset: 0,
+                                    blockOffset: 0,
+                                    list: [{
+                                            type: "input",
+                                            name: "field_PLALL",
+                                            position: "label-left",
+                                            offsetTop: 22,
+                                            label: "Арендуемая площадь (м2)",
+                                            labelWidth: 200,
+                                            inputWidth: 40,
+                                            userdata: {
+                                                mask: "numeric",
+                                                sizemask: 4
+                                            }
+                                        }, {
+                                            type: "input",
+                                            name: "field_PLIN",
+                                            position: "label-left",
+                                            offsetTop: 8,
+                                            hidden: true,
+                                            label: "Арендуемая площадь (м2) от",
+                                            labelWidth: 200,
+                                            inputWidth: 40,
+                                            userdata: {
+                                                mask: "numeric",
+                                                sizemask: 4
+                                            }
+                                        }
+
+                                        , {
+                                            type: "newcolumn"
+                                        }, {
+                                            type: "checkbox",
+                                            offsetTop: 26,
+                                            offsetLeft: 12,
+                                            label: "Можно _частями",
+                                            position: "label-left",
+                                            name: "field_MPLALL",
+                                            checked: false,
+                                            hidden:true
+                                        }
+                                    ]
+                                }, {
+                                    type: "input",
+                                    name: "field_PL",
+                                    position: "label-left",
+                                    label: "Полезная площадь (м2)",
+                                    labelWidth: 200,
+                                    inputWidth: 40,
+                                    userdata: {
+                                        mask: "numeric",
+                                        sizemask: 4
+                                    }
+                                }, {
+                                    type: "input",
+                                    name: "field_PLKOR",
+                                    position: "label-left",
+                                    label: "Коридорный коэффициент %",
+                                    labelWidth: 200,
+                                    inputWidth: 20,
+                                    userdata: {
+                                        mask: "numeric",
+                                        sizemask: 2
+                                    }
+                                }, {
+                                    type: "block",
+                                   // width: 500,
+                                    offsetLeft: 0,
+                                    blockOffset: 0,
+                                    list: [{
+                                        type: "input",
+                                        inputWidth: 100,
+                                        labelWidth: 100,
+                                        label: "АС в год за м2",
+                                        position: "label-left",
+                                        name: "field_CENA_AR",
+                                        userdata: {
+                                            mask: "float",
+                                            sizemask: 9
+                                        }
+
+                                    }, {
+                                        type: "input",
+                                        inputWidth: 100,
+                                        labelWidth: 100,
+                                        label: "АС в мес. за м2",
+                                        position: "label-left",
+                                        name: "field_CENA_AR_MES",
+                                        userdata: {
+                                            mask: "float",
+                                            sizemask: 9
+                                        }
+
+                                    }, {
+                                        type: "input",
+                                        labelWidth: 100,
+                                        inputWidth: 100,
+                                        label: "АС в мес. за всё",
+                                        position: "label-left",
+                                        name: "field_CENA_AR_MES_ALL",
+                                        userdata: {
+                                            mask: "float",
+                                            sizemask: 9
+                                        }
+
+                                    }]
+                                },
+                                {
+                                    type: "MultyPL",
+                                    name: "field_MPL",
+                                    position: "label-left",
+                                    label: "площади",
+                                    labelWidth: 160,
+                                    // inputWidth: 510,
+                                },
+                                {
+                                    type: "MultyCian",
+                                    label: "Налог",
+                                    // inputWidth: 510,
+                                    position: "label-left",
+                                    name: "field_VatType",
+                                    multi: false,
+                                    options: [{
+                                        text: "НДС включен",
+                                        value: "included",
+                                    }, {
+                                        text: "НДС не включен",
+                                        value: "notIncluded",
+                                    }, {
+                                        text: "УСН",
+                                        value: "usn",
+                                    }]
+                                },
+                                {
+                                    type: "MultyCian",
+                                    name: "field_KOMKL",
+                                    position: "label-left",
+                                    label: "Комисс. для клиента",
+                                    // inputWidth: 510,
+                                    labelWidth: 160,
+                                    multi: false,
+                                    options: [{
+                                        text: "Без комиссии",
+                                        value: "Без комиссии"
+                                    }, {
+                                        text: "С комиссией",
+                                        value: "С комиссией",
+                                        selected: true
+                                    }, ]
+                                }, {
+                                    type: "MultyCian",
+                                    name: "field_GV",
+                                    position: "label-left",
+                                    label: "Готовность к вьезду",
+                                    multi: false,
+                                    labelWidth: 160,
+                                    // inputWidth: 510,
+                                    options: [{
+                                        text: "Готово к въезду",
+                                        value: "Готово к въезду"
+                                    }, {
+                                        text: "Готово к въезду, требуется косметический ремонт",
+                                        value: "Готово к въезду, требуется косметический ремонт"
+                                    }, {
+                                        text: "Под отделку",
+                                        value: "Под отделку"
+                                    }]
+                                }, {
+                                    type: "MultyCian",
+                                    name: "field_PLANIROVKA",
+                                    position: "label-left",
+                                    label: "Планировка",
+                                    labelWidth: 160,
+                                    // inputWidth: 510,
+                                    multi: false,
+                                    options: [{
+                                        text: "Кабинетная",
+                                        value: "Кабинетная"
+                                    }, {
+                                        text: "Открытая",
+                                        value: "Открытая"
+                                    }, {
+                                        text: "Смешанная",
+                                        value: "Смешанная"
+                                    }, {
+                                        text: "Зальная",
+                                        value: "Зальная"
+                                    }]
+                                }, {
+                                    type: "input",
+                                    name: "field_KOLKAB",
+                                    position: "label-left",
+                                    label: "Количество кабинетов",
+                                    offsetTop: 18,
+                                    labelWidth: 145,
+                                    inputWidth: 40,
+                                    userdata: {
+                                        mask: "float",
+                                        sizemask: 2
+                                    }
+                                }, { //Юридический адрес
+                                    type: "MultyCian",
+                                    label: "Юридический адрес",
+                                    // inputWidth: 510,
+                                    position: "label-left",
+                                    name: "field_IsLegalAddressProvided",
+                                    multi: false,
+                                    options: [{
+                                        text: "Предоставляется",
+                                        value: true
+                                    }, {
+                                        text: "Не предоставляется",
+                                        value: false
+                                    }]
+                                }, {
+                                    type: 'MultyCian',
+                                    name: "field_WaterPipesCount",
+                                    label: 'Количество мокрых<br>точек (водопровод):',
+                                    multi: false,
+                                    // inputWidth: 510,
+                                    labelWidth: 90,
+                                    //offsetLeft: 22,
+                                    options: [{
+                                        text: "Нет",
+                                        value: 0
+                                    }, {
+                                        text: "1",
+                                        value: 1
+                                    }, {
+                                        text: "2",
+                                        value: 2
+                                    }, {
+                                        text: "3",
+                                        value: 3
+                                    }, {
+                                        text: "4",
+                                        value: 4
+                                    }]
+                                }, {
+                                    type: "checkbox",
+                                    label: "Высокий потолок",
+                                    position: "label-left",
+                                    name: "field_BIGH",
+                                    labelWidth: 140,
+                                    offsetTop: 18,
+                                    checked: false,
+                                    value: 1
+                                }, {
+                                    type: "checkbox",
+                                    label: "Лофт",
+                                    position: "label-left",
+                                    name: "field_LOFT",
+                                    labelWidth: 140,
+                                    offsetTop: 12,
+                                    checked: false,
+                                    value: 1
+                                }, {
+                                    type: "checkbox",
+                                    label: "Отдельный вход",
+                                    position: "label-left",
+                                    name: "field_PERSONALVHOD",
+                                    labelWidth: 140,
+                                    offsetTop: 12,
+                                    checked: false,
+                                    value: 1
+                                },
+
+
+                                {
+                                    type: "MultyCian",
+                                    name: "field_ConditionType",
+                                    label: 'Состояние :',
+                                    // inputWidth: 510,
+                                    labelWidth: 90,
+                                    offsetLeft: 0,
+                                    offsetTop: 6,
+                                    multi: false,
+                                    options: [{
+                                        text: "Требуется косметический ремонт",
+                                        value: "cosmeticRepairsRequired"
+                                    }, {
+                                        text: "Под чистовую отделку",
+                                        value: "finishing"
+                                    }, {
+                                        text: "Требуется капитальный ремонт",
+                                        value: "majorRepairsRequired"
+                                    }, {
+                                        text: "Офисная отделка",
+                                        value: "office"
+                                    }]
+                                },
+
+                                /*
+                                                            {
+                                                                type: "label",
+                                                                label: "Подробнее о планировке:"
+                                                            }, {
+                                                                type: 'editor',
+                                                                name: 'field_INFOKAB',
+                                                                label: 'Подробнее о планировке:',
+                                                                position: "label-top",
+                                                                // inputWidth: 500,
+                                                                inputHeight: 124
+                                                            },
+                                */
+                                /*
+                            {
+                                type: "label",
+                                label: "Состояние отделки:"
+                            }, {
+                                visible: false,
+                                type: 'editor',
+                                name: 'field_SOSTOTDEL',
+                                label: 'Состояние отделки:',
+                                position: "label-top",
+                                // inputWidth: 500,
+                                inputHeight: 124
+                            },
+*/
+
+                                /*
+                                                            // блок аренды
+                                                            {
+                                                                type: "block",
+                                                                blockOffset: 0,
+                                                                offsetTop: 12,
+                                                                className: "blockUPR",
+                                                                name: "arblock",
+                                                               // width: 500,
+                                                                list: [{
+                                                                        type: "label",
+                                                                        label: "Аренда",
+                                                                        position: "absolute",
+                                                                        className: "labelUPR",
+                                                                        labelTop: -15
+                                                                    }, {
+                                                                        type: "button",
+                                                                        value: "+",
+                                                                        label: "Аренда",
+                                                                        className: "bcollaps",
+                                                                        name: "bcollapsAR",
+                                                                        inputTop: -20
+                                                                    }, {
+                                                                        type: "block",
+                                                                        name: "arblockfields",
+                                                                        blockOffset: 0,
+                                                                        hidden: false,
+                                                                        list: [{
+                                                                            type: 'combo',
+                                                                            position: "label-left",
+                                                                            label: "Налоги",
+                                                                            value: 0,
+                                                                            inputWidth: 140,
+                                                                            labelWidth: 100,
+
+                                                                            offsetLeft: 22,
+                                                                            name: "field_NALOGAR",
+                                                                            options: [{
+                                                                                text: "НДФЛ",
+                                                                                value: "НДФЛ"
+                                                                            }, {
+                                                                                text: "УСН",
+                                                                                value: "УСН"
+                                                                            }, {
+                                                                                text: "Включая НДС",
+                                                                                value: "Включая НДС"
+                                                                            }, {
+                                                                                text: "Не включая НДС",
+                                                                                value: "Не включая НДС",
+                                                                                selected: true
+                                                                            }, ]
+
+                                                                        }, {
+                                                                            type: "input",
+                                                                            inputWidth: 40,
+                                                                            labelWidth: 100,
+
+                                                                            name: "field_AVANS",
+                                                                            label: "Аванс (мес.)",
+                                                                            offsetLeft: 22,
+                                                                            position: "label-left",
+                                                                        }, {
+                                                                            type: "input",
+                                                                            inputWidth: 40,
+                                                                            name: "field_DEPOZIT",
+                                                                            label: "Депозит (мес.)",
+                                                                            offsetLeft: 22,
+                                                                            labelWidth: 100,
+
+                                                                            position: "label-left",
+                                                                        }, {
+                                                                            type: 'combo',
+                                                                            position: "label-left",
+                                                                            label: "Тип договора",
+                                                                            inputWidth: 140,
+                                                                            offsetLeft: 22,
+                                                                            labelWidth: 100,
+
+                                                                            name: "field_TIPDAR",
+                                                                            options: [{
+                                                                                text: "Прямая аренда",
+                                                                                value: "Прямая аренда"
+                                                                            }, {
+                                                                                text: "Субаренда",
+                                                                                value: "Субаренда"
+                                                                            }, {
+                                                                                text: "Субаренда от упр. компании",
+                                                                                value: "Субаренда от упр. компании"
+                                                                            }, {
+                                                                                text: "Предварительный Договор",
+                                                                                value: "Предварительный Договор",
+                                                                                selected: true
+                                                                            }, ]
+
+                                                                        }, {
+                                                                            type: 'combo',
+                                                                            position: "label-left",
+                                                                            label: "Срок договора",
+                                                                            inputWidth: 140,
+                                                                            offsetLeft: 22,
+                                                                            labelWidth: 100,
+                                                                            name: "field_TIMEDAR",
+                                                                            options: [{
+                                                                                text: "Краткосрочный",
+                                                                                value: "Краткосрочный"
+                                                                            }, {
+                                                                                text: "Долгосрочный",
+                                                                                value: "Долгосрочный"
+                                                                            }, {
+                                                                                text: "Не принципиально",
+                                                                                value: "Не принципиально",
+                                                                                selected: true
+                                                                            }, ]
+
+                                                                        }, {
+                                                                            type: 'combo',
+                                                                            position: "label-left",
+                                                                            labelWidth: 100,
+                                                                            label: "Коммуналка",
+                                                                            inputWidth: 240,
+                                                                            offsetLeft: 22,
+                                                                            name: "field_KOMUNAL",
+                                                                            options: [{
+                                                                                text: "Включено в АС",
+                                                                                value: "Включено в АС"
+                                                                            }, {
+                                                                                text: "Включено, кроме Эл. энергии",
+                                                                                value: "Включено, кроме Эл. энергии"
+                                                                            }, {
+                                                                                text: "Оплачивается по факту",
+                                                                                value: "Оплачивается по факту",
+                                                                                selected: true
+                                                                            }, ]
+
+                                                                        }, {
+                                                                            type: "input",
+                                                                            // inputWidth: 510,
+                                                                            name: "field_KOMMSOBSTAR",
+                                                                            label: "Коммисия от собственика (%)",
+                                                                            offsetLeft: 22,
+                                                                            offsetTop: 12,
+                                                                            position: "label-top",
+                                                                        }, {
+                                                                            type: "checkbox",
+                                                                            label: "Договор подписан",
+                                                                            inputWidth: 20,
+                                                                            offsetLeft: 22,
+                                                                            checked: false,
+                                                                            position: "label-left",
+                                                                            name: "field_DOG_AR_CH"
+                                                                        }, {
+                                                                            type: "container",
+                                                                            inputHeight: 30,
+                                                                        }]
+                                                                    },
+
+
+                                                                ]
+                                                            },
+                                                            // блок продажи
+                                                            {
+                                                                type: "block",
+                                                                blockOffset: 0,
+                                                                offsetTop: 12,
+                                                                className: "blockUPR",
+                                                                name: "saleblock",
+                                                               // width: 500,
+                                                                list: [{
+                                                                        type: "label",
+                                                                        label: "Продажа",
+                                                                        position: "absolute",
+                                                                        className: "labelUPR",
+                                                                        labelTop: -15
+                                                                    }, {
+                                                                        type: "button",
+                                                                        value: "+",
+                                                                        label: "Продажа",
+                                                                        className: "bcollaps",
+                                                                        name: "bcollapsSALE",
+                                                                        inputTop: -20
+                                                                    }, {
+                                                                        type: "block",
+                                                                        name: "saleblockfields",
+                                                                        blockOffset: 0,
+                                                                        hidden: false,
+                                                                        list: [{
+                                                                                type: "block",
+                                                                               // width: 500,
+                                                                                list: [{
+                                                                                    type: "input",
+                                                                                    inputWidth: 100,
+                                                                                    labelWidth: 100,
+                                                                                    label: "Цена за м2",
+                                                                                    name: "field_CENA_PR",
+                                                                                    position: "label-left",
+                                                                                }, {
+                                                                                    type: "newcolumn"
+                                                                                }, {
+                                                                                    type: "checkbox",
+                                                                                    label: "Договорная",
+                                                                                    inputWidth: 20,
+                                                                                    checked: false,
+                                                                                    position: "label-left",
+                                                                                    name: "nofieldCENA_PR"
+                                                                                }]
+                                                                            },
+
+                                                                            {
+                                                                                type: 'combo',
+                                                                                position: "label-left",
+                                                                                label: "Налоги",
+                                                                                value: 0,
+                                                                                inputWidth: 140,
+                                                                                labelWidth: 100,
+                                                                                offsetLeft: 22,
+                                                                                name: "field_NALOG_PR",
+                                                                                options: [{
+                                                                                    text: "НДФЛ",
+                                                                                    value: "НДФЛ"
+                                                                                }, {
+                                                                                    text: "УСН",
+                                                                                    value: "УСН"
+                                                                                }, {
+                                                                                    text: "Включая НДС",
+                                                                                    value: "Включая НДС"
+                                                                                }, {
+                                                                                    text: "Не включая НДС",
+                                                                                    value: "Не включая НДС",
+                                                                                    selected: true
+                                                                                }, ]
+
+                                                                            }, {
+                                                                                type: 'combo',
+                                                                                position: "label-left",
+                                                                                label: "Тип договора",
+                                                                                labelWidth: 100,
+                                                                                inputWidth: 140,
+                                                                                offsetLeft: 22,
+                                                                                name: "field_TIPD_PR",
+                                                                                options: [{
+                                                                                    text: "Договор купли-продажи",
+                                                                                    value: "Договор купли-продажи"
+                                                                                }, {
+                                                                                    text: "Инвест-контракт",
+                                                                                    value: "Инвест-контракт"
+                                                                                }, {
+                                                                                    text: "ППА",
+                                                                                    value: "ППА"
+                                                                                }, {
+                                                                                    text: "Продажа юр. лица",
+                                                                                    value: "Продажа юр. лица",
+                                                                                    selected: true
+                                                                                }, ]
+
+                                                                            }, {
+                                                                                type: "input",
+                                                                                // inputWidth: 510,
+                                                                                name: "field_KOMMSOBST_PR",
+                                                                                label: "Коммисия от собственика (%)",
+                                                                                offsetLeft: 22,
+                                                                                offsetTop: 12,
+                                                                                position: "label-top",
+                                                                            }, {
+                                                                                type: "container",
+                                                                                inputHeight: 30,
+                                                                            }
+                                                                        ]
+                                                                    },
+
+
+                                                                ]
+                                                            },
+                                */
+
+                                /*
+                                                            {
+                                                                type: "label",
+                                                                label: "Внутренний комментарий:"
+                                                            }, {
+                                                                type: 'editor',
+                                                                name: 'field_REM',
+                                                                label: 'Внутренний комментарий:',
+                                                                position: "label-top",
+                                                                // inputWidth: 500,
+                                                                inputHeight: 124
+                                                            }, {
+                                                                type: "label",
+                                                                label: "Внешний комментарий:"
+                                                            }, {
+                                                                type: 'editor',
+                                                                name: 'field_EXTREM',
+                                                                label: 'Внешний комментарий:',
+                                                                position: "label-top",
+                                                                // inputWidth: 500,
+                                                                inputHeight: 124
+                                                            }, {
+                                                                type: "label",
+                                                                label: "Разбивка по этажам:"
+                                                            }, {
+                                                                type: 'editor',
+                                                                name: 'field_ETAGREM',
+                                                                label: 'Разбивка по этажам:',
+                                                                position: "label-top",
+                                                                // inputWidth: 500,
+                                                                inputHeight: 124
+                                                            }, {
+                                                                type: "label",
+                                                                label: "Текстовое примечание для CIAN:"
+                                                            },
+
+                                */
+
+                                {
+                                    type: 'input',
+                                    name: 'field_CIANREM',
+                                    label: 'Текстовое примечание для CIAN:',
+                                    position: "label-top",
+                                    // inputWidth: 510,
+                                    inputHeight: 224,
+                                    rows: 30,
+                                    offsetTop: 22
+                                }
+                            ]
+                        }, {
+                            type: 'container',
+                            name: 'containerBot',
+                            inputHeight: 80
+                        },
+                        // блок аренды
+                        {
+                            type: "block",
+                            name: "blSOBST",
+                            hidden: true,
+                            // inputWidth: 500,
+                            list: [{
+                                type: 'soBst21',
+                                name: 'SOBST',
+                                label: "Собственик",
+                                // inputWidth: 500
+                            }]
+                        },
+                    ]);
+//item.form21.hideItem('field_TIPP');
+
+var data = item.form21.getFormData();
+for (var key in data) {
+    if (item.form21.getUserData(key, "mask") == "numeric" || item.form21.getUserData(key, "mask") == "float") {
+        $($(item.form21._getItemByName(key)).find('input')).inputmask({
+            mask: '9{1,' + item.form21.getUserData(key, "sizemask") + '}',
+        });
+    }
+}
+
+for (var key in data) {
+
+}
+
+
+//minimumHeight
+
+var list = $(item.form21.cont).find('.minimumHeight');
+for (var i = 0; i < list.length; i++) {
+    $(list[i]).find('.dhxform_base').hide();
+    $($(list[i]).find('.dhxform_base')[0]).height(11);
+    //$($(list[i]).find('.dhxform_base')[0]).width(510);
+    $($(list[i]).find('.dhxform_base')[0]).show();
+    $($(list[i]).find('.dhxform_base').find('.dhxform_item_label_left')).hide();
+}
+$(item.form21.cont).find('.labelOpenBl').find('div').click(function() {
+    var p = $(this).parent();
+    while (!p.hasClass('minimumHeight')) {
+        p = p.parent();
+    }
+    if ($(this).html() == 'Развернуть') {
+        $(this).html('Свернуть');
+        $(p).find('.dhxform_base').show();
+        $($(p).find('.dhxform_base')[0]).css('height', 'auto');
+        $($(p).find('.dhxform_base')[0]).show();
+        $($(p).find('.dhxform_base').find('.dhxform_item_label_left')).show();
+    } else {
+        $(this).html('Развернуть')
+        $(p).find('.dhxform_base').hide();
+        $($(p).find('.dhxform_base')[0]).height(11);
+        $($(p).find('.dhxform_base')[0]).show();
+        $($(p).find('.dhxform_base').find('.dhxform_item_label_left')).hide();
+    }
+})

@@ -24,9 +24,53 @@ export default {
       { hid: 'description', name: 'description', content: '' },
       { name: 'format-detection', content: 'telephone=no' },
     ],
+    script: [
+
+      { src: 'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js' },
+      {
+        src: 'https://api-maps.yandex.ru/2.1/?apikey=fdb945b0-aaa5-4b5d-a837-383abb24dfc4&lang=ru_RU',
+      },
+      {
+        src: '/js/dhtmlx/dhtmlx.js',
+      },
+      {
+        src: '/js/dhtmlx/dhtmlxgrid.js',
+      },
+
+      {
+        src: '/js/inputmask/inputmask.js',
+      },
+      {
+        src: '/js/inputmask/inputmask.extensions.js',
+      },
+      {
+        src: '/js/inputmask/jquery.inputmask.js',
+      },
+      {
+        src: '/js/inputmask/inputmask.numeric.extensions.js',
+      },
+
+
+      {
+        src: '/js/prototipe.js',
+      },
+      {
+        src: '/js/adres21.js',
+      },
+      {
+        src: '/js/ob21.js',
+      },
+
+
+
+    ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
-      { rel: 'stylesheet', type: 'text/css', href: 'https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css'},
+      { rel: 'stylesheet', type: 'text/css', href: '/css/bootstrap.min.css'},
+      { rel: 'stylesheet', type: 'text/css', href: '/js/dhtmlx/dhtmlx.css'},
+      { rel: 'stylesheet', type: 'text/css', href: '/css/skyblue/dhtmlx.css'},
+      { rel: 'stylesheet', type: 'text/css', href: '/css/main.css'},
+      { rel: 'stylesheet', type: 'text/css', href: '/font/fontawesome/web-fonts-with-css/css/fontawesome-all.min.css'},
     ],
   },
 
@@ -38,6 +82,8 @@ export default {
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
     {src: '~/plugins/v-mask', mode: 'client'},
+    {src: '~/plugins/v-calendar', mode: 'client'},
+    { src: '@/plugins/api', mode: 'client' }
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components

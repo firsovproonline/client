@@ -1,8 +1,8 @@
 const MD5 = require("crypto-js/md5");
 const config = require("../config/db.config.js");
 
-const Sequelize = require("sequelize");
-const sequelize = new Sequelize(
+const {Sequelize, Op} = require("sequelize");
+const sequelizeMysql = new Sequelize(
   config.DB,
   config.USER,
   config.PASSWORD,
@@ -20,11 +20,18 @@ const sequelize = new Sequelize(
   }
 );
 const db = {};
+db.Op = Op
 db.sequelizePg = new Sequelize(config.postgress.db,
   config.postgress.user,
   config.postgress.password, {
   dialect: "postgres",
-  host: config.postgress.host
+  host: config.postgress.host,
+  logging: 0
 });
-
+const sequelize = db.sequelizePg;
+db.impressins = require("../models/impressions.js")(sequelize, Sequelize);
+db.rent21ob = require("../models/rent21.ob.model.js")(sequelize, Sequelize);
+db.rent21address = require("../models/rent21.address.model.js")(sequelize, Sequelize);
+db.rent21building = require("../models/rent21.building.model.js")(sequelize, Sequelize);
+db.sequelizePg.sync({force: false})
 module.exports = db;

@@ -20,7 +20,77 @@ const corsOptions = {
 }
 
 passport.serializeUser(function(user, done) {
-  done(null, user);
+  // console.error(db.sequelize)
+  const sql = "select * from users WHERE login = '" + user.username + "'"
+  db.sequelizePg.query(sql, {
+    raw: true,
+  }).then((items) => {
+    var isAdmin = false;
+    var isRieltor = false;
+    if (items[0][0].tip == 'Администратор') {
+      isAdmin = true;
+    }
+    if (items[0][0].tip == 'Риэлтор') {
+      isAdmin = false;
+      isRieltor = true;
+
+    }
+    user.isAdmin = isAdmin;
+    user.MZ = items[0][0].mz;
+    user.DOSTUP = items[0][0].dostup;
+    user.isRieltor = isRieltor;
+    done(null, user);
+  })
+
+  // done(null, user);
+
+/*
+    db.sequelize.query("select * from `users` WHERE `LOGIN` = '" + user.username + "'", [], function(err, result) {
+      if (result) {
+        if (result.length == 0) {
+          var query = "INSERT INTO users SET ?",
+            values = {
+              LOGIN: user.username,
+              EMAIL: user._json.default_email,
+              TIP: 'Гость'
+            };
+          db.sequelize.query(query, values, function(err, result) {
+            if (result) {
+              user.isAdmin = false;
+              user.isRieltor = false;
+              user.MZ = -1;
+              user.DOSTUP = '';
+              done(null, user);
+            }
+            else {
+              console.log(err)
+            }
+          })
+        }
+        else {
+          var isAdmin = false;
+          var isRieltor = false;
+          if (result[0].TIP == 'Администратор') {
+            isAdmin = true;
+          }
+          if (result[0].TIP == 'Риэлтор') {
+            isAdmin = false;
+            isRieltor = true;
+
+          }
+          user.isAdmin = isAdmin;
+          user.MZ = result[0].MZ;
+          user.DOSTUP = result[0].DOSTUP;
+          user.isRieltor = isRieltor;
+          done(null, user);
+        }
+      }
+      else {
+        done(null, user);
+      }
+    })
+*/
+
 });
 
 passport.deserializeUser(function(obj, done) {
@@ -94,6 +164,8 @@ app.get('/logout', function(req, res){
 require('./routes/main')(app);
 require('./routes/impressions')(app);
 require('./routes/recentcalls')(app);
+require('./routes/rent21/ob')(app);
+require('./routes/rent21/map')(app);
 
 
 export default {

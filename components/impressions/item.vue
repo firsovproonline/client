@@ -16,9 +16,7 @@ export default {
   },
   computed:{
     getCALLDATE(){
-      return new Date(new Date(this.value.start_time*1000)
-        .getTime() + (3*60*60*1000)).toISOString()
-        .replace('T','<br>').replace('.000Z','')
+      return this.value.createdAt.replace('T','<br>').replace('.000Z','')
     }
   },
 }

@@ -1,14 +1,14 @@
 <template>
   <div style="display: flex">
     <div class="vdiv"></div>
-    <div class="tddiv" style="width:55px;min-width: 55px">{{item.id}}</div>
+    <div class="tddiv" style="width:70px;min-width: 70px">{{item.id}}</div>
     <div class="vdiv"></div>
-    <div class="tddiv" style="width:85px;min-width: 85px">{{getCALLDATE}}</div>
+    <div class="tddiv" style="width:105px;min-width: 105px">{{getCALLDATE}}</div>
     <div class="vdiv"></div>
     <div class="tddiv" style="width:110px;min-width: 110px" >{{item.client_number}}</div>
     <div class="vdiv"></div>
     <div v-if="item.impression" class="tddiv" style="width: 50%;white-space: nowrap;overflow: hidden">
-      <a :href="'/impressions/'+item.impression_id" >{{item.impression}}</a>
+      <router-link :to="'/impressions/'+item.impression_id" >{{item.impression}}</router-link>
     </div>
     <div v-else class="tddiv" style="width: 50%;white-space: nowrap;overflow: hidden">Создать клиена</div>
     <div class="vdiv"></div>

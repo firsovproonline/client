@@ -17,6 +17,7 @@ export default {
   methods:{
     save(){
       this.$store.dispatch('main/globalMessage','save')
+
     },
     cancel(){
       this.$store.dispatch('main/globalMessage','cancel')

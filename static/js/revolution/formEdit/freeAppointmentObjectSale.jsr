@@ -1,0 +1,1429 @@
+item.form21 = new dhtmlXForm($(item)[0], [{
+        type: "settings",
+        //inputWidth: 300,
+        inputHeight: 25,
+        position: "label-top"
+    }, {
+        type: "hidden",
+        name: "field_SOBST",
+        value: ''
+    }, {
+        type: "hidden",
+        name: "field_UID",
+        value: generateUID()
+    }, {
+        type: "block",
+        name: "blGL",
+        blockOffset: 0,
+        offsetLeft: 12,
+        list: [{
+                type: "block",
+                blockOffset: 0,
+                offsetLeft: 0,
+                list: [{
+                    type: "checkbox",
+                    label: "Архив",
+                    position: "label-left",
+                    name: "field_ARHIV",
+                    checked: false
+                },
+                                    {
+                                        type: "input",
+                                        label: "Изменён",
+                                        position: "label-left",
+                                        name: "field_DATAP",
+                                        inputHeight:22,
+                                        inputWidth: 90,
+                                        readonly:true
+                                    }, {
+                    type: "select",
+                    label: "Ответственный",
+                    name: "field_IMPORTANT",
+                    position: "label-left",
+                    offsetLeft: 30,
+                    inputWidth: 200,
+                    filtering: true,
+                    options: window['listUser']
+                }]
+            }, {
+                type: "MultyCian",
+                name: "field_OPP",
+                position: "label-left",
+                label: "Операция *",
+                multi: false,
+                // inputWidth: 510,
+                value: "Аренда",
+                options: [{
+                    text: "Аренда",
+                    value: "Аренда"
+                }, {
+                    text: "Продажа",
+                    value: "Продажа"
+                }]
+            }, {
+                type: "MultyCian",
+                name: "field_OPPTIP",
+                position: "label-left",
+                label: "Тип недвижимости *",
+                multi: false,
+                // inputWidth: 510,
+                options: [{
+                    text: "Коммерческая",
+                    value: "Коммерческая"
+                }, {
+                    text: "Жилая",
+                    value: "Жилая"
+                }, {
+                    text: "Загородная",
+                    value: "Загородная"
+                }]
+            }, {
+                type: "MultyCian",
+                name: "field_TIP",
+                position: "label-left",
+                label: "Тип",
+                labelWidth: 160,
+                // inputWidth: 510,
+                value: "Склад",
+                multi: false,
+                options: [{
+                    text: "Офис",
+                    value: "Офис"
+                }, {
+                    text: "Склад",
+                    value: "Склад"
+                }, {
+                    text: "Торговая площадь",
+                    value: "Торговая площадь"
+                }, {
+                    text: "Помещение свободного назначения",
+                    value: "Помещение свободного назначения"
+                }, {
+                    text: "Здание",
+                    value: "Здание"
+                }, {
+                    text: "Гараж",
+                    value: "Гараж"
+                }, {
+                    text: "Готовый бизнес",
+                    value: "Готовый бизнес"
+                }, {
+                    text: "Производство",
+                    value: "Производство"
+                }, {
+                    text: "Коммерческая земля",
+                    value: "Коммерческая земля"
+                }]
+            }, {
+                type: 'block',
+                id: 'loadField',
+                list: []
+            }, {
+                type: "MultyCian",
+                name: "field_ETAG",
+                position: "label-left",
+                label: "Этаж",
+                multi: false,
+                labelWidth: 160,
+                // inputWidth: 510,
+                options: [{
+                        text: "Мансардный",
+                        value: "Мансардный"
+                    }, {
+                        text: "Цокольный",
+                        value: "Цокольный"
+                    }, {
+                        text: "Подвальный",
+                        value: "Подвальный"
+                    }, {
+                        text: "Антресольный",
+                        value: "Антресольный"
+                    }, {
+                        text: "1",
+                        value: "1",
+                    }, {
+                        text: "2",
+                        value: "2"
+                    }, {
+                        text: "3",
+                        value: "3"
+                    }, {
+                        text: "4",
+                        value: "4"
+                    }, {
+                        text: "5",
+                        value: "5"
+                    }, {
+                        text: "6",
+                        value: "6"
+                    }, {
+                        text: "7",
+                        value: "7"
+                    }, {
+                        text: "8",
+                        value: "8"
+                    }, {
+                        text: "9",
+                        value: "9"
+                    }, {
+                        text: "10",
+                        value: "10"
+                    }, {
+                        text: "11",
+                        value: "11"
+                    }
+
+
+                ]
+            },
+            // Условия сделки
+            {
+                type: "block",
+                name: "BargainTerms",
+                blockOffset: 0,
+                className: "oneBorder",
+                list: [{
+                        type: "label",
+                        className: "linelabel",
+                        label: "Условия сделки"
+                    }, {
+                        type: "settings",
+                        //                        offsetLeft: 6
+                    },
+
+                    {
+                        type: "block",
+                        blockOffset: 0,
+                        offsetLeft: 8,
+                        list: [{
+                                type: "input",
+                                name: "field_PLALL",
+                                position: "label-left",
+                                offsetTop: 22,
+                                label: "Продаваемая площадь м²",
+                                labelWidth: 200,
+                                inputWidth: 40,
+                                userdata: {
+                                    mask: "numeric",
+                                    sizemask: 4
+                                }
+                            }, {
+                                type: "input",
+                                name: "field_PLIN",
+                                position: "label-left",
+                                offsetTop: 8,
+                                hidden: true,
+                                label: "Арендуемая площадь (м2) от",
+                                labelWidth: 200,
+                                inputWidth: 40,
+                                userdata: {
+                                    mask: "numeric",
+                                    sizemask: 4
+                                }
+                            }
+
+                            , {
+                                type: "newcolumn"
+                            }, {
+                                type: "checkbox",
+                                offsetTop: 26,
+                                offsetLeft: 12,
+                                hidden: true,
+                                label: "Можно _частями",
+                                position: "label-left",
+                                name: "field_MPLALL",
+                                hidden: true,
+
+                                checked: false
+                            }
+                        ]
+                    }, {
+                        type: "block",
+                        blockOffset: 0,
+                        offsetLeft: 8,
+                        list: [{
+                            type: "input",
+                            inputWidth: 100,
+                            labelWidth: 100,
+                            label: "Цена за м2",
+                            position: "label-left",
+                            name: "field_CENA_AR",
+                            userdata: {
+                                mask: "float",
+                                sizemask: 9
+                            }
+
+                        }, {
+                            type: "input",
+                            labelWidth: 100,
+                            inputWidth: 100,
+                            label: "Цена за всю площадь",
+                            position: "label-left",
+                            name: "field_CENA_AR_MES_ALL",
+                            userdata: {
+                                mask: "float",
+                                sizemask: 9
+                            }
+
+                        }]
+                    },
+                                {
+                                    type: "MultyPL",
+                                    name: "field_MPL",
+                                    position: "label-left",
+                                    label: "площади",
+                                    labelWidth: 160,
+                                    // inputWidth: 510,
+                                },
+                    {
+                        type: "MultyCian",
+                        label: "Налог",
+                        offsetLeft: 6,
+                        // inputWidth: 500,
+                        position: "label-left",
+                        name: "field_VatType",
+                        multi: false,
+                        options: [{
+                            text: "НДС включен",
+                            value: "included",
+                        }, {
+                            text: "НДС не включен",
+                            value: "notIncluded",
+                        }, {
+                            text: "УСН",
+                            value: "usn",
+                        }]
+                    }, {
+                        type: "MultyCian",
+                        label: "Тип договора",
+                        offsetLeft: 6,
+                        // inputWidth: 500,
+                        position: "label-left",
+                        name: "field_BargainTerms:ContractType",
+                        multi: false,
+                        options: [{
+                            text: "Переуступка прав собственности",
+                            value: "leaseAssignment",
+                        }, {
+                            text: "Продажа",
+                            value: "sale",
+                        }]
+                    }
+
+/*
+                    , {
+                        type: "MultyCian",
+                        name: "field_KOMKL",
+                        position: "label-left",
+                        label: "Комисс. для клиента",
+                        offsetLeft: 6,
+                        // inputWidth: 500,
+                        labelWidth: 160,
+                        multi: false,
+                        options: [{
+                            text: "Без комиссии",
+                            value: "Без комиссии"
+                        }, {
+                            text: "С комиссией",
+                            value: "С комиссией",
+                            selected: true
+                        }]
+                    }
+*/
+                ]
+            },
+            // другие поля
+            {
+                type: "MultyCian",
+                name: "field_TIPP",
+                position: "label-left",
+                label: "Назначение *",
+                multi: true,
+                // inputWidth: 510,
+                options: []
+            },
+            // блок площадей
+            {
+                type: "MultyCian",
+                name: "field_GV",
+                position: "label-left",
+                label: "Готовность к вьезду",
+                multi: false,
+                labelWidth: 160,
+                // inputWidth: 510,
+                options: [{
+                    text: "Готово к въезду",
+                    value: "Готово к въезду"
+                }, {
+                    text: "Готово к въезду, требуется косметический ремонт",
+                    value: "Готово к въезду, требуется косметический ремонт"
+                }, {
+                    text: "Под отделку",
+                    value: "Под отделку"
+                }]
+            }, {
+                type: "MultyCian",
+                name: "field_PLANIROVKA",
+                position: "label-left",
+                label: "Планировка",
+                labelWidth: 160,
+                // inputWidth: 510,
+                multi: false,
+                options: [{
+                    text: "Кабинетная",
+                    value: "Кабинетная"
+                }, {
+                    text: "Открытая",
+                    value: "Открытая"
+                }, {
+                    text: "Смешанная",
+                    value: "Смешанная"
+                }, {
+                    text: "Зальная",
+                    value: "Зальная"
+                }]
+            }, {
+                type: "input",
+                name: "field_KOLKAB",
+                position: "label-left",
+                label: "Количество кабинетов",
+                offsetTop: 18,
+                labelWidth: 145,
+                inputWidth: 40,
+                userdata: {
+                    mask: "float",
+                    sizemask: 2
+                }
+            }, { //Юридический адрес
+                type: "MultyCian",
+                label: "Юридический адрес",
+                // inputWidth: 510,
+                position: "label-left",
+                name: "field_IsLegalAddressProvided",
+                multi: false,
+                options: [{
+                    text: "Предоставляется",
+                    value: true
+                }, {
+                    text: "Не предоставляется",
+                    value: false
+                }]
+            }, {
+                type: 'MultyCian',
+                name: "field_WaterPipesCount",
+                label: 'Количество мокрых<br>точек (водопровод):',
+                multi: false,
+                // inputWidth: 510,
+                labelWidth: 90,
+                //offsetLeft: 22,
+                options: [{
+                    text: "Нет",
+                    value: 0
+                }, {
+                    text: "1",
+                    value: 1
+                }, {
+                    text: "2",
+                    value: 2
+                }, {
+                    text: "3",
+                    value: 3
+                }, {
+                    text: "4",
+                    value: 4
+                }]
+            }, {
+                type: "checkbox",
+                label: "Высокий потолок",
+                position: "label-left",
+                name: "field_BIGH",
+                labelWidth: 140,
+                offsetTop: 18,
+                checked: false,
+                value: 1
+            }, {
+                type: "checkbox",
+                label: "Лофт",
+                position: "label-left",
+                name: "field_LOFT",
+                labelWidth: 140,
+                offsetTop: 12,
+                checked: false,
+                value: 1
+            }, {
+                type: "checkbox",
+                label: "Витринные окна",
+                position: "label-left",
+                name: "field_HasShopWindows",
+                labelWidth: 140,
+                offsetTop: 12,
+                checked: false,
+                value: 1
+            }, {
+                type: "MultyCian",
+                name: "field_InputType",
+                label: 'Вход:',
+                // inputWidth: 510,
+                labelWidth: 90,
+                multi: false,
+                options: [{
+                    text: "Общий с улицы",
+                    value: "commonFromStreet"
+                }, {
+                    text: "Общий со двора",
+                    value: "commonFromYard"
+                }, {
+                    text: "Отдельный с улицы",
+                    value: "separateFromStreet"
+                }, {
+                    text: "Отдельный со двора",
+                    value: "separateFromYard"
+                }]
+            }, {
+                type: "MultyCian",
+                name: "field_ConditionType",
+                label: 'Состояние:',
+                // inputWidth: 510,
+                labelWidth: 90,
+                multi: false,
+                options: [{
+                    text: "Требуется косметический ремонт",
+                    value: "cosmeticRepairsRequired"
+                }, {
+                    text: "Дизайнерский ремонт",
+                    value: "design"
+                }, {
+                    text: "Под чистовую отделку",
+                    value: "finishing"
+                }, {
+                    text: "Требуется капитальный ремонт",
+                    value: "majorRepairsRequired"
+                }, {
+                    text: "Офисная отделка",
+                    value: "office"
+                }, {
+                    text: "Типовой ремонт",
+                    value: "typical"
+                }]
+            },
+
+            // здание
+            {
+                type: "block",
+                name: "Building",
+                blockOffset: 0,
+                className: "oneBorder minimumHeight",
+                list: [{
+                    type: "label",
+                    className: "linelabel",
+                    label: "Информация о здании"
+                }, {
+                    type: "label",
+                    className: "labelOpenBl",
+
+                    label: "Развернуть"
+                }, {
+                    type: "input",
+                    label: "Название",
+                    position: "label-left",
+                    offsetTop: 8,
+                    offsetLeft: 6,
+                    labelTop: 11,
+                    labelWidth: 90,
+                    inputWidth: 410,
+                    name: "field_Building:Name"
+                }, {
+                    type: "input",
+                    label: "Количество этажей",
+                    position: "label-left",
+                    offsetTop: 8,
+                    offsetLeft: 6,
+                    labelTop: 11,
+                    labelWidth: 90,
+                    inputWidth: 40,
+                    value: 1,
+                    userdata: {
+                        mask: "numeric",
+                        sizemask: 2
+                    },
+                    name: "field_Building:FloorsCount"
+                }, {
+                    type: "input",
+                    label: "Общая площадь, м²",
+                    position: "label-left",
+                    offsetTop: 8,
+                    offsetLeft: 6,
+                    labelTop: 11,
+                    labelWidth: 90,
+                    inputWidth: 40,
+                    value: 0,
+                    userdata: {
+                        mask: "numeric",
+                        sizemask: 4
+                    },
+                    name: "field_Building:TotalArea"
+                }, {
+                    type: "MultyCian",
+                                        offsetTop: 16,
+
+                    name: "field_Building:HeatingType",
+                    label: 'Отопление:',
+                    // inputWidth: 510,
+                    labelWidth: 90,
+                    multi: false,
+                    options: [{
+                        text: " Автономное",
+                        value: "autonomous"
+                    }, {
+                        text: "Центральное",
+                        value: "central"
+                    }, {
+                        text: "Нет",
+                        value: "no"
+                    }]
+                }, {
+                    type: "input",
+                    label: "Высота потолков, м",
+                    position: "label-left",
+                    offsetTop: 16,
+                    offsetLeft: 6,
+                    labelTop: 11,
+                    labelWidth: 90,
+                    inputWidth: 40,
+                    value: 1,
+                    userdata: {
+                        mask: "numeric",
+                        sizemask: 2
+                    },
+                    name: "field_Building:CeilingHeight"
+                }, {
+                    type: "MultyCian",
+                    name: "field_Building:Type",
+                    position: "label-left",
+                    label: "Тип здания",
+                    labelWidth: 160,
+                    // inputWidth: 510,
+                                        offsetTop: 16,
+
+                    multi: false,
+                    //hidden: true,
+                    options: [{
+                        value: "Административное здание",
+                        text: "Административное здание"
+                    }, {
+                        value: "Бизнес-центр",
+                        text: "Бизнес-центр"
+                    }, {
+                        value: "Деловой центр",
+                        text: "Деловой центр"
+                    }, {
+                        value: "Деловой дом",
+                        text: "Деловой дом"
+                    }, {
+                        value: "Бизнес-парк",
+                        text: "Бизнес-парк"
+                    }, {
+                        value: "Бизнес-квартал",
+                        text: "Бизнес-квартал"
+                    }, {
+                        value: "Деловой квартал",
+                        text: "Деловой квартал"
+                    }, {
+                        value: "Объект свободного назначения",
+                        text: "Объект свободного назначения"
+                    }, {
+                        value: "Производственный комплекс",
+                        text: "Производственный комплекс"
+                    }, {
+                        value: "Индустриальный парк",
+                        text: "Индустриальный парк"
+                    }, {
+                        value: "Промплощадка",
+                        text: "Промплощадка"
+                    }, {
+                        value: "Производственно-складской комплекс",
+                        text: "Производственно-складской комплекс"
+                    }, {
+                        value: "Логистический центр",
+                        text: "Логистический центр"
+                    }, {
+                        value: "Логистический комплекс",
+                        text: "Логистический комплекс"
+                    }, {
+                        value: "Логистический парк",
+                        text: "Логистический парк"
+                    }, {
+                        value: "Особняк",
+                        text: "Особняк"
+                    }, {
+                        value: "Производственное здание",
+                        text: "Производственное здание"
+                    }, {
+                        value: "Производственный цех",
+                        text: "Производственный цех"
+                    }, {
+                        value: "Модульное здание",
+                        text: "Модульное здание"
+                    }, {
+                        value: "Многофункциональный комплекс",
+                        text: "Многофункциональный комплекс"
+                    }, {
+                        value: "Офисно-гостиничный комплекс",
+                        text: "Офисно-гостиничный комплекс"
+                    }, {
+                        value: "Офисно-жилой комплекс",
+                        text: "Офисно-жилой комплекс"
+                    }, {
+                        value: "Офисно-складское здание",
+                        text: "Офисно-складское здание"
+                    }, {
+                        value: "Офисно-складской комплекс",
+                        text: "Офисно-складской комплекс"
+                    }, {
+                        value: "Офисное здание",
+                        text: "Офисное здание"
+                    }, {
+                        value: "Офисный центр",
+                        text: "Офисный центр"
+                    }, {
+                        value: "Офисный комплекс",
+                        text: "Офисный комплекс"
+                    }, {
+                        value: "Офисно-производственный комплекс",
+                        text: "Офисно-производственный комплекс"
+                    }, {
+                        value: "Офисный квартал",
+                        text: "Офисный квартал"
+                    }, {
+                        value: "Старый фонд",
+                        text: "Старый фонд"
+                    }, {
+                        value: "Другое",
+                        text: "Другое"
+                    }, {
+                        value: "Аутлет",
+                        text: "Аутлет"
+                    }, {
+                        value: "Имущественный комплекс",
+                        text: "Имущественный комплекс"
+                    }, {
+                        value: "Жилой комплекс",
+                        text: "Жилой комплекс"
+                    }, {
+                        value: "Жилой дом",
+                        text: "Жилой дом"
+                    }, {
+                        value: "Торгово-деловой комплекс",
+                        text: "Торгово-деловой комплекс"
+                    }, {
+                        value: "Торгово-общественный центр",
+                        text: "Торгово-общественный центр"
+                    }, {
+                        value: "Торгово-развлекательный центр",
+                        text: "Торгово-развлекательный центр"
+                    }, {
+                        value: "Торгово-складской комлекс",
+                        text: "Торгово-складской комлекс"
+                    }, {
+                        value: "Торговый центр",
+                        text: "Торговый центр"
+                    }, {
+                        value: "Торговый комплекс",
+                        text: "Торговый комплекс"
+                    }, {
+                        value: "Специализированный торговый центр",
+                        text: "Специализированный торговый центр"
+                    }, {
+                        value: "Отдельно стоящее здание",
+                        text: "Отдельно стоящее здание"
+                    }, {
+                        value: "Технопарк",
+                        text: "Технопарк"
+                    }, {
+                        value: "Торгово-выставочный комплекс",
+                        text: "Торгово-выставочный комплекс"
+                    }, {
+                        value: "Торговый дом",
+                        text: "Торговый дом"
+                    }, {
+                        value: "Торгово-офисный комплекс",
+                        text: "Торгово-офисный комплекс"
+                    }, {
+                        value: "Склад",
+                        text: "Склад"
+                    }, {
+                        value: "Складской комплекс",
+                        text: "Складской комплекс"
+                    }],
+                }, {
+                    type: "input",
+                    label: "Застройщик",
+                    position: "label-left",
+                    offsetTop: 28,
+                    offsetLeft: 6,
+                    labelTop: 11,
+                    labelWidth: 90,
+                    inputWidth: 410,
+                    name: "field_Building:Developer"
+                }, {
+                    type: "input",
+                    label: "Управляющая компания",
+                    position: "label-left",
+                    offsetTop: 8,
+                    offsetLeft: 6,
+                    labelTop: 11,
+                    labelWidth: 90,
+                    inputWidth: 410,
+                    name: "field_Building:ManagementCompany"
+                }, {
+                    type: "MultyCian",
+                    name: "field_Building:VentilationType",
+                    label: 'Вентиляция:',
+                    // inputWidth: 510,
+                    labelWidth: 90,
+                    offsetTop: 8,
+                    multi: false,
+                    options: [{
+                        text: "Приточная",
+                        value: "forced"
+                    }, {
+                        text: "Естественная",
+                        value: "natural"
+                    }, {
+                        text: "Нет",
+                        value: "no"
+                    }]
+                }, {
+                    type: "MultyCian",
+                    name: "field_Building:ConditioningType",
+                    label: 'Кондиционирование:',
+                    // inputWidth: 510,
+                    labelWidth: 90,
+                    multi: false,
+                    options: [{
+                        text: "Центральное",
+                        value: "central"
+                    }, {
+                        text: "Местное",
+                        value: "local"
+                    }, {
+                        text: "Нет",
+                        value: "no"
+                    }]
+                }, {
+                    type: "MultyCian",
+                    name: "field_Building:ExtinguishingSystemType",
+                    label: 'Система<br>пожаротушения:',
+                    // inputWidth: 510,
+                    labelWidth: 90,
+                    multi: false,
+                    options: [{
+                        text: "Сигнализация",
+                        value: "alarm"
+                    }, {
+                        text: "Газовая",
+                        value: "gas"
+                    }, {
+                        text: "Гидрантная",
+                        value: "hydrant"
+                    }, {
+                        text: "Нет",
+                        value: "no"
+                    }, {
+                        text: "Порошковая",
+                        value: "powder"
+                    }, {
+                        text: "Спринклерная",
+                        value: "sprinkler"
+                    }]
+                }, {
+                    type: "MultyCian",
+                    name: "field_Building:StatusType",
+                    label: 'Категория:',
+                    // inputWidth: 510,
+                    labelWidth: 90,
+                    multi: false,
+                    options: [{
+                        text: "Действующее",
+                        value: "operational"
+                    }, {
+                        text: "Проект",
+                        value: "project"
+                    }, {
+                        text: "Строящееся",
+                        value: "underConstruction"
+                    }]
+                }]
+            },
+            // Участок
+            {
+                type: "block",
+                name: "Land",
+                blockOffset: 0,
+                className: "oneBorder minimumHeight",
+                list: [{
+                        type: "label",
+                        className: "linelabel",
+                        label: "Информация об участке"
+                    }, {
+                        type: "label",
+                        className: "labelOpenBl",
+
+                        label: "Развернуть"
+                    }, {
+                        type: "input",
+                        label: "Площадь участка",
+                        position: "label-left",
+                        offsetTop: 8,
+                        offsetLeft: 6,
+                        labelTop: 11,
+                        labelWidth: 90,
+                        inputWidth: 40,
+                        value: 0,
+                        userdata: {
+                            mask: "numeric",
+                            sizemask: 4
+                        },
+                        name: "field_Land:Area"
+                    }, {
+                        type: "MultyCian",
+                        name: "field_Land:AreaUnitType",
+                        position: "label-left",
+                        label: "Единица измерения",
+                        // inputWidth: 510,
+                        labelWidth: 160,
+                        multi: false,
+                        options: [{
+                            text: "Гектар",
+                            value: "hectare",
+                        }, {
+                            text: "Сотка",
+                            value: "sotka",
+                        }]
+                    }, {
+                        type: "MultyCian",
+                        name: "field_Land:Type",
+                        position: "label-left",
+                        label: "Тип участка",
+                        // inputWidth: 510,
+                        labelWidth: 160,
+                        multi: false,
+                        options: [{
+                            text: "В собственности",
+                            value: "owned",
+                        }, {
+                            text: "В аренде",
+                            value: "rent",
+                        }]
+                    }
+
+                ]
+            }, {
+                type: 'input',
+                name: 'field_CIANREM',
+                label: 'Текстовое примечание для CIAN:',
+                position: "label-top",
+                // inputWidth: 510,
+                inputHeight: 224,
+                rows: 30,
+                offsetTop: 22
+            }
+        ]
+    }, {
+        type: 'container',
+        name: 'containerBot',
+        inputHeight: 80
+    },
+    // блок аренды
+    {
+        type: "block",
+        name: "blSOBST",
+        hidden: true,
+        // inputWidth: 500,
+        list: [{
+            type: 'soBst21',
+            name: 'SOBST',
+            label: "Собственик",
+            // inputWidth: 500
+        }]
+    },
+]);
+//item.form21.hideItem('field_TIPP');
+item.form21.setDataList('field_TIPP', [{
+    value: "bakery",
+    text: "Пекарня"
+}, {
+    value: "bakeryProducts",
+    text: "Выпечка"
+}, {
+    value: "bank",
+    text: "Банк"
+}, {
+    value: "bar",
+    text: "Бар"
+}, {
+    value: "barbershop",
+    text: "Парикмахерская"
+}, {
+    value: "beautySaloon",
+    text: "Салон красоты"
+}, {
+    value: "cafe",
+    text: "Кафе/ресторан"
+}, {
+    value: "carWash",
+    text: "Автомойка"
+}, {
+    value: "carService",
+    text: "Автосервис"
+}, {
+    value: "clothesStudio",
+    text: "Ателье одежды"
+}, {
+    value: "club",
+    text: "Клуб"
+}, {
+    value: "confectionery",
+    text: "Кондитерская"
+}, {
+    value: "domesticServices",
+    text: "Бытовые услуги"
+}, {
+    value: "exhibition",
+    text: "Выставка"
+}, {
+    value: "fitnessCentre",
+    text: "Фитнес"
+}, {
+    value: "flowers",
+    text: "Цветы"
+}, {
+    value: "fruit",
+    text: "Фрукты"
+}, {
+    value: "guild",
+    text: "Цех"
+}, {
+    value: "gym",
+    text: "Спортзал"
+}, {
+    value: "hall",
+    text: "Зал"
+}, {
+    value: "hookah",
+    text: "Кальянная"
+}, {
+    value: "hostel",
+    text: "Хостел"
+}, {
+    value: "hotel",
+    text: "Гостиница"
+}, {
+    value: "medicalCenter",
+    text: "Медицинский центр"
+}, {
+    value: "mounting",
+    text: "Шиномонтаж"
+}, {
+    value: "office",
+    text: "Офис"
+}, {
+    value: "other",
+    text: "Другое"
+}, {
+    value: "pawnshop",
+    text: "Ломбард"
+}, {
+    value: "pharmacy",
+    text: "Аптека"
+}, {
+    value: "products",
+    text: "Продукты"
+}, {
+    value: "publicCatering",
+    text: "Общепит"
+}, {
+    value: "restaurant",
+    text: "Ресторан"
+}, {
+    value: "sauna",
+    text: "Сауна"
+}, {
+    value: "school",
+    text: "Школа"
+}, {
+    value: "service",
+    text: "Сервис"
+}, {
+    value: "shawarma",
+    text: "Шаурма"
+}, {
+    value: "shop",
+    text: "Магазин"
+}, {
+    value: "showroom",
+    text: "Шоурум"
+}, {
+    value: "stomatology",
+    text: "Стоматология"
+}, {
+    value: "studio",
+    text: "Фотостудия"
+}, {
+    value: "trade",
+    text: "Коммерция"
+}, {
+    value: "workshop",
+    text: "Мастерская"
+}, {
+    value: "spaSaloon",
+    text: "Spa салон"
+}, {
+    value: "aviaBookingOffice",
+    text: "Авиа кассы"
+}, {
+    value: "carSpareParts",
+    text: "Автозапчасти"
+}, {
+    value: "automobileCenter",
+    text: "Автосалон"
+}, {
+    value: "fillingStation",
+    text: "АЗС"
+}, {
+    value: "alcholicBeveragesStore",
+    text: "Алкомаркет"
+}, {
+    value: "anticafe",
+    text: "Антикафе"
+}, {
+    value: "rentalBusiness",
+    text: "Арендный бизнес"
+}, {
+    value: "center",
+    text: "База"
+}, {
+    value: "recreationalCenter",
+    text: "База отдыха"
+}, {
+    value: "bathingComplex",
+    text: "Банный комплекс"
+}, {
+    value: "underwear",
+    text: "Белье"
+}, {
+    value: "bijouterie",
+    text: "Бижутерия"
+}, {
+    value: "poolhall",
+    text: "Бильярдная"
+}, {
+    value: "hospitalComplex",
+    text: "Больничный комплекс"
+}, {
+    value: "bowling",
+    text: "Боулинг"
+}, {
+    value: "bookmakerSOffice",
+    text: "Букмекерская контора"
+}, {
+    value: "boutique",
+    text: "Бутик"
+}, {
+    value: "snackBar",
+    text: "Буфет"
+}, {
+    value: "householdAppliances",
+    text: "Бытовая техника"
+}, {
+    value: "gallery",
+    text: "Галерея"
+}, {
+    value: "hypermarket",
+    text: "Гипермаркет"
+}, {
+    value: "guestHouse",
+    text: "Гостевой дом"
+}, {
+    value: "readyMadeBusiness",
+    text: "Готовый бизнес"
+}, {
+    value: "goodsForChildren",
+    text: "Детские товары"
+}, {
+    value: "childClub",
+    text: "Детский клуб"
+}, {
+    value: "childStore",
+    text: "Детский магазин"
+}, {
+    value: "daycare",
+    text: "Детский сад"
+}, {
+    value: "childCenter",
+    text: "Детский центр"
+}, {
+    value: "rentalHouse",
+    text: "Доходный дом"
+}, {
+    value: "factory",
+    text: "Завод"
+}, {
+    value: "lending",
+    text: "Займы"
+}, {
+    value: "petShop",
+    text: "Зоомагазин"
+}, {
+    value: "petProducts",
+    text: "Зоотовары"
+}, {
+    value: "dentalPolyclinic",
+    text: "Зубная поликлиника"
+}, {
+    value: "internetShop",
+    text: "Интернет магазин"
+}, {
+    value: "joga",
+    text: "Йога"
+}, {
+    value: "quest",
+    text: "Квест"
+}, {
+    value: "customerRelatedOffice",
+    text: "Клиентский офис"
+}, {
+    value: "clinic",
+    text: "Клиника"
+}, {
+    value: "cosmetics",
+    text: "Косметика"
+}, {
+    value: "cosmeticMedicine",
+    text: "Косметология"
+}, {
+    value: "coffeeHouse",
+    text: "Кофейня"
+}, {
+    value: "cookery",
+    text: "Кулинария"
+}, {
+    value: "smallProductionEnterprice",
+    text: "Малое производство"
+}, {
+    value: "manicure",
+    text: "Маникюр"
+}, {
+    value: "massageSalon",
+    text: "Массажный салон"
+}, {
+    value: "furniture",
+    text: "Мебель"
+}, {
+    value: "miniHotel",
+    text: "Мини-отель"
+}, {
+    value: "meet",
+    text: "Мясо"
+}, {
+    value: "notarySOffice",
+    text: "Нотариальная контора"
+}, {
+    value: "nightClub",
+    text: "Ночной клуб"
+}, {
+    value: "currencyExchange",
+    text: "Обмен валюты"
+}, {
+    value: "shoes",
+    text: "Обувь"
+}, {
+    value: "clothers",
+    text: "Одежда"
+}, {
+    value: "optics",
+    text: "Оптика"
+}, {
+    value: "recreationCenter",
+    text: "Пансионат"
+}, {
+    value: "perfumery",
+    text: "Парфюмерия"
+}, {
+    value: "pizzeria",
+    text: "Пиццерия"
+}, {
+    value: "dishes",
+    text: "Посуда"
+}, {
+    value: "representativeOffice",
+    text: "Представительство"
+}, {
+    value: "production",
+    text: "Производство"
+}, {
+    value: "collectionPoint",
+    text: "Пункт выдачи"
+}, {
+    value: "workplace",
+    text: "Рабочeе место"
+}, {
+    value: "workRoom",
+    text: "Рабочий кабинет"
+}, {
+    value: "fish",
+    text: "Рыба"
+}, {
+    value: "salon",
+    text: "Салон"
+}, {
+    value: "phoneShop",
+    text: "Салон связи"
+}, {
+    value: "healthResort",
+    text: "Санаторий"
+}, {
+    value: "flexiblePurpose",
+    text: "Свободное назначение"
+}, {
+    value: "warehouse",
+    text: "Склад"
+}, {
+    value: "gymHall",
+    text: "Спортивный зал"
+}, {
+    value: "vahicleServiceCenter",
+    text: "СТО"
+}, {
+    value: "canteen",
+    text: "Столовая"
+}, {
+    value: "streetRetail",
+    text: "Стрит ритейл"
+}, {
+    value: "constructionMaterials",
+    text: "Стройматериалы"
+}, {
+    value: "dancingStudio",
+    text: "Студия танцев"
+}, {
+    value: "souvenirs",
+    text: "Сувениры"
+}, {
+    value: "bagStore",
+    text: "Сумки"
+}, {
+    value: "supermarket",
+    text: "Супермаркет"
+}, {
+    value: "sushi",
+    text: "Суши"
+}, {
+    value: "tatooSaloon",
+    text: "Тату салон"
+}, {
+    value: "printingOffice",
+    text: "Типография"
+}, {
+    value: "consumerGoods",
+    text: "ТНП"
+}, {
+    value: "householdGoods",
+    text: "Товары для дома"
+}, {
+    value: "shoppingFloorSpace",
+    text: "Торговая площадь"
+}, {
+    value: "trading",
+    text: "Торговля"
+}, {
+    value: "shopEquipment",
+    text: "Торговое"
+}, {
+    value: "shoppingComplex",
+    text: "Торговый комплекс"
+}, {
+    value: "tradingCenter",
+    text: "Торговый центр"
+}, {
+    value: "travelAgency",
+    text: "Турагенство"
+}, {
+    value: "services",
+    text: "Услуги"
+}, {
+    value: "educationalCenter",
+    text: "Учебный центр"
+}, {
+    value: "fastFood",
+    text: "Фастфуд"
+}, {
+    value: "farm",
+    text: "Ферма"
+}, {
+    value: "photoStudio",
+    text: "Фото студия"
+}, {
+    value: "dryCleaning",
+    text: "Химчистка"
+}, {
+    value: "bakeryComplex",
+    text: "Хлебокомбинат"
+}, {
+    value: "privatePractice",
+    text: "Частная практика"
+}, {
+    value: "sewingShop",
+    text: "Швейный цех"
+}, {
+    value: "electronicCigarette",
+    text: "Электронные сигареты"
+}, {
+    value: "jewerlyShop",
+    text: "Ювелирный"
+}]);
+
+var data = item.form21.getFormData();
+for (var key in data) {
+    if (item.form21.getUserData(key, "mask") == "numeric" || item.form21.getUserData(key, "mask") == "float") {
+        $($(item.form21._getItemByName(key)).find('input')).inputmask({
+            mask: '9{1,' + item.form21.getUserData(key, "sizemask") + '}',
+        });
+    }
+}
+
+for (var key in data) {
+
+}
+
+
+//minimumHeight
+
+var list = $(item.form21.cont).find('.minimumHeight');
+for (var i = 0; i < list.length; i++) {
+    $(list[i]).find('.dhxform_base').hide();
+    $($(list[i]).find('.dhxform_base')[0]).height(11);
+    //$($(list[i]).find('.dhxform_base')[0]).width(510);
+    $($(list[i]).find('.dhxform_base')[0]).show();
+    $($(list[i]).find('.dhxform_base').find('.dhxform_item_label_left')).hide();
+}
+$(item.form21.cont).find('.labelOpenBl').find('div').click(function() {
+    var p = $(this).parent();
+    while (!p.hasClass('minimumHeight')) {
+        p = p.parent();
+    }
+    if ($(this).html() == 'Развернуть') {
+        $(this).html('Свернуть');
+        $(p).find('.dhxform_base').show();
+        $($(p).find('.dhxform_base')[0]).css('height', 'auto');
+        $($(p).find('.dhxform_base')[0]).show();
+        $($(p).find('.dhxform_base').find('.dhxform_item_label_left')).show();
+    } else {
+        $(this).html('Развернуть')
+        $(p).find('.dhxform_base').hide();
+        $($(p).find('.dhxform_base')[0]).height(11);
+        $($(p).find('.dhxform_base')[0]).show();
+        $($(p).find('.dhxform_base').find('.dhxform_item_label_left')).hide();
+    }
+})
+console.log(item.form21.cont);
