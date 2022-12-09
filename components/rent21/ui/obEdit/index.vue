@@ -8,11 +8,76 @@
     </div>
     <div v-if="innerWidth > 1000">
       <div class="rowCol" style="display: flex;width: 98%; overflow: hidden" ref="main">
-        <div ref="mainaddress" style="overflow: auto;width: 400px;overflow-x: hidden;background-color: white">
-          <div ref="address" ></div>
+        <div style="border-right: 1px solid;">
+          <div style="display: flex;padding: 5px">
+            <div :class="activeAddress == 'main' ? 'tabBt active':'tabBt'" @click="activeAddress = 'main'">Основные поля</div>
+            <div :class="activeAddress == 'photo' ? 'tabBt active':'tabBt'" @click="activeAddress = 'photo'" >Фото</div>
+          </div>
+          <div ref="mainaddress" style="overflow: auto;width: 400px;overflow-x: hidden;background-color: white">
+            <div v-show="activeAddress==='main'" ref="address" ></div>
+          </div>
         </div>
-        <div ref="mainob21" style="padding-right: 6px; overflow: auto;width: 410px;overflow-x: hidden;background-color: white">
-        <div ref="ob21"  ></div>
+
+        <div style="border-right: 1px solid;flex: 1 auto;">
+          <div style="display: flex;padding: 5px">
+            <div :class="activeFloor == 'sobst' ? 'tabBt active':'tabBt'" @click="activeFloor = 'sobst'">Собственники</div>
+            <div :class="activeFloor == 'floor' ? 'tabBt active':'tabBt'" @click="activeFloor = 'floor'" >Помещения</div>
+          </div>
+          <div ref="floor" style="overflow: auto;overflow-x: hidden;background-color: white">
+            <div v-show="activeFloor==='floor'">
+              <div v-for="(item, index) in floors" :key="index" style="padding-left: 11px">
+                <div>Этаж {{item.ETAG}}</div>
+                <div v-for="(itemOb, index) in item.ob21" :key="index">
+                  <div :class="uidOb === itemOb.UID?'active':''" @click="uidOb=itemOb.UID" style="display: flex;padding-left: 12px;cursor: pointer">
+                    <div style="display: flex;align-items: center;max-width: 170px;min-width: 170px">
+                      <div style="width: 100px;overflow: hidden;white-space:nowrap">{{itemOb.TIP}}</div>
+                      <div style="margin-left: 3px">{{itemOb.OPP}}</div>
+                      <div style="margin-left: 3px">{{itemOb.PLALL}}</div>
+                    </div>
+                    <div style="display: flex;margin-left: 15px;align-items: center;">
+                      <i class="fa-map-marker fa"  aria-hidden="true"
+                         style="color:#68c8d8;font-size:14px;margin-left:-3px;"></i>
+                      <i class="fa-map-marker fa"  aria-hidden="true"
+                         style="color:blue;font-size:14px;margin-left:3px;"></i>
+                      <i class="fa-map-marker fa" aria-hidden="true"
+                         style="color:green;font-size:14px;margin-left:3px;"></i>
+                      <i class="fa-map-marker far" aria-hidden="true"
+                         style="color:red;font-size:14px;margin-left:3px;"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div v-show="activeFloor==='sobst'">
+              <div v-for="(item, index) in owners" :key="index"
+                   :class="activeOwner === item.UID? 'active_red':''"
+                   style="padding-left: 11px;border-bottom: 1px solid">
+                <div>{{item.NAME}}</div>
+                <div>
+                  <div v-for="(item1, index) in item.contacts" :key="index" style="padding-left: 11px">
+                    <div>{{item1.FIRSTNAME}}</div>
+                    <div v-for="(phone, index) in item1.PHONE" :key="index" style="display: flex;padding-left: 11px">
+                      <div>{{phone.VAL}}</div>
+                      <div>{{phone.REM}}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        <div>
+          <div style="display: flex;padding: 5px">
+            <div :class="activeOb21 == 'main' ? 'tabBt active':'tabBt'" @click="activeOb21 = 'main'">Основные поля</div>
+            <div :class="activeOb21 == 'photo' ? 'tabBt active':'tabBt'" @click="activeOb21 = 'photo'" >Фото</div>
+            <div :class="activeOb21 == 'export' ? 'tabBt active':'tabBt'" @click="activeOb21 = 'export'" style="margin-left: 8px">Экспорт</div>
+          </div>
+          <div ref="mainob21" style="padding-right: 6px; overflow: auto;width: 380px;overflow-x: hidden;background-color: white">
+            <div v-show="activeOb21==='main'"  ref="ob21"  ></div>
+          </div>
+
         </div>
       </div>
       <!--
@@ -29,9 +94,23 @@ export default {
     win: {},
     disableItems: [],
     ob21Form: null,
-    addressForm: null
+    addressForm: null,
+    activeOb21: 'main',
+    activeAddress: 'main',
+    activeFloor:'floor',
+    uidOb: '',
+    floors: [],
+    owners: []
   }),
   computed:{
+    activeOwner(){
+      if(this.item.ob21&&this.item.ob21.find && this.uidOb != ''
+        && this.item.ob21.find(el => el.UID === this.uidOb)){
+        return this.item.ob21.find(el => el.UID === this.uidOb).owner.UID
+      }else{
+        return 0
+      }
+    },
     innerWidth(){
       return window.innerWidth
     },
@@ -43,6 +122,16 @@ export default {
     },
   },
   watch:{
+    uidOb(val, old){
+      if(old!==''){
+        this.reload(false)
+      }
+      this.activeFloor = 'sobst'
+      console.log(val)
+    },
+    activeOb21(val){
+      console.log(val)
+    },
     globalMessage(val){
       if(val){
         console.log(val)
@@ -50,8 +139,9 @@ export default {
           const ob = {}
           ob.address = this.item.address
           ob.building = this.item.building
-          ob.ob21 = this.item.fields
-          console.log({building :ob.building.UID,address :ob.address.UID,ob21:ob.ob21.UID})
+          ob.ob21 = this.item.ob21[this.item.ob21.findIndex(el => el.UID === this.uidOb)]
+          console.log({building :ob.building.UID,address :ob.address.UID,
+            ob21:this.item.ob21[this.item.ob21.findIndex(el => el.UID === this.uidOb)].UID})
           this.$axios.put('/api/rent21/ob',ob).then(item=>{
             console.log(item.data)
             this.$store.dispatch('main/globalMessage',null)
@@ -73,14 +163,14 @@ export default {
 
     window.addEventListener('resize', this.resize);
     this.$store.dispatch('main/globalMessage','hideMenu')
-    this.$axios.get('/api/rent21/ob/'+this.$route.params.id).then(item=>{
+    this.$axios.get('/api/rent21/building/'+this.$route.params.id).then(item=>{
       if(item.data.error && item.data.error === 401){
         window.alert('Вы не авторизованы')
         return
       }
       console.log(item.data)
-      this.$store.dispatch('ob21edit/item',item.data.row[0])
-      console.log('ob', item.data.row[0])
+      this.$store.dispatch('ob21edit/item',item.data.row)
+      console.log('ob', item.data.row)
       if(this.innerWidth >1000){
 /*
         this.win.dhxTabbar = new window.dhtmlXTabBar({
@@ -1851,16 +1941,56 @@ export default {
     window.removeEventListener('resize', this.resize);
   },
   methods:{
+    reload(load){
+      if(load){
+        this.$axios.get('/api/rent21/building/'+this.$route.params.id).then(item=> {
+          if (item.data.error && item.data.error === 401) {
+            window.alert('Вы не авторизованы')
+            return
+          }
+          console.log(item.data)
+          this.$store.dispatch('ob21edit/item', item.data.row)
+          this.$nextTick(()=>{
+            this.initForms()
+          })
+          console.log('ob', item.data.row)
+        })
+      }else{
+        this.initForms(true)
+      }
+    },
     resize(){
       if(this.$refs.main){
         const h = window.innerHeight - this.$refs.main.getBoundingClientRect().top;
         const w = window.innerWidth - this.$refs.main.getBoundingClientRect().left;
         this.$refs.main.style.height = (h- 20) + 'px';
-        this.$refs.mainaddress.style.height = (h- 50) + 'px';
-        this.$refs.mainob21.style.height = (h- 50) + 'px';
+        this.$refs.mainaddress.style.height = (h- 60) + 'px';
+        this.$refs.mainob21.style.height = (h- 60) + 'px';
+        this.$refs.floor.style.height = (h- 60) + 'px';
       }
     },
-    initForms(){
+    initForms(ob21){
+      if(this.uidOb ===''){
+        this.uidOb = this.item.ob21[0].UID
+      }
+      this.floors = []
+      this.owners = []
+      const tempAr = []
+      this.item.ob21.forEach(item=>{
+        if(!this.floors.find(el => el.ETAG === item.ETAG)){
+          this.floors.push({ETAG: item.ETAG,ob21:[]})
+        }
+        if(item.owner){
+          if(tempAr.indexOf(item.owner.UID)=== -1){
+            this.owners.push(item.owner)
+          }
+          tempAr.push(item.owner.UID)
+        }
+        this.floors.find(el => el.ETAG === item.ETAG).ob21.push(item)
+      })
+      this.floors = window.sort_by_key(this.floors,'ETAG')
+      console.log('this.floors',this.floors)
+      console.log('this.owners',this.owners)
       if(this.innerWidth >1000) {
 /*
         for (let key in this.item.building) {
@@ -1873,21 +2003,18 @@ export default {
         this.win.dhxTabbar.layout.cells('a').form.setItemValue('adres', this.item.address)
         this.win.dhxTabbar.layout.cells('d').formOb.setItemValue('obfields',{pchange:this.onChange,data:this.item.fields});
 */
-
-        this.ob21Form.setItemValue('obfields',{pchange:this.onChange,data:this.item.fields});
-        this.addressForm.setItemValue('adres', this.item.address)
-        this.addressForm.setItemValue('obfields',{pchange:this.onChange,data:this.item.fields})
-        for (let key in this.item.building) {
-          if (this.addressForm.isItem('field_' + key)) {
-            this.addressForm.setItemValue('field_' + key, this.item.building[key]);
+        if(!ob21){
+          this.addressForm.setItemValue('adres', this.item.address)
+          for (let key in this.item.building) {
+            if (this.addressForm.isItem('field_' + key)) {
+              this.addressForm.setItemValue('field_' + key, this.item.building[key]);
+            }
           }
         }
-
-
+        this.ob21Form.setItemValue('obfields',{pchange:this.onChange,data:this.item.ob21.find(el => el.UID === this.uidOb)});
       }else{
-        this.ob21Form.setItemValue('obfields',{pchange:this.onChange,data:this.item.fields});
+        this.ob21Form.setItemValue('obfields',{pchange:this.onChange,data:this.item.ob21.find(el => el.UID === this.uidOb)});
         this.addressForm.setItemValue('adres', this.item.address)
-        this.addressForm.setItemValue('obfields',{pchange:this.onChange,data:this.item.fields})
         for (let key in this.item.building) {
           if (this.addressForm.isItem('field_' + key)) {
             this.addressForm.setItemValue('field_' + key, this.item.building[key]);
@@ -1911,7 +2038,7 @@ export default {
             ob = this.ob21Form.getFormData().obfields
           }
           delete ob.form
-          this.item.fields = ob
+          this.item.ob21[this.item.ob21.findIndex(el => el.UID === this.uidOb)] = ob
           this.$store.dispatch('main/save_component', () => import('@/components/rent21/ui/r21save'))
           break
         case 'address':
@@ -1957,6 +2084,18 @@ export default {
 </script>
 
 <style scoped>
+.active{
+  border-bottom: 1px dotted #000F1A;
+}
+.active_red{
+  border-bottom: 2px solid #e5194d !important;
+}
+
+.tabBt{
+  padding: 2px;
+  margin-left: 6px;
+  cursor: pointer;
+}
 .rowCart{
   display: flex;flex-wrap: nowrap;
 }

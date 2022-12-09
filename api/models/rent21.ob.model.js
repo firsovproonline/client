@@ -12,6 +12,9 @@ module.exports = (sequelize, Sequelize) => {
     build: {
       type: Sequelize.STRING(64),
     },
+    owner: {
+      type: Sequelize.STRING(64),
+    },
     category: {
       type: Sequelize.STRING(64)
     },

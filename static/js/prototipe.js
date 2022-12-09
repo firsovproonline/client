@@ -6,6 +6,14 @@ var myWins = null;
 var count = 0;
 var position = 0;
 // Make a call to REST when JS SDK is loaded
+window.sort_by_key = function(array, key)
+{
+  return array.sort(function(a, b)
+  {
+    var x = a[key]; var y = b[key];
+    return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+  });
+}
 function disableForms(els, flagvisible) {
   for (var i = 0; i < els.length; i++) {
     if (flagvisible) {

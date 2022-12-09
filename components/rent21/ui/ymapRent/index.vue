@@ -69,8 +69,12 @@ export default {
   methods:{
     clickPlacemark(e){
       const data = e.get('target').properties.get('fdata');
+      console.log(data)
+      this.$axios.get('/api/rent21/building/'+data.build_uid).then(build=>{
+        console.log(build)
+      })
       window.open(
-          '/realestate/'+data.ob21.UID,
+          '/realestate/'+data.build_uid,
           '_blank' // <- This is what makes it open in a new window.
         );
     },

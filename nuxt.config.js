@@ -1,6 +1,7 @@
 export default {
   // Disable server-side rendering: https://go.nuxtjs.dev/ssr-mode
   ssr: false,
+  target: 'server',
 //  generate: {
 //    dir: 'C:\\OpenServer\\domains\\rieltor.firsovpro.online\\test\\',
 //    subFolders: false,
@@ -26,7 +27,8 @@ export default {
     ],
     script: [
 
-      { src: 'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js' },
+      { src: '/js/jquery.min.js',
+      },
       {
         src: 'https://api-maps.yandex.ru/2.1/?apikey=fdb945b0-aaa5-4b5d-a837-383abb24dfc4&lang=ru_RU',
       },
@@ -45,20 +47,25 @@ export default {
       },
       {
         src: '/js/inputmask/jquery.inputmask.js',
+        async: false,
       },
       {
         src: '/js/inputmask/inputmask.numeric.extensions.js',
+        async: false,
       },
 
 
       {
         src: '/js/prototipe.js',
+        async: false,
       },
       {
         src: '/js/adres21.js',
+        async: false,
       },
       {
         src: '/js/ob21.js',
+        async: false,
       },
 
 
@@ -118,6 +125,9 @@ export default {
   },
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
+    transpile: [
+      '/plugins',
+    ],
     babel: {
       compact: true,
     },
