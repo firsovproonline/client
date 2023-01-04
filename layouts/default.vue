@@ -19,10 +19,11 @@
         </svg>
       </div>
     </div>
+    <div v-if="vComponent" :class="ifmetro ? 'rpanel-big' : ifInfo ?'lpanel':'rpanel'">
+      <component :is="vComponent" v-if="vComponent" />
+    </div>
     <div class="page-wrapper compact-wrapper">
-      <div v-if="vComponent" :class="ifmetro ? 'rpanel-big' : ifInfo ?'lpanel':'rpanel'">
-        <component :is="vComponent" v-if="vComponent" />
-      </div>
+
       <div class="page-main-header">
         <div class="main-header-right row m-0" style="width: auto">
           <div class="main-header-left">
@@ -96,6 +97,7 @@
         <div class="page-body" :style="width<1001 || !showNav ? 'margin-left:0px;overflow-x:hidden':'overflow-x:hidden'">
           <div class="custom-container">
             <div class="container-fluid">
+              <div v-if="vComponent" class="modalDiv"></div>
               <Nuxt />
             </div>
           </div>
@@ -191,7 +193,14 @@ export default {
 
 <style lang="css">
 
-
+.modalDiv{
+  position: absolute;
+  width: 100%;
+  opacity: 0.3;
+  z-index: 4000;
+  background-color: black;
+  height: -webkit-fill-available;
+}
 
 .row{
   justify-content: center;

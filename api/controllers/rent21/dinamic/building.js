@@ -27,12 +27,30 @@ if(req.user && (req.user.isAdmin || req.user.isRieltor) && req.user.DOSTUP.index
         raw: true
       }).then((items) => {
         outOb.ob21 = []
+        const uids = []
         items[0].forEach(item=>{
+          if(item.owner === null){
+            item.owner = {}
+          }
+          if(item.contacts === null){
+            item.contacts =[]
+          }
           item.owner.contacts = item.contacts
           item.fields.owner = item.owner
+          if(uids.indexOf(item.fields.UID)===-1){
+            uids.push(item.fields.UID)
+          }
           outOb.ob21.push(item.fields)
         })
-        res.json({row : outOb})
+
+        console.error(uids)
+        sql = "select * from rent21_exports where uid in ('" + uids.join("','") + "')"
+        db.sequelizePg.query(sql, {
+          raw: true
+        }).then(items=>{
+          outOb.export = items[0]
+          res.json({row : outOb})
+        })
       })
     })
   })

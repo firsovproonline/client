@@ -167,6 +167,7 @@ require('./routes/recentcalls')(app);
 require('./routes/rent21/ob')(app);
 require('./routes/rent21/map')(app);
 require('./routes/rent21/building')(app);
+require('./routes/rent21/photo')(app);
 
 
 export default {

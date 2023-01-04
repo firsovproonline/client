@@ -72,10 +72,16 @@
           <div style="display: flex;padding: 5px">
             <div :class="activeOb21 == 'main' ? 'tabBt active':'tabBt'" @click="activeOb21 = 'main'">Основные поля</div>
             <div :class="activeOb21 == 'photo' ? 'tabBt active':'tabBt'" @click="activeOb21 = 'photo'" >Фото</div>
-            <div :class="activeOb21 == 'export' ? 'tabBt active':'tabBt'" @click="activeOb21 = 'export'" style="margin-left: 8px">Экспорт</div>
+            <div :class="activeOb21 == 'export' ? 'tabBt active':'tabBt'" @click="showExport" style="margin-left: 8px;display: flex">
+              <div>Экспорт</div>
+              <indicator :item="activeExport" />
+            </div>
           </div>
-          <div ref="mainob21" style="padding-right: 6px; overflow: auto;width: 380px;overflow-x: hidden;background-color: white">
+          <div ref="mainob21" style="padding-right: 6px; overflow: auto;width: 400px;overflow-x: hidden;background-color: white">
             <div v-show="activeOb21==='main'"  ref="ob21"  ></div>
+            <div v-show="activeOb21==='photo'"  ref="ob21Photo"  >
+              <ListPhoto :uid="uidOb" />
+            </div>
           </div>
 
         </div>
@@ -88,8 +94,11 @@
 </template>
 
 <script>
+import ListPhoto from '@/components/rent21/ui/photo/list'
+import Indicator from '@/components/rent21/ui/export/indicator'
 export default {
   name: 'obEdit',
+  components: { Indicator, ListPhoto },
   data: () => ({
     win: {},
     disableItems: [],
@@ -103,6 +112,14 @@ export default {
     owners: []
   }),
   computed:{
+    activeExport(){
+      if(this.item && this.uidOb != ''
+      && this.item.export.find(el => el.uid === this.uidOb)){
+        return this.item.export.find(el => el.uid === this.uidOb)
+      }else{
+        return {}
+      }
+    },
     activeOwner(){
       if(this.item.ob21&&this.item.ob21.find && this.uidOb != ''
         && this.item.ob21.find(el => el.UID === this.uidOb)){
@@ -126,11 +143,11 @@ export default {
       if(old!==''){
         this.reload(false)
       }
-      this.activeFloor = 'sobst'
-      console.log(val)
+      //this.activeFloor = 'sobst'
+      //console.log(val)
     },
     activeOb21(val){
-      console.log(val)
+      //console.log(val)
     },
     globalMessage(val){
       if(val){
@@ -1941,6 +1958,16 @@ export default {
     window.removeEventListener('resize', this.resize);
   },
   methods:{
+    showExport(){
+      const p = {
+        comp:() => import('../export/formExport'),
+        pfield: '',
+        field: this.activeExport,
+        value: this.activeExport,
+        spr: ''
+      }
+      this.$store.dispatch('main/setVcomponent', p)
+    },
     reload(load){
       if(load){
         this.$axios.get('/api/rent21/building/'+this.$route.params.id).then(item=> {

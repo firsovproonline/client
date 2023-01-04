@@ -29,10 +29,14 @@ db.sequelizePg = new Sequelize(config.postgress.db,
   logging: 0
 });
 const sequelize = db.sequelizePg;
+db.sequelizeMysql =sequelizeMysql;
+db.sequelizeMysql.sync({force: false});
 db.impressins = require("../models/impressions.js")(sequelize, Sequelize);
 db.rent21ob = require("../models/rent21.ob.model.js")(sequelize, Sequelize);
 db.rent21address = require("../models/rent21.address.model.js")(sequelize, Sequelize);
 db.rent21building = require("../models/rent21.building.model.js")(sequelize, Sequelize);
 db.rent21owner = require("../models/rent21.owner.model.js")(sequelize, Sequelize);
+db.rent21export = require("../models/rent21.export.model.js")(sequelize, Sequelize);
+
 db.sequelizePg.sync({force: false})
 module.exports = db;
