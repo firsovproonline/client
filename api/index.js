@@ -275,7 +275,9 @@ var timerIdCian = setInterval(function() {
               Promise.all(promiseAR).then(
                 result => {
                   for (var i = 0; i < result.length; i++) {
-                    avitoItens = avitoItens.concat(result[i].res.items)
+                    if(result[i].res.items.length > 0){
+                      avitoItens = avitoItens.concat(result[i].res.items)
+                    }
                   }
                   fs.writeFileSync(__dirname + '/config/avitoreport.json', JSON.stringify(avitoItens));
                   //res.json({rows : avitoItens})
