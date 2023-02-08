@@ -102,7 +102,7 @@ passport.deserializeUser(function(obj, done) {
 passport.use(new YandexStrategy({
     clientID: config.YANDEX_CLIENT_ID,
     clientSecret: config.YANDEX_CLIENT_SECRET,
-    callbackURL: "http://firsovpro.online:3022/api/auth/yandex/callback"
+    callbackURL: config.callbackURL
   },
   function(accessToken, refreshToken, profile, done) {
     // asynchronous verification, for effect...
@@ -234,7 +234,7 @@ var timerIdCian = setInterval(function() {
   request.post('https://api.avito.ru/token/?grant_type=client_credentials&client_id=IYakbUJeEieLz93hCnT3&client_secret=z8EaNtc5IYBJWL-YHY37nDYjm4SmsCcNGRI7XJ18',
     function(error, response, body) {
       if (!error && response.statusCode == 200) {
-        fs.writeFileSync(__dirname + '/avitoreport_token.text', body);
+        fs.writeFileSync(__dirname + '/config/avitoreport_token.text', body);
 
         const access_token = JSON.parse(body).access_token;
         var options = {
