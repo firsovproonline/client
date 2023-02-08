@@ -183,14 +183,12 @@ exports.list = (req, res) => {
     if(where != ''){
       where = ' WHERE '+ where
     }
-    console.error(where)
   }
   let order = ` ORDER BY calldate DESC `
   if(req.body.order == 'createdAt'){
     order = ` ORDER BY "createdAt" DESC `
   }
   const sql =`SELECT * FROM impressions `+where+order+` OFFSET `+req.body.offset+` LIMIT `+req.body.limit
-  console.error(sql)
   db.sequelizePg.query(`SELECT COUNT(id) as  count FROM impressions `+where, {
     raw: true
   }).then((items) => {
@@ -198,7 +196,6 @@ exports.list = (req, res) => {
     db.sequelizePg.query(`SELECT impressions.*,json_extract_path(impressions.fields,'TEL')::text FROM impressions `+where+order+` OFFSET `+req.body.offset+` LIMIT `+req.body.limit, {
       raw: true
     }).then((items) => {
-      console.error(req.body)
       res.json({count:count, rows : items[0],sql:sql, body:req.body})
     })
   })

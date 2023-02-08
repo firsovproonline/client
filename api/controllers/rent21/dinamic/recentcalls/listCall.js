@@ -36,7 +36,6 @@ if(req.body){
   if(where != ''){
     where = ' WHERE '+ where
   }
-  console.error('where', where)
 }
 db.sequelizePg.query(`SELECT COUNT(id) as  count FROM callzvons `+where, {
   raw: true
@@ -45,16 +44,12 @@ db.sequelizePg.query(`SELECT COUNT(id) as  count FROM callzvons `+where, {
   const sql = `SELECT callzvons.*
             FROM callzvons `+where+` ORDER BY  callzvons.start_time DESC
                 OFFSET `+req.body.offset+` LIMIT `+req.body.limit
-  console.error('++++++++++++++',sql)
-
   db.sequelizePg.query(sql, {
     raw: true
   }).then((items) => {
-    // console.error(req.body)
     res.json({count:count, rows : items[0]})
   })
 })
 }else{
-  console.error(req.user)
   res.json({error : 401})
 }

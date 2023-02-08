@@ -14,7 +14,6 @@ if(req.user && (req.user.isAdmin || req.user.isRieltor) && req.user.DOSTUP.index
     res.json({row : items[0]})
   })
 }else{
-  console.error(req.user)
   res.json({error : 401})
 }
 

@@ -21,7 +21,6 @@ const corsOptions = {
 }
 
 passport.serializeUser(function(user, done) {
-  // console.error(db.sequelize)
   const sql = "select * from users WHERE login = '" + user.username + "'"
   db.sequelizePg.query(sql, {
     raw: true,

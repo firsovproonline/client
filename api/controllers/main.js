@@ -383,7 +383,6 @@ exports.test = (req, res) => {
                 LIMIT 40`, {
     raw: true, //если для таблицы, к которой происходит обращение, не определена модель
   }).then((items) => {
-    console.error('============')
     res.json(items)
   })
 

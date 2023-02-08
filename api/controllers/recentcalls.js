@@ -16,7 +16,6 @@ exports.list = (req, res) => {
   let where = '';
   if(req.body){
     for (const key in req.body) {
-      console.error('***********'+key+'****************')
       if (key && req.body.hasOwnProperty(key) !== 'undefined') {
         if(req.body[key] !==''){
           switch (key) {
@@ -36,7 +35,6 @@ exports.list = (req, res) => {
     if(where != ''){
       where = ' WHERE '+ where
     }
-    console.error('where',where)
   }
   db.sequelizePg.query(`SELECT COUNT(id) as  count FROM callzvons `+where, {
     raw: true
@@ -52,7 +50,6 @@ exports.list = (req, res) => {
                 OFFSET `+req.body.offset+` LIMIT `+req.body.limit, {
       raw: true
     }).then((items) => {
-      console.error(req.body)
       res.json({count:count, rows : items[0]})
     })
   })

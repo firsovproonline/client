@@ -43,7 +43,6 @@ if(req.user && (req.user.isAdmin || req.user.isRieltor) && req.user.DOSTUP.index
           outOb.ob21.push(item.fields)
         })
 
-        console.error(uids)
         sql = "select * from rent21_exports where uid in ('" + uids.join("','") + "')"
         db.sequelizePg.query(sql, {
           raw: true
@@ -55,7 +54,6 @@ if(req.user && (req.user.isAdmin || req.user.isRieltor) && req.user.DOSTUP.index
     })
   })
 }else{
-  console.error(req.user)
   res.json({error : 401})
 }
 

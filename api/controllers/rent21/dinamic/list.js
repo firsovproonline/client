@@ -40,12 +40,10 @@ db.sequelizePg.query(sqlCount, {
   db.sequelizePg.query(sql, {
     raw: true
   }).then((items) => {
-    console.error(req.body)
     res.json({count:count, rows : items[0],sql:sql, body:req.body})
   })
 
 })
 }else{
-  console.error(req.user)
   res.json({error : 401})
 }

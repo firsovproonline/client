@@ -15,7 +15,6 @@ const sql = `SELECT rent21_buildings.address AS address,
 db.sequelizePg.query(sql, {
   raw: true
 }).then((items) => {
-  // console.error(req.body)
   const outOb = {}
   const outAr = []
   items[0].forEach(item=>{

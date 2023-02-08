@@ -26,7 +26,6 @@ LEFT JOIN rent21_obs ON rent21_obs.uid = rent21_exports.uid
     LEFT JOIN rent21_buildings ON rent21_buildings.uid = rent21_obs.build
     LEFT JOIN rent21_addresses ON rent21_addresses.uid = rent21_buildings.address
     ` + where + ` OFFSET 0 LIMIT 5000`
-console.error(sql)
 db.sequelizePg.query(sqlCount, {
   raw: true
 }).then((items) => {
