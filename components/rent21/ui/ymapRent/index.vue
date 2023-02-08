@@ -1,11 +1,15 @@
 <template>
-  <div ref="map" class="main"></div>
+  <div ref="map" class="main">
+    <YmapFind ref="YmapFind" />
+  </div>
 </template>
 
 <script>
 
+import YmapFind from '@/components/rent21/ui/ymapRent/filter'
 export default {
   name: "ymapRent",
+  components: { YmapFind },
   data: () => ({
     myMap: {}
   }),
@@ -18,11 +22,13 @@ export default {
     window.ymaps.ready(()=> {
       this.myMap = new window.ymaps.Map(this.$refs.map, {
         center: [55.76, 37.64],
-        zoom: 13
+        zoom: 13,
+        controls: []
       });
+      this.myMap.controls.getContainer().appendChild(this.$refs.YmapFind.$el)
       if(this.Mapready)this.Mapready(this.myMap)
       this.$axios.post('/api/rent21/map').then(items=>{
-        console.log(items)
+        // console.log(items)
         const clusterer = new window.ymaps.Clusterer();
         items.data.rows.forEach(item=>{
 //          if(item.building && item.building.length > 1){
@@ -58,7 +64,6 @@ export default {
           clusterer.add(myPlacemark);
         })
         this.myMap.geoObjects.add(clusterer);
-
       })
     });
     window.addEventListener('resize', this.resize);
@@ -181,5 +186,6 @@ export default {
 <style scoped>
 .main{
   min-height: 300px;
+  width: 100%;
 }
 </style>

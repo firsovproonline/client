@@ -83,9 +83,16 @@
                         <i class="fa fa-angle-right"></i>
                       </div>
                     </router-link>
-                    <ul class="nav-submenu menu-content" style="display: none;">
-                      <li><a href="index.html">Default</a></li>
-                      <li><a href="dashboard-02.html">Ecommerce</a></li>
+                    <router-link class="nav-link menu-title" to="/report">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-home"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                      <span>Экспорт</span>
+                      <div class="according-menu">
+                        <i class="fa fa-angle-right"></i>
+                      </div>
+                    </router-link>
+                    <ul class="nav-submenu menu-content nav-submenuShow" style="">
+                      <li><router-link to="/report/avito">Avito</router-link></li>
+                      <li><router-link to="/report/cian">Cian</router-link></li>
                     </ul>
                   </li>
                 </ul>
@@ -130,9 +137,11 @@ export default {
   },
   watch:{
     globalMessage(val){
-      console.log('globalMessage', val)
       if(val==='hideMenu'){
         this.showNav = false
+      }
+      if(val==='showMenu'){
+        this.showNav = true
       }
     }
   },
@@ -176,6 +185,7 @@ export default {
       console.log(item.data)
     });
     this.$store.dispatch('main/load');
+    this.$store.dispatch('export/load');
 
     /*
     window.onload = function () {
@@ -192,7 +202,9 @@ export default {
 </script>
 
 <style lang="css">
-
+.nav-submenuShow{
+  display: block !important;
+}
 .modalDiv{
   position: absolute;
   width: 100%;

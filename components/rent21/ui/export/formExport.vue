@@ -7,15 +7,15 @@
       </div>
       <div :class="activeTab == 'Cian' ? 'hitem active':'hitem'" @click="activeTab='Cian'">
         Cian
-        <input type="checkbox">
+        <input type="checkbox" v-model="cianCh">
       </div>
       <div :class="activeTab == 'Cian1' ? 'hitem active':'hitem'" @click="activeTab='Cian1'">
         Cian1
-        <input type="checkbox">
+        <input type="checkbox" v-model="cian1Ch">
       </div>
       <div :class="activeTab == 'Avito' ? 'hitem active':'hitem'" @click="activeTab='Avito'">
         Avito
-        <input type="checkbox">
+        <input type="checkbox" v-model="avitoCh">
       </div>
       <div :class="activeTab == 'Yandex' ? 'hitem active':'hitem'" @click="activeTab='Yandex'">
         Yandex
@@ -28,7 +28,7 @@
     </div>
     <div class="footer">
       <button type="button" class="btn btn-pill btn-primary btn-air-primary btn-sm">Сохранить</button>
-      <button type="button" class="btn btn-pill btn-secondary btn-air-secondary btn-sm">Отменить</button>
+      <button type="button" @click="close" class="btn btn-pill btn-secondary btn-air-secondary btn-sm">Отменить</button>
     </div>
   </div>
 </template>
@@ -43,46 +43,54 @@ export default {
   data: () => ({
     ob21Form: null,
     flagSubV: false,
-    activeTab: ''
+    activeTab: '',
+    exportOB: {},
+    avitoCh: false,
+    cianCh: false,
+    cian1Ch: false,
   }),
   computed:{
     value(){
-      return this.$store.getters['main/combovalue']
+      return this.$store.getters['main/combovalue'];
     }
   },
   watch:{
     activeTab(val){
-      let exportOB = {};
-
+      this.exportOB = {};
       switch (val) {
         case 'Avito':
           if(this.value && this.value.fields && this.value.fields.avito){
-            exportOB = this.value.fields.avito
+            this.exportOB = this.value.fields.avito
           }
           break
         case 'Cian':
           if(this.value && this.value.fields && this.value.fields.cian){
-            exportOB = this.value.fields.cian
+            this.exportOB = this.value.fields.cian
           }
           break
         case 'Cian1':
           if(this.value && this.value.fields && this.value.fields.cian1){
-            exportOB = this.value.fields.cian1
+            this.exportOB = this.value.fields.cian1
           }
           break
         case 'Rent21':
           if(this.value && this.value.fields && this.value.fields.rent21){
-            exportOB = this.value.fields.rent21
+            this.exportOB = this.value.fields.rent21
           }
           break
         case 'Yandex':
           if(this.value && this.value.fields && this.value.fields.Yandex){
-            exportOB = this.value.fields.Yandex
+            this.exportOB = this.value.fields.Yandex
           }
           break
 
       }
-      console.log('+++++++++++++++++',exportOB)
+      console.log(this.exportOB)
+
+      Object.keys(this.exportOB).forEach(key=>{
+        this.ob21Form.setItemValue(key, this.exportOB[key]);
+      })
+      //console.log('+++++++++++++++++',this.exportOB)
 
       if (val == 'Avito') {
         //Заголовок обьявления:
@@ -109,6 +117,7 @@ export default {
         this.ob21Form.hideItem('commercial-building-type');
         this.ob21Form.hideItem('purpose');
       }
+
     }
   },
   mounted () {
@@ -476,6 +485,24 @@ export default {
       }
     ]);
     this.activeTab ='Rent21'
+    console.log('export++++++++', this.value)
+    const ob = this.value;
+    if(this.value.fields.cian.Publ == 1) this.cianCh = true
+    else this.cianCh = false
+    if(this.value.fields.cian1.Publ == 1) this.cian1Ch = true
+    else this.cian1Ch = false
+    if(this.value.fields.avito.Publ == 1) this.avitoCh = true
+    else this.avitoCh = false
+    console.log(this.value.uid,this.value.fields.cian.Publ,this.value.fields.avito.Publ)
+  },
+  methods:{
+    close(){
+      this.$store.dispatch('main/setVcomponent', {
+        comp: null,
+        field: null,
+        spr: null
+      })
+    }
   }
 }
 </script>

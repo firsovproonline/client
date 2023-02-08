@@ -3,7 +3,7 @@ import MD5 from 'crypto-js/md5'
 const express = require('express')
 const cors = require("cors")
 const fs = require('fs')
-const request = require('request');
+
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const Sequelize = require("sequelize");
@@ -11,10 +11,11 @@ const passport = require('passport');
 const YandexStrategy = require('passport-yandex').Strategy;
 const methodOverride = require('method-override');
 const bodyParser = require('body-parser');
+const request = require('request');
 
 const db = require("./models");
 const config = require("./config/db.config.js");
-
+const ejs = require('ejs');
 const corsOptions = {
   origin: "*"
 }
@@ -166,8 +167,141 @@ require('./routes/impressions')(app);
 require('./routes/recentcalls')(app);
 require('./routes/rent21/ob')(app);
 require('./routes/rent21/map')(app);
+require('./routes/rent21/report')(app);
+require('./routes/rent21/export')(app);
 require('./routes/rent21/building')(app);
 require('./routes/rent21/photo')(app);
+
+var timerIdCian = setInterval(function() {
+  console.log("get CIAN")
+
+  var request = require('request');
+  request({
+    url: "https://public-api.cian.ru/v1/get-order",
+    method: "GET",
+    headers: {
+      "Authorization": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjI0MTQzNDd9.tnl_IpjFbd6npeK5eZawYTOxmBudZMLey70YhS3jRQs",
+      "content-type": "application/json"
+    },
+    body: ""
+  }, function(error, response, body) {
+    if (error) {
+
+    }
+    else {
+      if (response.statusCode == 200) {
+        var J = JSON.parse(body);
+        var ob = {};
+        for (var i = 0; i < J.result.offers.length; i++) {
+          ob[J.result.offers[i].externalId] = J.result.offers[i];
+        }
+        fs.writeFileSync(__dirname + '/cianreport.json', JSON.stringify(ob))
+      }
+      else {
+
+      }
+    }
+  });
+
+  request({
+    url: "https://public-api.cian.ru/v1/get-order",
+    method: "GET",
+    headers: {
+      "Authorization": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjg4NDU2Nn0.CoaLFWfCsb7B__GGP0t7OMWO_n7Hajhwkq3u9YxWHrw",
+      "content-type": "application/json"
+    },
+    body: ""
+  }, function(error, response, body) {
+    if (error) {
+
+    }
+    else {
+      if (response.statusCode == 200) {
+        var J = JSON.parse(body);
+        //console.log('cian ==== ', J)
+        var ob = {};
+        for (var i = 0; i < J.result.offers.length; i++) {
+          ob[J.result.offers[i].externalId] = J.result.offers[i];
+        }
+        fs.writeFileSync(__dirname + '/cianreport1.json', JSON.stringify(ob))
+      }
+      else {
+
+      }
+    }
+  });
+
+  request.post('https://api.avito.ru/token/?grant_type=client_credentials&client_id=IYakbUJeEieLz93hCnT3&client_secret=z8EaNtc5IYBJWL-YHY37nDYjm4SmsCcNGRI7XJ18',
+    function(error, response, body) {
+      if (!error && response.statusCode == 200) {
+        fs.writeFileSync(__dirname + '/avitoreport_token.text', body);
+
+        const access_token = JSON.parse(body).access_token;
+        var options = {
+          url: 'https://api.avito.ru/autoload/v2/reports/last_completed_report',
+          headers: {
+            'Authorization': 'Bearer ' + access_token
+          }
+        };
+        function callback(error, response, body) {
+          if (!error && response.statusCode == 200) {
+            try {
+              fs.writeFileSync(__dirname + '/avitoreport_full.json', body);
+              const J = JSON.parse(body);
+              const report_id = J.report_id
+              const section_stats = J.section_stats
+              const pages = Math.floor(section_stats.count / 50)
+              let avitoItens = []
+              const promiseAR = [];
+              for (let i=0;i<=pages;i++){
+                promiseAR.push(new Promise(function(resolve, reject) {
+                  const reportOptions = {
+                    url: 'https://api.avito.ru/autoload/v2/reports/'+report_id+'/items?page='+i,
+                    headers: {
+                      'Authorization': 'Bearer ' + access_token
+                    }
+                  }
+                  request(reportOptions,(error, response, body) =>{
+                    if (!error && response.statusCode == 200) {
+                      resolve({
+                        res: JSON.parse(body)
+                      })
+                    }else{
+                      reject({})
+                    }
+                  });
+
+                }));
+              }
+              Promise.all(promiseAR).then(
+                result => {
+                  for (var i = 0; i < result.length; i++) {
+                    avitoItens = avitoItens.concat(result[i].res.items)
+                  }
+                  fs.writeFileSync(__dirname + '/avitoreport.json', JSON.stringify(avitoItens));
+                  //res.json({rows : avitoItens})
+                },
+                error => {
+                 // res.json({rows : 0})
+                }
+              )
+            }
+            catch (e) {
+              fs.writeFileSync(__dirname + '/avitoreport_error.text', body);
+            }
+          }
+          else {}
+        }
+        request(options, callback);
+      }
+      else {
+        fs.writeFileSync(__dirname + '/avito_error.text', JSON.stringify(response));
+        //res.json({rows : 0,temp:1})
+      }
+    });
+
+
+}, 300000);
 
 
 export default {

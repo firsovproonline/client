@@ -1,8 +1,25 @@
 <template>
   <div class="main">
+    <modal
+      v-show="flagModal"
+      :show="flagModal"
+      :scrollable="false"
+      body-id="modalBody" header-id="modalHeader"
+      @close="showBig"
+    >
+      <template #header>
+        {{titleModal}}
+      </template>
+      <template #body>
+        <img
+          v-if="flagModal"
+          :src="'/api/rent21/photo/get/'+active" style="width: 100%" />
+      </template>
+    </modal>
     <div v-for="(item, index) in items" :key="index" class="MainphotoBox" >
       <div :step="index"
         @click="active = item.ID"
+        @dblclick="showBig"
         :class="active === item.ID? 'photoBox active':'photoBox'"
         draggable="true" @dragstart="ondragstart" @drop="ondrop" @dragend="ondragover"
       >
@@ -20,9 +37,14 @@ export default {
   },
   data: () => ({
     items: [],
-    active: 0
+    active: 0,
+    flagModal: false,
+    titleModal: ''
   }),
   methods:{
+    showBig(){
+      this.flagModal = !this.flagModal
+    },
     ondragstart(ev){
       console.log(ev)
     },
@@ -34,6 +56,9 @@ export default {
     }
   },
   watch:{
+    active(val){
+      this.titleModal = this.items.find(item => item.ID == val).TITLE
+    },
     uid(val){
       console.log('photouid',val)
       if(val && val !== ''){

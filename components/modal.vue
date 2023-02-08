@@ -133,7 +133,7 @@ export default {
   }
   &-header {
     padding-bottom: 16px;
-    font-size: 25px;
+    font-size: 14px;
     text-align: center;
   }
   &-footer {
