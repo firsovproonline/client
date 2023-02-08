@@ -36,6 +36,7 @@ export default {
   },
   computed:{
     bgAvito(){
+      return '';
       if(this.avito){
         if(this.avito.find(item => item.ad_id == this.uid)){
           if(this.avito.find(item => item.ad_id == this.uid).avito_status){
@@ -61,6 +62,7 @@ export default {
 
     },
     messageAvito(){
+      return '';
       if(this.avito){
         if(this.avito.find(item => item.ad_id == this.uid)){
           if(this.avito.find(item => item.ad_id == this.uid).avito_status

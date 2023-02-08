@@ -195,7 +195,7 @@ var timerIdCian = setInterval(function() {
         for (var i = 0; i < J.result.offers.length; i++) {
           ob[J.result.offers[i].externalId] = J.result.offers[i];
         }
-        fs.writeFileSync(__dirname + '/cianreport.json', JSON.stringify(ob))
+        fs.writeFileSync(__dirname + '/config/cianreport.json', JSON.stringify(ob))
       }
       else {
 
@@ -223,7 +223,7 @@ var timerIdCian = setInterval(function() {
         for (var i = 0; i < J.result.offers.length; i++) {
           ob[J.result.offers[i].externalId] = J.result.offers[i];
         }
-        fs.writeFileSync(__dirname + '/cianreport1.json', JSON.stringify(ob))
+        fs.writeFileSync(__dirname + '/config/cianreport1.json', JSON.stringify(ob))
       }
       else {
 
@@ -246,7 +246,7 @@ var timerIdCian = setInterval(function() {
         function callback(error, response, body) {
           if (!error && response.statusCode == 200) {
             try {
-              fs.writeFileSync(__dirname + '/avitoreport_full.json', body);
+              fs.writeFileSync(__dirname + '/config/avitoreport_full.json', body);
               const J = JSON.parse(body);
               const report_id = J.report_id
               const section_stats = J.section_stats
@@ -278,7 +278,7 @@ var timerIdCian = setInterval(function() {
                   for (var i = 0; i < result.length; i++) {
                     avitoItens = avitoItens.concat(result[i].res.items)
                   }
-                  fs.writeFileSync(__dirname + '/avitoreport.json', JSON.stringify(avitoItens));
+                  fs.writeFileSync(__dirname + '/config/avitoreport.json', JSON.stringify(avitoItens));
                   //res.json({rows : avitoItens})
                 },
                 error => {
@@ -287,7 +287,7 @@ var timerIdCian = setInterval(function() {
               )
             }
             catch (e) {
-              fs.writeFileSync(__dirname + '/avitoreport_error.text', body);
+              fs.writeFileSync(__dirname + '/config/avitoreport_error.text', body);
             }
           }
           else {}
@@ -295,7 +295,7 @@ var timerIdCian = setInterval(function() {
         request(options, callback);
       }
       else {
-        fs.writeFileSync(__dirname + '/avito_error.text', JSON.stringify(response));
+        fs.writeFileSync(__dirname + '/config/avito_error.text', JSON.stringify(response));
         //res.json({rows : 0,temp:1})
       }
     });
