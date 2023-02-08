@@ -174,10 +174,6 @@ export default {
       return this.$store.getters['main/save_component']
     },
   },
-  created () {
-    this.$store.dispatch('main/load');
-    this.$store.dispatch('export/load');
-  },
   mounted() {
     document.body.classList.add('landing-wrraper');
     this.resize();
@@ -189,6 +185,8 @@ export default {
       console.log(item.data)
     });
 
+    this.$store.dispatch('main/load');
+    this.$store.dispatch('export/load');
 
     /*
     window.onload = function () {
