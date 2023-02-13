@@ -23,7 +23,7 @@ export default {
       this.myMap = new window.ymaps.Map(this.$refs.map, {
         center: [55.76, 37.64],
         zoom: 13,
-        controls: []
+        // controls: []
       });
       this.myMap.controls.getContainer().appendChild(this.$refs.YmapFind.$el)
       if(this.Mapready)this.Mapready(this.myMap)

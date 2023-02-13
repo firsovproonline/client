@@ -1,4 +1,5 @@
 module.exports = (sequelize, Sequelize) => {
+
   const Rent21_ob = sequelize.define("rent21_ob", {
     id: {
       type: Sequelize.INTEGER,
@@ -9,14 +10,17 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.STRING(64),
       unique: 'compositeIndex'
     },
-    build: {
+    owner: {
       type: Sequelize.STRING(64),
     },
-    owner: {
+    build: {
       type: Sequelize.STRING(64),
     },
     category: {
       type: Sequelize.STRING(64)
+    },
+    cian: {
+      type: Sequelize.JSON
     },
     fields: {
       type: Sequelize.JSON

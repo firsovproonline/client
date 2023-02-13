@@ -2127,6 +2127,7 @@ export default {
             }
           }
         }
+        console.log('============================',this.item.ob21.find(el => el.UID === this.uidOb))
         this.ob21Form.setItemValue('obfields',{pchange:this.onChange,data:this.item.ob21.find(el => el.UID === this.uidOb)});
       }else{
         this.ob21Form.setItemValue('obfields',{pchange:this.onChange,data:this.item.ob21.find(el => el.UID === this.uidOb)});

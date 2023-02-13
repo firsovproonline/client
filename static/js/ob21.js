@@ -240,7 +240,14 @@
             item.innerHTML = "";
         },
         setValue: function(item, data) {
-            var J = JSON.parse(data);
+          let J = []
+          if (typeof data === 'string' || data instanceof String){
+            J = JSON.parse(data);
+          }else{
+            J = data;
+
+          }
+          console.log('MPL',data)
             for (var i = 0; i < J.length; i++) {
                 this.addSubItem(J[i]);
             }
