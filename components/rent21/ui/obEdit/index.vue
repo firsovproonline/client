@@ -7,7 +7,7 @@
       <div ref="ob21"  ></div>
     </div>
     <div v-if="innerWidth > 1000">
-      <div class="rowCol" style="display: flex;width: 98%; overflow: hidden" ref="main">
+      <div class="rowCol scroll21" style="display: flex;width: 98%; overflow: hidden" ref="main">
         <div style="border-right: 1px solid;">
           <div style="display: flex;padding: 5px">
             <div :class="activeAddress == 'main' ? 'tabBt active':'tabBt'"
@@ -15,7 +15,7 @@
             <div :class="activeAddress == 'photo' ? 'tabBt active':'tabBt'"
                  @click="activeAddress = 'photo'" >Фото</div>
           </div>
-          <div ref="mainaddress" style="overflow: auto;width: 400px;overflow-x: hidden;background-color: white">
+          <div ref="mainaddress" class="scroll21" style="overflow: auto;width: 400px;overflow-x: hidden;background-color: white">
             <div v-show="activeAddress==='main'" ref="address" ></div>
           </div>
         </div>
@@ -24,6 +24,14 @@
           <div style="display: flex;padding: 5px">
             <div :class="activeFloor == 'sobst' ? 'tabBt active':'tabBt'" @click="activeFloor = 'sobst'">Собственники</div>
             <div :class="activeFloor == 'floor' ? 'tabBt active':'tabBt'" @click="activeFloor = 'floor'" >Помещения</div>
+            <div v-show="activeFloor == 'floor'" style="width: 100%;text-align: end;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-copy"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+            </div>
+            <div v-show="activeFloor == 'sobst'" style="width: 100%;text-align: end;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            </div>
           </div>
           <div ref="floor" style="overflow: auto;overflow-x: hidden;background-color: white">
             <div v-show="activeFloor==='floor'">
@@ -32,7 +40,7 @@
                 <div v-for="(itemOb, index) in item.ob21" :key="index">
                   <div :class="uidOb === itemOb.UID?'active':''" @click="uidOb=itemOb.UID" style="display: flex;padding-left: 12px;cursor: pointer">
                     <div style="display: flex;align-items: center;max-width: 170px;min-width: 170px">
-                      <div style="width: 100px;overflow: hidden;white-space:normal">{{itemOb.TIP}}</div>
+                      <div style="width: 100px;overflow: hidden;white-space:normal">{{replaceTip(itemOb.TIP)}}</div>
                       <div style="margin-left: 3px">{{itemOb.OPP}}</div>
                       <div style="margin-left: 3px">{{itemOb.PLALL}}</div>
                     </div>
@@ -55,20 +63,7 @@
               </div>
             </div>
             <div v-show="activeFloor==='sobst'">
-              <div v-for="(item, index) in owners" :key="index"
-                   :class="activeOwner === item.UID? 'active_red':''"
-                   style="padding-left: 11px;border-bottom: 1px solid">
-                <div>{{item.NAME}}</div>
-                <div>
-                  <div v-for="(item1, index) in item.contacts" :key="index" style="padding-left: 11px">
-                    <div>{{item1.FIRSTNAME}}</div>
-                    <div v-for="(phone, index) in item1.PHONE" :key="index" style="display: flex;padding-left: 11px">
-                      <div>{{phone.VAL}}</div>
-                      <div>{{phone.REM}}</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <OwnerList :items="owners" />
             </div>
           </div>
         </div>
@@ -83,7 +78,7 @@
               <indicator v-if="this.$store.getters['export/items'].length > 0" :uid="uidOb" :item="activeExport" />
             </div>
           </div>
-          <div ref="mainob21" style="padding-right: 6px; overflow: auto;width: 400px;overflow-x: hidden;background-color: white">
+          <div ref="mainob21" class="scroll21" style="padding-right: 6px; overflow: auto;width: 400px;overflow-x: hidden;background-color: white">
             <div v-show="activeOb21==='main'"  ref="ob21"  ></div>
             <div v-show="activeOb21==='photo'"  ref="ob21Photo"  >
               <ListPhoto :uid="uidOb" />
@@ -102,9 +97,10 @@
 <script>
 import ListPhoto from '@/components/rent21/ui/photo/list'
 import Indicator from '@/components/rent21/ui/export/indicator'
+import OwnerList from '@/components/rent21/ui/owner/ownerList'
 export default {
   name: 'obEdit',
-  components: { Indicator, ListPhoto },
+  components: { OwnerList, Indicator, ListPhoto },
   data: () => ({
     win: {},
     disableItems: [],
@@ -233,6 +229,12 @@ export default {
     window.removeEventListener('resize', this.resize);
   },
   methods:{
+    replaceTip(val){
+      if(val === 'Помещение свободного назначения'){
+        return 'ПСН'
+      }else
+        return val
+    },
     createForms(){
       this.$axios.get('/api/rent21/building/'+this.$route.params.id).then(item=>{
         if(item.data.error && item.data.error === 401){
@@ -2244,6 +2246,22 @@ export default {
   .rowCol{
     width: 45%;
   }
+}
+
+.scroll21::-webkit-scrollbar {
+  width: 4px;
+}
+
+.scroll21::-webkit-scrollbar-track {
+  -webkit-box-shadow: 5px 5px 5px -5px rgba(34, 60, 80, 0.2) inset;
+  background-color: #f9f9fd;
+}
+
+.scroll21::-webkit-scrollbar-thumb {
+  background-color: #356184;
+  background-image: -webkit-gradient(linear, 0 0, 0 100%,
+  color-stop(.5, rgba(255, 255, 255, .25)),
+  color-stop(.5, transparent), to(transparent));
 }
 
 </style>
