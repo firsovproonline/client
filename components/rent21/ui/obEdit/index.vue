@@ -9,6 +9,8 @@
     <div v-if="innerWidth > 1000">
       <div class="rowCol scroll21" style="display: flex;width: 98%; overflow: hidden" ref="main">
         <div style="border-right: 1px solid;">
+          <div v-if="edit=='ob21'" class="modalDivLocal" style="width: 400px"></div>
+
           <div style="display: flex;padding: 5px">
             <div :class="activeAddress == 'main' ? 'tabBt active':'tabBt'"
                  @click="activeAddress = 'main'">Основные поля</div>
@@ -21,6 +23,8 @@
         </div>
 
         <div style="border-right: 1px solid;flex: 1 auto;">
+          <div v-if="edit=='ob21' || edit=='address' || edit=='build'" class="modalDivLocal" style="width: 350px"></div>
+
           <div style="display: flex;padding: 5px">
             <div :class="activeFloor == 'sobst' ? 'tabBt active':'tabBt'" @click="activeFloor = 'sobst'">Собственники</div>
             <div :class="activeFloor == 'floor' ? 'tabBt active':'tabBt'" @click="activeFloor = 'floor'" >Помещения</div>
@@ -70,6 +74,8 @@
 
 
         <div>
+          <div v-if="edit=='address' || edit=='build'" class="modalDivLocal" style="width: 400px"></div>
+
           <div style="display: flex;padding: 5px">
             <div :class="activeOb21 == 'main' ? 'tabBt active':'tabBt'" @click="activeOb21 = 'main'">Основные поля</div>
             <div :class="activeOb21 == 'photo' ? 'tabBt active':'tabBt'" @click="activeOb21 = 'photo'" >Фото</div>
@@ -110,6 +116,7 @@ export default {
     activeAddress: 'main',
     activeFloor:'floor',
     uidOb: '',
+    edit: '',
     floors: [],
     owners: []
   }),
@@ -186,22 +193,43 @@ export default {
     },
     globalMessage(val){
       if(val){
-        console.log(val)
         if(val === 'save'){
           const ob = {}
-          ob.address = this.item.address
-          ob.building = this.item.building
-          ob.ob21 = this.item.ob21[this.item.ob21.findIndex(el => el.UID === this.uidOb)]
-          console.log({building :ob.building.UID,address :ob.address.UID,
-            ob21:this.item.ob21[this.item.ob21.findIndex(el => el.UID === this.uidOb)].UID})
+          if(this.edit === 'ob21'){
+            ob.ob21 = this.item.ob21[this.item.ob21.findIndex(el => el.UID === this.uidOb)]
+          }else{
+            ob.address = this.item.address
+            ob.building = this.item.building
+          }
           this.$axios.put('/api/rent21/ob',ob).then(item=>{
-            console.log(item.data)
             this.$store.dispatch('main/globalMessage',null)
             disableForms(this.disableItems, false)
             this.$store.dispatch('main/save_component', null)
-
+            if(this.edit === 'ob21'){
+              this.$axios.get('/api/rent21/ob/'+this.uidOb).then(item=>{
+                this.ob21Form.setItemValue('obfields',{pchange:this.onChange,data:item.data.row[0].fields});
+                this.edit =  ''
+              })
+            }else{
+              this.$axios.get('/api/rent21/building/'+ob.building.UID).then(item=>{
+                this.addressForm.setItemValue('adres', item.data.row.address)
+                for (let key in item.data.row.building) {
+                  if (this.addressForm.isItem('field_' + key)) {
+                    this.addressForm.setItemValue('field_' + key, item.data.row.building[key]);
+                  }
+                }
+                this.edit =  ''
+              })
+            }
           })
         }else{
+          console.log('cancel', this.edit)
+          if(this.edit === 'ob21'){
+            this.$axios.get('/api/rent21/ob/'+this.uidOb).then(item=>{
+              this.ob21Form.setItemValue('obfields',{pchange:this.onChange,data:item.data.row[0].fields});
+            })
+          }
+          this.edit =  ''
           this.$store.dispatch('main/globalMessage',null)
           disableForms(this.disableItems, false)
           this.$store.dispatch('main/save_component', null)
@@ -2143,59 +2171,32 @@ export default {
       }
     },
     onChange(name, value, state){
-      console.log('onChange',name, value, state)
+      if(name.indexOf('field_') !== -1){
+        this.edit = 'build'
+      }else
+        this.edit = name
 
       switch (name) {
         case 'ob21':
           let ob = null
-          if(this.innerWidth >1000){
-            ob = this.ob21Form.getFormData().obfields
-//            ob = this.win.dhxTabbar.layout.cells('d').formOb.getFormData().obfields
-//            this.disableItems = [this.win.dhxTabbar.layout.cells('a').cell, this.win.dhxTabbar.layout.cells('b').cell, this.win.dhxTabbar.layout.cells('c').cell]
-//            disableForms(this.disableItems, true);
-          }else{
-            ob = this.ob21Form.getFormData().obfields
-          }
+          ob = this.ob21Form.getFormData().obfields
           delete ob.form
           this.item.ob21[this.item.ob21.findIndex(el => el.UID === this.uidOb)] = ob
           this.$store.dispatch('main/save_component', () => import('@/components/rent21/ui/r21save'))
           break
         case 'address':
-          if(this.innerWidth >1000){
             this.item.address =  this.addressForm.getFormData().adres.data;
-            //this.item.address = this.win.dhxTabbar.layout.cells('a').form.getFormData().adres.data;
-            //this.disableItems = [this.win.dhxTabbar.layout.cells('b').cell, this.win.dhxTabbar.layout.cells('c').cell, this.win.dhxTabbar.layout.cells('d').cell]
-            //disableForms(this.disableItems, true);
             this.$store.dispatch('main/save_component', () => import('@/components/rent21/ui/r21save'))
-          }else{
-            this.item.address =  this.addressForm.getFormData().adres.data;
-          }
           break
         default:
-          if(this.innerWidth >1000){
             name = name.replace('field_','')
-            console.log('state',state)
             if(state !== undefined && typeof state === 'boolean'){
               this.item.building[name] = state
             }else{
               this.item.building[name] = value
             }
-
-
             disableForms(this.disableItems, true);
             this.$store.dispatch('main/save_component', () => import('@/components/rent21/ui/r21save'))
-          }else{
-            name = name.replace('field_','')
-            console.log('state',state)
-            if(state !== undefined && typeof state === 'boolean'){
-              console.log('+++++++++++++++++++++++++++')
-              this.item.building[name] = state
-            }else{
-              console.log('---------------------------')
-              this.item.building[name] = value
-            }
-            this.$store.dispatch('main/save_component', () => import('@/components/rent21/ui/r21save'))
-          }
       }
     }
   }
@@ -2262,6 +2263,15 @@ export default {
   background-image: -webkit-gradient(linear, 0 0, 0 100%,
   color-stop(.5, rgba(255, 255, 255, .25)),
   color-stop(.5, transparent), to(transparent));
+}
+
+.modalDivLocal {
+  position: absolute;
+  width: inherit;
+  opacity: 0.3;
+  z-index: 4000;
+  background-color: black;
+  height: -webkit-fill-available;
 }
 
 </style>
