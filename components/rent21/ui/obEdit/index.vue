@@ -79,10 +79,12 @@
           <div style="display: flex;padding: 5px">
             <div :class="activeOb21 == 'main' ? 'tabBt active':'tabBt'" @click="activeOb21 = 'main'">Основные поля</div>
             <div :class="activeOb21 == 'photo' ? 'tabBt active':'tabBt'" @click="activeOb21 = 'photo'" >Фото</div>
+            <!--
             <div :class="activeOb21 == 'export' ? 'tabBt active':'tabBt'" @click="showExport" style="margin-left: 8px;display: flex">
               <div>Экспорт</div>
               <indicator v-if="this.$store.getters['export/items'].length > 0" :uid="uidOb" :item="activeExport" />
             </div>
+            -->
           </div>
           <div ref="mainob21" class="scroll21" style="padding-right: 6px; overflow: auto;width: 400px;overflow-x: hidden;background-color: white">
             <div v-show="activeOb21==='main'"  ref="ob21"  ></div>
