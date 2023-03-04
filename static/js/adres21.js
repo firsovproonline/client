@@ -962,6 +962,11 @@ dhtmlXForm.prototype.items.adRes21 = {
         $(cont[0]).parent().parent().parent().css('padding-left', '0px')
         $('.dhxform_base_nested').css('padding-left', '0px')
         title.html(data.label);
+        item.clearMetro = function (){
+          console.log('this.form21', this.form21)
+          //this.form21.clear()
+
+        }
         item.addMetro = function(obMetro) {
             var subkey = obMetro.PUID;
             this.form21.addItem('metro', {
@@ -1068,6 +1073,8 @@ dhtmlXForm.prototype.items.adRes21 = {
         }
         //item.form21.map.setCenter([item.form21.getItemValue('LAT'), item.form21.getItemValue('LNG')])
         item._value = ob;
+      //item.clearMetro()
+
     },
     setReadonly: function(item, val) {
         var data = item.form21.getFormData(true);
