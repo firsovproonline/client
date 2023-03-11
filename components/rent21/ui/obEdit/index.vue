@@ -19,6 +19,11 @@
           </div>
           <div ref="mainaddress" class="scroll21" style="overflow: auto;width: 400px;overflow-x: hidden;background-color: white">
             <div v-show="activeAddress==='main'" ref="address" ></div>
+            <div v-show="activeAddress==='photo'"  ref="ob21Photo"  >
+              <div v-if="item.building">
+                <ListPhoto v-show="item.building && item.building.UID" :uid="item.building.UID" />
+              </div>
+            </div>
           </div>
         </div>
 

@@ -1,9 +1,11 @@
 import ss from "sequelize";
 import MD5 from 'crypto-js/md5'
 const express = require('express')
+const mysql = require("mysql")
 const cors = require("cors")
 const fs = require('fs')
-
+const gm = require('gm')
+const fileUpload = require('express-fileupload');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const Sequelize = require("sequelize");
@@ -118,29 +120,44 @@ passport.use(new YandexStrategy({
 
 const app = express()
 // require('./routes/main')(app);
-
+/*
 app.use(bodyParser.urlencoded({
   extended: false
 }));
 app.use(bodyParser.json({
   limit: '5mb'
 }))
+
+ */
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
+
+app.use(fileUpload({
+  createParentPath: true,
+  limits: {
+    fileSize: 20 * 1024 * 10024 * 10024 //2MB max file(s) size
+  },
+}));
+
 app.use(cookieParser());
 // app.use(cookieParser(config.cookieSecret))
 app.use(cors(corsOptions));
 app.use(express.json())
-app.use(express.urlencoded({ extended: false }))
+app.use(express.urlencoded({ extended: true }))
 //require('./routes/yandex')(app);
 app.use(session({
   resave: true,
-  saveUninitialized: true,
+  saveUninitialized: false,
   secret: 'uwotm8'
 }));
-//app.use(express.bodyParser());
-app.use(methodOverride());
-
 app.use(passport.initialize());
 app.use(passport.session());
+
+
+//app.use(express.bodyParser());
+//app.use(methodOverride());
+
 
 
 app.get('/auth/yandex',

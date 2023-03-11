@@ -8,3 +8,14 @@ exports.get = (req, res) => {
   const fileContent = fs.readFileSync(__dirname +'/dinamic/photo/get.js', "utf8");
   eval(fileContent);
 }
+
+exports.post = (req, res) => {
+  const fileContent = fs.readFileSync(__dirname +'/dinamic/photo/post.js', "utf8");
+  eval(fileContent);
+}
+
+exports.delete = (req, res) => {
+  const fileContent = fs.readFileSync(__dirname +'/dinamic/photo/delete.js', "utf8");
+  eval(fileContent);
+}
+
