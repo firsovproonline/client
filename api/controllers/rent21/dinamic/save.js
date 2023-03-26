@@ -78,6 +78,7 @@ if(req.user && (req.user.isAdmin || req.user.isRieltor) && req.user.DOSTUP.index
 
         break;
       case 'ob21':
+        const ob21 = req.body[key]
         promiseAR.push(new Promise(function (resolve, reject) {
           db.rent21ob.update(
             {
@@ -93,18 +94,18 @@ if(req.user && (req.user.isAdmin || req.user.isRieltor) && req.user.DOSTUP.index
               reject({ 'error': 405 })
             } else {
               const out = []
-              if(req.body[key].UID == '09152a34-602a-460d-848f-2f6f8829389e'){
-                for (const [title, value] of Object.entries(req.body[key])) {
+              if(1 == 1){
+                for (const [title, value] of Object.entries(ob21)) {
                   out.push([
                     null,
-                    req.body[key].UID,
+                    ob21.UID,
                     'ob21',
                     title,
                     value,
                     'root'
                   ])
                 }
-                let sql = "delete from fields WHERE `UID` in ('" + req.body[key].UID + "') AND `TIP` <> 'linc21'";
+                let sql = "delete from fields WHERE `UID` in ('" + ob21.UID + "') AND `TIP` <> 'linc21'";
                 const connection = mysql.createConnection({
                   host: db.config.HOST,
                   user: db.config.USER,
@@ -116,16 +117,17 @@ if(req.user && (req.user.isAdmin || req.user.isRieltor) && req.user.DOSTUP.index
                   sql = "INSERT INTO  `fields` (ID,UID,TIP,TITLE,VAL,PUID) VALUES ?";
                   connection.query(sql, [out], function(err, result) {
                     fs.writeFileSync(__dirname+'../../../config/saveOB21.json', JSON.stringify(out))
+                    resolve({ 'body': req.body })
                   })
                 })
               }
-              resolve({ 'body': req.body })
 
             }
           })
         }));
         break
       case 'address':
+        const address = req.body[key]
         promiseAR.push(new Promise(function (resolve, reject) {
           db.rent21address.update(
             {
@@ -140,12 +142,78 @@ if(req.user && (req.user.isAdmin || req.user.isRieltor) && req.user.DOSTUP.index
             if (item[0] == 0) {
               reject({ 'error': 405 })
             } else {
-              resolve({ 'body': req.body })
+              const out = []
+              if(1==1){
+                for (const [title, value] of Object.entries(address)) {
+                  if(title !=='METRO'){
+                    out.push([
+                      null,
+                      address.UID,
+                      'adRes21',
+                      title,
+                      value,
+                      'root'
+                    ])
+                  }else{
+                    value.forEach(item=>{
+                      const puid = generateUID()
+                      out.push([
+                        null,
+                        address.UID,
+                        'adRes21',
+                        'METRO',
+                        item.NAME,
+                        puid
+                      ])
+                      out.push([
+                        null,
+                        address.UID,
+                        'adRes21',
+                        'GLMETRO',
+                        item.GLMETRO,
+                        puid
+                      ])
+                      out.push([
+                        null,
+                        address.UID,
+                        'adRes21',
+                        'UDTIP',
+                        item.UDTIP,
+                        puid
+                      ])
+                      out.push([
+                        null,
+                        address.UID,
+                        'adRes21',
+                        'UD',
+                        item.UD,
+                        puid
+                      ])
+                    })
+                  }
+                }
+                let sql = "delete from fields WHERE `UID` in ('" + address.UID + "') AND `TIP` <> 'linc21'";
+                const connection = mysql.createConnection({
+                  host: db.config.HOST,
+                  user: db.config.USER,
+                  password: db.config.PASSWORD,
+                  database: db.config.DB,
+                  debug: false
+                });
+                connection.query(sql, [], function(err, result) {
+                  sql = "INSERT INTO  `fields` (ID,UID,TIP,TITLE,VAL,PUID) VALUES ?";
+                  connection.query(sql, [out], function(err, result) {
+                    fs.writeFileSync(__dirname+'../../../config/saveADDRESS.json', JSON.stringify(out))
+                    resolve({ 'body': req.body })
+                  })
+                })
+              }
             }
           })
         }));
         break
       case 'building':
+        const building = req.body[key]
         promiseAR.push(new Promise(function (resolve, reject) {
           db.rent21building.update(
             { fields: req.body[key] },
@@ -158,7 +226,32 @@ if(req.user && (req.user.isAdmin || req.user.isRieltor) && req.user.DOSTUP.index
             if (item[0] == 0) {
               reject({ 'error': 405 })
             } else {
-              resolve({ 'body': req.body })
+              const out = []
+              for (const [title, value] of Object.entries(building)) {
+                out.push([
+                  null,
+                  building.UID,
+                  'buid21',
+                  title,
+                  value,
+                  'root'
+                ])
+              }
+              let sql = "delete from fields WHERE `UID` in ('" + building.UID + "') AND `TIP` <> 'linc21'";
+              const connection = mysql.createConnection({
+                host: db.config.HOST,
+                user: db.config.USER,
+                password: db.config.PASSWORD,
+                database: db.config.DB,
+                debug: false
+              });
+              connection.query(sql, [], function(err, result) {
+                sql = "INSERT INTO  `fields` (ID,UID,TIP,TITLE,VAL,PUID) VALUES ?";
+                connection.query(sql, [out], function(err, result) {
+                  fs.writeFileSync(__dirname+'../../../config/saveBuilding.json', JSON.stringify(out))
+                  resolve({ 'body': req.body })
+                })
+              })
             }
           })
         }));
