@@ -27,6 +27,9 @@ module.exports = (sequelize, Sequelize) => {
     },
     exports: {
       type: Sequelize.JSON
+    },
+    showcase: {
+      type: Sequelize.JSON
     }
   });
   return Rent21_ob;

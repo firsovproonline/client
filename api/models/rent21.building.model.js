@@ -8,6 +8,12 @@ module.exports = (sequelize, Sequelize) => {
     uid: {
       type: Sequelize.STRING(64),
     },
+    mapurl: {
+      type: Sequelize.STRING(250),
+    },
+    exporturl: {
+      type: Sequelize.JSON
+    },
     address: {
       type: Sequelize.STRING(64),
       unique: 'compositeIndex'

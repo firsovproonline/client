@@ -224,6 +224,10 @@ export default {
 </script>
 
 <style lang="css">
+.dhxform_obj_dhx_skyblue div.dhxform_txt_label2 span{
+  background: none !important;
+}
+
 .nav-submenuShow{
   display: block !important;
 }

@@ -65,6 +65,7 @@
                          style="color:red;font-size:14px;margin-left:3px;"></i>
                     </div>
                     -->
+
                     <indicator v-if="1==1" :uid="itemOb.UID" :item="getExport(itemOb.UID)" />
 
                   </div>
@@ -84,17 +85,19 @@
           <div style="display: flex;padding: 5px">
             <div :class="activeOb21 == 'main' ? 'tabBt active':'tabBt'" @click="activeOb21 = 'main'">Основные поля</div>
             <div :class="activeOb21 == 'photo' ? 'tabBt active':'tabBt'" @click="activeOb21 = 'photo'" >Фото</div>
-            <!--
+            <div :class="activeOb21 == 'showcase' ? 'tabBt active':'tabBt'" @click="activeOb21 = 'showcase'" >Витрина</div>
             <div :class="activeOb21 == 'export' ? 'tabBt active':'tabBt'" @click="showExport" style="margin-left: 8px;display: flex">
               <div>Экспорт</div>
-              <indicator v-if="this.$store.getters['export/items'].length > 0" :uid="uidOb" :item="activeExport" />
+              <indicator style="margin-top: -3px" :uid="uidOb" :item="activeExport" />
             </div>
-            -->
           </div>
           <div ref="mainob21" class="scroll21" style="padding-right: 6px; overflow: auto;width: 400px;overflow-x: hidden;background-color: white">
             <div v-show="activeOb21==='main'"  ref="ob21"  ></div>
             <div v-show="activeOb21==='photo'"  ref="ob21Photo"  >
               <ListPhoto :uid="uidOb" />
+            </div>
+            <div v-show="activeOb21==='showcase'" >
+              <showcase :uid="uidOb" />
             </div>
           </div>
 
@@ -111,9 +114,10 @@
 import ListPhoto from '@/components/rent21/ui/photo/list'
 import Indicator from '@/components/rent21/ui/export/indicator'
 import OwnerList from '@/components/rent21/ui/owner/ownerList'
+import Showcase from '@/components/rent21/ui/showcase'
 export default {
   name: 'obEdit',
-  components: { OwnerList, Indicator, ListPhoto },
+  components: { Showcase, OwnerList, Indicator, ListPhoto },
   data: () => ({
     win: {},
     disableItems: [],
@@ -129,30 +133,30 @@ export default {
   }),
   computed:{
     activeExport(){
-      if(this.item && this.uidOb != ''
-      && this.item.export.find(el => el.uid === this.uidOb)){
-        const xOb = this.item.export.find(el => el.uid === this.uidOb)
-        if(!xOb.fields.avito){
-          xOb.fields.avito = {
+      if(this.item && this.uidOb != '' && this.item.ob21.find(el => el.UID === this.uidOb).exports){
+        const xOb = this.item.ob21.find(el => el.UID === this.uidOb).exports
+        console.log('xOb',xOb)
+        if(!xOb.avito){
+          xOb.avito = {
             Publ: 0
           }
         }
-        if(!xOb.fields.cian){
-          xOb.fields.cian = {
+        if(!xOb.cian){
+          xOb.cian = {
             Publ: 0
           }
         }
-        if(!xOb.fields.cian1){
-          xOb.fields.cian1 = {
+        if(!xOb.cian1){
+          xOb.cian1 = {
             Publ: 0
           }
         }
-        console.log('===============',xOb)
+
         const exportOb = {
-          avitopubl: xOb.fields.avito.Publ,
-          cianpubl: xOb.fields.cian.Publ,
-          cian1publ: xOb.fields.cian1.Publ,
-          fields: xOb.fields,
+          avitopubl: xOb.avito.Publ,
+          cianpubl: xOb.cian.Publ,
+          cian1publ: xOb.cian1.Publ,
+          fields: xOb,
           exportOb: xOb,
           uid: xOb.uid
         }
@@ -3069,29 +3073,29 @@ export default {
 
     },
     getExport(val){
-      if(this.item && this.item.export.find(el => el.uid === val)){
-        const xOb = this.item.export.find(el => el.uid === val)
-        if(!xOb.fields.avito){
-          xOb.fields.avito = {
+      if(this.item && this.item.ob21.find(el => el.UID === val).exports){
+        const xOb = this.item.ob21.find(el => el.UID === val).exports
+        if(!xOb.avito){
+          xOb.avito = {
             Publ: 0
           }
         }
-        if(!xOb.fields.cian){
-          xOb.fields.cian = {
+        if(!xOb.cian){
+          xOb.cian = {
             Publ: 0
           }
         }
-        if(!xOb.fields.cian1){
-          xOb.fields.cian1 = {
+        if(!xOb.cian1){
+          xOb.cian1 = {
             Publ: 0
           }
         }
         // console.log('===============',xOb)
         const exportOb = {
-          avitopubl: xOb.fields.avito.Publ,
-          cianpubl: xOb.fields.cian.Publ,
-          cian1publ: xOb.fields.cian1.Publ,
-          fields: xOb.fields,
+          avitopubl: xOb.avito.Publ,
+          cianpubl: xOb.cian.Publ,
+          cian1publ: xOb.cian1.Publ,
+          fields: xOb,
           exportOb: xOb,
           uid: val
         }
@@ -3111,8 +3115,8 @@ export default {
     showExport(){
       const p = {
         comp:() => import('../export/formExport'),
-        pfield: '',
-        field: this.activeExport,
+        pfield: this.uidOb,
+        field: this.item.building.UID,
         value: this.activeExport,
         spr: ''
       }

@@ -1,33 +1,33 @@
 <template>
   <div class="main">
     <div class="header" style="display: flex">
-      <div :class="activeTab == 'Rent21' ? 'hitem active':'hitem'" @click="activeTab='Rent21'">
+      <div :class="activeTab == 'rent21' ? 'hitem active':'hitem'" @click="activeTab='rent21'">
         Rent21
-        <input type="checkbox">
+        <input type="checkbox" v-model="rent21Ch">
       </div>
-      <div :class="activeTab == 'Cian' ? 'hitem active':'hitem'" @click="activeTab='Cian'">
+      <div :class="activeTab == 'cian' ? 'hitem active':'hitem'" @click="activeTab='cian'">
         Cian
         <input type="checkbox" v-model="cianCh">
       </div>
-      <div :class="activeTab == 'Cian1' ? 'hitem active':'hitem'" @click="activeTab='Cian1'">
+      <div :class="activeTab == 'cian1' ? 'hitem active':'hitem'" @click="activeTab='cian1'">
         Cian1
         <input type="checkbox" v-model="cian1Ch">
       </div>
-      <div :class="activeTab == 'Avito' ? 'hitem active':'hitem'" @click="activeTab='Avito'">
+      <div :class="activeTab == 'avito' ? 'hitem active':'hitem'" @click="activeTab='avito'">
         Avito
         <input type="checkbox" v-model="avitoCh">
       </div>
       <div :class="activeTab == 'Yandex' ? 'hitem active':'hitem'" @click="activeTab='Yandex'">
         Yandex
-        <input type="checkbox">
+        <input type="checkbox" v-model="YandexCh">
       </div>
     </div>
     <div class="body" style="padding-right: 18px">
       <div ref="body" style="overflow: auto"> </div>
-      <ExportPhoto style="margin-left: 20px" />
+      <ExportPhoto v-if="value.exportOb[activeTab]" style="margin-left: 20px" :buildingUid="combofield" :uid="combofieldp" :items="value.exportOb[activeTab].PHOTO" />
     </div>
     <div class="footer">
-      <button type="button" class="btn btn-pill btn-primary btn-air-primary btn-sm">Сохранить</button>
+      <button type="button" @click="save" class="btn btn-pill btn-primary btn-air-primary btn-sm">Сохранить</button>
       <button type="button" @click="close" class="btn btn-pill btn-secondary btn-air-secondary btn-sm">Отменить</button>
     </div>
   </div>
@@ -39,6 +39,7 @@ export default {
   name: 'formExport',
   components: { ExportPhoto },
   props:{
+    field: {},
   },
   data: () => ({
     ob21Form: null,
@@ -46,34 +47,67 @@ export default {
     activeTab: '',
     exportOB: {},
     avitoCh: false,
+    rent21Ch: false,
     cianCh: false,
     cian1Ch: false,
+    YandexCh: false
   }),
   computed:{
     value(){
       return this.$store.getters['main/combovalue'];
+    },
+    combofieldp(){
+      return this.$store.getters['main/combofieldp'];
+    },
+    combofield(){
+      return this.$store.getters['main/combofield'];
     }
   },
   watch:{
-    activeTab(val){
+    activeTab(val,old){
+      if(old !== ''){
+        const photo = this.value.fields[old].PHOTO
+        this.value.fields[old] = this.ob21Form.getFormData()
+        this.value.fields[old].PHOTO = photo
+        let Publ = "0"
+        switch (old) {
+          case 'avito':
+            if(this.avitoCh) Publ = '1'
+            break;
+          case 'cian':
+            if(this.cianCh) Publ = '1'
+            break;
+          case 'cian1':
+            if(this.cian1Ch) Publ = '1'
+            break;
+          case 'rent21':
+            if(this.rent21Ch) Publ = '1'
+            break;
+          case 'Yandex':
+            if(this.YandexCh) Publ = '1'
+            break;
+            default:
+        }
+        this.value.fields[old].Publ = Publ;
+      }
       this.exportOB = {};
       switch (val) {
-        case 'Avito':
+        case 'avito':
           if(this.value && this.value.fields && this.value.fields.avito){
             this.exportOB = this.value.fields.avito
           }
           break
-        case 'Cian':
+        case 'cian':
           if(this.value && this.value.fields && this.value.fields.cian){
             this.exportOB = this.value.fields.cian
           }
           break
-        case 'Cian1':
+        case 'cian1':
           if(this.value && this.value.fields && this.value.fields.cian1){
             this.exportOB = this.value.fields.cian1
           }
           break
-        case 'Rent21':
+        case 'rent21':
           if(this.value && this.value.fields && this.value.fields.rent21){
             this.exportOB = this.value.fields.rent21
           }
@@ -85,14 +119,12 @@ export default {
           break
 
       }
-      console.log(this.exportOB)
 
       Object.keys(this.exportOB).forEach(key=>{
         this.ob21Form.setItemValue(key, this.exportOB[key]);
       })
-      //console.log('+++++++++++++++++',this.exportOB)
 
-      if (val == 'Avito') {
+      if (val == 'avito') {
         //Заголовок обьявления:
         let input = this.ob21Form.getInput('TITLE');
         $(input).attr("maxlength", 50);
@@ -118,10 +150,16 @@ export default {
         this.ob21Form.hideItem('purpose');
       }
 
+    },
+    rent21Ch(val){
+      this.value.exportOb.rent21.Publ = val
+    },
+    cianCh(val){
+      this.value.exportOb.cian.Publ = val
     }
+
   },
   mounted () {
-
     this.ob21Form = new dhtmlXForm(this.$refs.body, [
       {
         type: "block",
@@ -484,18 +522,53 @@ export default {
         value: ""
       }
     ]);
-    this.activeTab ='Rent21'
-    console.log('export++++++++', this.value)
+    this.ob21Form.attachEvent("onChange", this.onChange);
+
+    this.activeTab ='rent21'
+    // console.log('export++++++++', this.value)
     const ob = this.value;
+    if(this.value.fields.rent21.Publ == 1) this.rent21Ch = true
+    else this.rent21Ch = false
     if(this.value.fields.cian.Publ == 1) this.cianCh = true
     else this.cianCh = false
     if(this.value.fields.cian1.Publ == 1) this.cian1Ch = true
     else this.cian1Ch = false
     if(this.value.fields.avito.Publ == 1) this.avitoCh = true
     else this.avitoCh = false
-    console.log(this.value.uid,this.value.fields.cian.Publ,this.value.fields.avito.Publ)
+    //console.log(this.value.uid,this.value.fields.cian.Publ,this.value.fields.avito.Publ)
   },
   methods:{
+    onChange(name, value, state){
+      if(state!== undefined){
+        if(state)
+        this.value.exportOb[this.activeTab][name] = 1
+        else
+          this.value.exportOb[this.activeTab][name] = 0
+      }else{
+        this.value.exportOb[this.activeTab][name] = value
+      }
+      console.log(name, value,state, this.activeTab,this.value.exportOb[this.activeTab])
+    },
+    save(){
+      console.log(this.value.exportOb)
+      const ob ={
+        export:{
+          uid: this.combofieldp,
+          value: this.value.exportOb
+        }
+      }
+      this.$axios.put('/api/rent21/ob',ob).then(item=>{
+        console.log(item)
+      })
+/*
+      this.$store.dispatch('main/setVcomponent', {
+        comp: null,
+        field: null,
+        spr: null
+      })
+
+ */
+    },
     close(){
       this.$store.dispatch('main/setVcomponent', {
         comp: null,
@@ -508,6 +581,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
 .active{
   border-bottom: 2px dotted red;
 }

@@ -21,7 +21,13 @@ const ejs = require('ejs');
 const corsOptions = {
   origin: "*"
 }
+function S4() {
+  return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
+}
 
+function generateUID() {
+  return (S4() + S4() + "-" + S4() + "-4" + S4().substr(0, 3) + "-" + S4() + "-" + S4() + S4() + S4()).toLowerCase();
+}
 passport.serializeUser(function(user, done) {
   const sql = "select * from users WHERE login = '" + user.username + "'"
   db.sequelizePg.query(sql, {
