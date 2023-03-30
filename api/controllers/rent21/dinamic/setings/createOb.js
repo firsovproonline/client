@@ -1,3 +1,2088 @@
+const mysql = require('mysql')
+const cianItems = {
+  rent: {
+    flatRent: {
+      Category: 'flatRent',
+      RoomType: ['both', 'combined', 'separate'],
+      BedsCount: 0,
+      FlatRoomsCount: [1, 2, 3, 4, 5, 6, 7, 9],
+      IsApartments: false,
+      IsPenthouse: false,
+      TotalArea: 0,
+      FloorNumber: 0,
+      AllRoomsArea: '',
+      RoomDefinitions: '',
+      Room: {
+        Area: ''
+      },
+      LivingArea: 0,
+      KitchenArea: 0,
+      LoggiasCount: 0,
+      BalconiesCount: 0,
+      WindowsViewType: ['street', 'yard', 'yardAndStreet'],
+      SeparateWcsCount: 0,
+      CombinedWcsCount: 0,
+      RepairType: ['cosmetic', 'design', 'euro', 'no'],
+      HasInternet: false,
+      HasFurniture: false,
+      HasPhone: false,
+      HasKitchenFurniture: false,
+      HasTv: false,
+      HasWasher: false,
+      HasConditioner: false,
+      HasRamp: false,
+      HasBathtub: false,
+      IsInHiddenBase: false,
+      HasShower: false,
+      HasDishwasher: false,
+      PetsAllowed: false,
+      HasFridge: false,
+      ChildrenAllowed: false,
+      Building: {
+        Name: '',
+        FloorsCount: 0,
+        BuildYear: 0,
+        MaterialType: [
+          'aerocreteBlock',
+          'block',
+          'boards',
+          'brick',
+          'foamConcreteBlock',
+          'gasSilicateBlock',
+          'monolith',
+          'monolithBrick',
+          'old',
+          'panel',
+          'stalin',
+          'wireframe',
+          'wood'
+        ],
+        Series: '',
+        CeilingHeight: 0,
+        PassengerLiftsCount: 0,
+        CargoLiftsCount: 0,
+        HasGarbageChute: false,
+        Parking: {}
+      },
+      Apartment: '',
+      BargainTerms: {
+        Price: 0,
+        UtilitiesTerms: {
+          IncludedInPrice: false,
+          Price: 0,
+          FlowMetersNotIncludedInPrice: false
+        },
+        Currency: ['eur', 'rur', 'usd'],
+        BargainAllowed: false,
+        BargainPrice: 0,
+        BargainConditions: '',
+        LeaseTermType: ['fewMonths', 'longTerm'],
+        PrepayMonths: 0,
+        Deposit: 0,
+        ClientFee: 0,
+        AgentFee: 0,
+        AgentBonus: {
+          Value: 0,
+          PaymentType: ['fixed', 'percent'],
+          Currency: ['eur', 'rur', 'usd'],
+        }
+      }
+    },
+    bedRent: {
+      Category: 'bedRent',
+      RoomsForSaleCount: 0,
+      RoomArea: 0,
+      BedsCountL: 0,
+      RoomsCount: 0,
+      TotalArea: 0,
+      FloorNumber: 0,
+      KitchenArea: 0,
+      LoggiasCount: 0,
+      BalconiesCount: 0,
+      SeparateWcsCount: 0,
+      CombinedWcsCount: 0,
+      RepairType: ['cosmetic', 'design', 'euro', 'no'],
+      HasInternet: false,
+      HasFurniture: false,
+      HasPhone: false,
+      HasKitchenFurniture: false,
+      HasTv: false,
+      HasWasher: false,
+      HasConditioner: false,
+      HasRamp: false,
+      HasBathtub: false,
+      IsInHiddenBase: false,
+      HasShower: false,
+      HasDishwasher: false,
+      PetsAllowed: false,
+      HasFridge: false,
+      ChildrenAllowed: false,
+      Building: {
+        Name: '',
+        FloorsCount: 0,
+        BuildYear: 0,
+        MaterialType: [
+          'aerocreteBlock',
+          'block',
+          'boards',
+          'brick',
+          'foamConcreteBlock',
+          'gasSilicateBlock',
+          'monolith',
+          'monolithBrick',
+          'old',
+          'panel',
+          'stalin',
+          'wireframe',
+          'wood'
+        ],
+        Series: '',
+        CeilingHeight: 0,
+        PassengerLiftsCount: 0,
+        CargoLiftsCount: 0,
+        HasGarbageChute: false,
+        Parking: {}
+      },
+      BargainTerms: {
+        Price: 0,
+        UtilitiesTerms: {
+          IncludedInPrice: false,
+          Price: 0,
+          FlowMetersNotIncludedInPrice: false
+        },
+        Currency: ['eur', 'rur', 'usd'],
+        BargainAllowed: false,
+        BargainPrice: 0,
+        BargainConditions: '',
+        LeaseTermType: ['fewMonths', 'longTerm'],
+        PrepayMonths: 0,
+        Deposit: 0,
+        ClientFee: 0,
+        AgentFee: 0,
+        AgentBonus: {
+          Value: 0,
+          PaymentType: ['fixed', 'percent'],
+          Currency: ['eur', 'rur', 'usd'],
+        }
+      }
+    },
+    roomRent: {
+      Category: 'roomRent',
+      RoomsForSaleCount: 0,
+      RoomType: ['both', 'combined', 'separate'],
+      RoomArea: 0,
+      BedsCount: 0,
+      RoomsCount: 0,
+      FlatRoomsCount: [1, 2, 3, 4, 5, 6, 7, 9],
+      TotalArea: 0,
+      FloorNumber: 0,
+      KitchenArea: 0,
+      LoggiasCount: 0,
+      BalconiesCount: 0,
+      SeparateWcsCount: 0,
+      CombinedWcsCount: 0,
+      RepairType: ['cosmetic', 'design', 'euro', 'no'],
+      HasInternet: false,
+      HasFurniture: false,
+      HasPhone: false,
+      HasKitchenFurniture: false,
+      HasTv: false,
+      HasWasher: false,
+      HasConditioner: false,
+      HasRamp: false,
+      HasBathtub: false,
+      IsInHiddenBase: false,
+      HasShower: false,
+      HasDishwasher: false,
+      PetsAllowed: false,
+      HasFridge: false,
+      ChildrenAllowed: false,
+      Building: {
+        Name: '',
+        FloorsCount: 0,
+        BuildYear: 0,
+        MaterialType: [
+          'aerocreteBlock',
+          'block',
+          'boards',
+          'brick',
+          'foamConcreteBlock',
+          'gasSilicateBlock',
+          'monolith',
+          'monolithBrick',
+          'old',
+          'panel',
+          'stalin',
+          'wireframe',
+          'wood'
+        ],
+        Series: '',
+        CeilingHeight: 0,
+        PassengerLiftsCount: 0,
+        CargoLiftsCount: 0,
+        HasGarbageChute: false,
+        Parking: {}
+      },
+      BargainTerms: {
+        Price: 0,
+        UtilitiesTerms: {
+          IncludedInPrice: false,
+          Price: 0,
+          FlowMetersNotIncludedInPrice: false
+        },
+        Currency: ['eur', 'rur', 'usd'],
+        BargainAllowed: false,
+        BargainPrice: 0,
+        BargainConditions: '',
+        LeaseTermType: ['fewMonths', 'longTerm'],
+        PrepayMonths: 0,
+        Deposit: 0,
+        TenantsType: ['any', 'family', 'female', 'male'],
+        ClientFee: 0,
+        AgentFee: 0,
+        AgentBonus: {
+          Value: 0,
+          PaymentType: ['fixed', 'percent'],
+          Currency: ['eur', 'rur', 'usd'],
+        }
+      }
+
+    },
+    houseRent: {
+      Category: 'houseRent',
+      BedsCount: 0,
+      BuildingCadastralNumber: '',
+      SettlementName: '',
+      TotalArea: 0,
+      BedroomsCount: 0,
+      WcLocationType: ['indoors', 'outdoors'],
+      RepairType: ['cosmetic', 'design', 'euro', 'no'],
+      HasInternet: false,
+      HasFurniture: false,
+      HasPhone: false,
+      HasKitchenFurniture: false,
+      HasTv: false,
+      HasWasher: false,
+      HasConditioner: false,
+      HasBathtub: false,
+      IsInHiddenBase: false,
+      HasShower: false,
+      HasBathhouse: false,
+      HasGarage: false,
+      HasPool: false,
+      HasDishwasher: false,
+      PetsAllowed: false,
+      HasFridge: false,
+      ChildrenAllowed: false,
+      Building: {
+        FloorsCount: 0,
+        BuildYear: 0,
+        MaterialType: [
+          'aerocreteBlock',
+          'boards',
+          'brick',
+          'foamConcreteBlock',
+          'gasSilicateBlock',
+          'monolith',
+          'monolithBrick',
+          'wireframe',
+          'wood'
+        ],
+        HeatingType: [
+          'autonomousGas',
+          'centralCoal',
+          'centralGas',
+          'diesel',
+          'electric',
+          'fireplace',
+          'no',
+          'solidFuelBoiler',
+          'stove'
+        ]
+      },
+      Land: {
+        Area: 0,
+        AreaUnitType: ['hectare', 'sotka'],
+        Status: [
+          'farm',
+          'gardening',
+          'individualHousingConstruction',
+          'industrialLand',
+          'privateFarm',
+          'suburbanNonProfitPartnership'
+        ]
+      },
+      BargainTerms: {
+        Price: 0,
+        UtilitiesTerms: {
+          IncludedInPrice: false,
+          Price: 0,
+          FlowMetersNotIncludedInPrice: false
+        },
+        Currency: ['eur', 'rur', 'usd'],
+        BargainAllowed: false,
+        BargainPrice: 0,
+        BargainConditions: '',
+        LeaseTermType: ['fewMonths', 'longTerm'],
+        PrepayMonths: 0,
+        Deposit: 0,
+        ClientFee: 0,
+        AgentFee: 0,
+        AgentBonus: {
+          Value: 0,
+          PaymentType: ['fixed', 'percent'],
+          Currency: ['eur', 'rur', 'usd'],
+        }
+      }
+    },
+    cottageRent: {
+      Category: 'cottageRent',
+      BedsCount: 0,
+      BuildingCadastralNumber: '',
+      SettlementName: '',
+      TotalArea: 0,
+      BedroomsCount: 0,
+      WcLocationType: ['indoors', 'outdoors'],
+      RepairType: ['cosmetic', 'design', 'euro', 'no'],
+      HasInternet: false,
+      HasFurniture: false,
+      HasPhone: false,
+      HasKitchenFurniture: false,
+      HasTv: false,
+      HasWasher: false,
+      HasConditioner: false,
+      HasBathtub: false,
+      IsInHiddenBase: false,
+      HasShower: false,
+      HasBathhouse: false,
+      HasGarage: false,
+      HasPool: false,
+      HasDishwasher: false,
+      PetsAllowed: false,
+      HasFridge: false,
+      ChildrenAllowed: false,
+      Building: {
+        FloorsCount: 0,
+        BuildYear: 0,
+        MaterialType: [
+          'aerocreteBlock',
+          'boards',
+          'brick',
+          'foamConcreteBlock',
+          'gasSilicateBlock',
+          'monolith',
+          'monolithBrick',
+          'wireframe',
+          'wood'
+        ],
+        HeatingType: [
+          'autonomousGas',
+          'centralCoal',
+          'centralGas',
+          'diesel',
+          'electric',
+          'fireplace',
+          'no',
+          'solidFuelBoiler',
+          'stove'
+        ]
+      },
+      Land: {
+        Area: 0,
+        AreaUnitType: ['hectare', 'sotka'],
+        Status: [
+          'farm',
+          'gardening',
+          'individualHousingConstruction',
+          'industrialLand',
+          'privateFarm',
+          'suburbanNonProfitPartnership'
+        ]
+      },
+      BargainTerms: {
+        Price: 0,
+        UtilitiesTerms: {
+          IncludedInPrice: false,
+          Price: 0,
+          FlowMetersNotIncludedInPrice: false
+        },
+        Currency: ['eur', 'rur', 'usd'],
+        BargainAllowed: false,
+        BargainPrice: 0,
+        BargainConditions: '',
+        LeaseTermType: ['fewMonths', 'longTerm'],
+        PrepayMonths: 0,
+        Deposit: 0,
+        ClientFee: 0,
+        AgentFee: 0,
+        AgentBonus: {
+          Value: 0,
+          PaymentType: ['fixed', 'percent'],
+          Currency: ['eur', 'rur', 'usd'],
+        }
+      }
+    },
+    townhouseRent: {
+      Category: 'townhouseRent',
+      BedsCount: 0,
+      BuildingCadastralNumber: '',
+      SettlementName: '',
+      TotalArea: 0,
+      BedroomsCount: 0,
+      WcLocationType: ['indoors', 'outdoors'],
+      RepairType: ['cosmetic', 'design', 'euro', 'no'],
+      HasInternet: false,
+      HasFurniture: false,
+      HasPhone: false,
+      HasKitchenFurniture: false,
+      HasTv: false,
+      HasWasher: false,
+      HasConditioner: false,
+      HasBathtub: false,
+      IsInHiddenBase: false,
+      HasShower: false,
+      HasBathhouse: false,
+      HasGarage: false,
+      HasPool: false,
+      HasDishwasher: false,
+      PetsAllowed: false,
+      HasFridge: false,
+      ChildrenAllowed: false,
+      Building: {
+        FloorsCount: 0,
+        BuildYear: 0,
+        MaterialType: [
+          'aerocreteBlock',
+          'boards',
+          'brick',
+          'foamConcreteBlock',
+          'gasSilicateBlock',
+          'monolith',
+          'monolithBrick',
+          'wireframe',
+          'wood'
+        ],
+        HeatingType: [
+          'autonomousGas',
+          'centralCoal',
+          'centralGas',
+          'diesel',
+          'electric',
+          'fireplace',
+          'no',
+          'solidFuelBoiler',
+          'stove'
+        ]
+      },
+      Land: {
+        Area: 0,
+        AreaUnitType: ['hectare', 'sotka'],
+        Status: [
+          'farm',
+          'gardening',
+          'individualHousingConstruction',
+          'industrialLand',
+          'privateFarm',
+          'suburbanNonProfitPartnership'
+        ]
+      },
+      BargainTerms: {
+        Price: 0,
+        UtilitiesTerms: {
+          IncludedInPrice: false,
+          Price: 0,
+          FlowMetersNotIncludedInPrice: false
+        },
+        Currency: ['eur', 'rur', 'usd'],
+        BargainAllowed: false,
+        BargainPrice: 0,
+        BargainConditions: '',
+        LeaseTermType: ['fewMonths', 'longTerm'],
+        PrepayMonths: 0,
+        Deposit: 0,
+        ClientFee: 0,
+        AgentFee: 0,
+        AgentBonus: {
+          Value: 0,
+          PaymentType: ['fixed', 'percent'],
+          Currency: ['eur', 'rur', 'usd'],
+        }
+      }
+    },
+    houseShareRent: {
+      Category: 'houseShareRent',
+      BedsCount: 0,
+      BuildingCadastralNumber: '',
+      SettlementName: '',
+      TotalArea: 0,
+      ShareAmount: '',
+      BedroomsCount: 0,
+      WcLocationType: ['indoors', 'outdoors'],
+      RepairType: ['cosmetic', 'design', 'euro', 'no'],
+      HasInternet: false,
+      HasFurniture: false,
+      HasPhone: false,
+      HasKitchenFurniture: false,
+      HasTv: false,
+      HasWasher: false,
+      HasConditioner: false,
+      HasBathtub: false,
+      IsInHiddenBase: false,
+      HasShower: false,
+      HasBathhouse: false,
+      HasGarage: false,
+      HasPool: false,
+      HasDishwasher: false,
+      PetsAllowed: false,
+      HasFridge: false,
+      ChildrenAllowed: false,
+      Building: {
+        FloorsCount: 0,
+        BuildYear: 0,
+        MaterialType: [
+          'aerocreteBlock',
+          'boards',
+          'brick',
+          'foamConcreteBlock',
+          'gasSilicateBlock',
+          'monolith',
+          'monolithBrick',
+          'wireframe',
+          'wood'
+        ],
+        HeatingType: [
+          'autonomousGas',
+          'centralCoal',
+          'centralGas',
+          'diesel',
+          'electric',
+          'fireplace',
+          'no',
+          'solidFuelBoiler',
+          'stove'
+        ]
+      },
+      Land: {
+        Area: 0,
+        AreaUnitType: ['hectare', 'sotka'],
+        Status: [
+          'farm',
+          'gardening',
+          'individualHousingConstruction',
+          'industrialLand',
+          'privateFarm',
+          'suburbanNonProfitPartnership'
+        ]
+      },
+      BargainTerms: {
+        Price: 0,
+        UtilitiesTerms: {
+          IncludedInPrice: false,
+          Price: 0,
+          FlowMetersNotIncludedInPrice: false
+        },
+        Currency: ['eur', 'rur', 'usd'],
+        BargainAllowed: false,
+        BargainPrice: 0,
+        BargainConditions: '',
+        LeaseTermType: ['fewMonths', 'longTerm'],
+        PrepayMonths: 0,
+        Deposit: 0,
+        ClientFee: 0,
+        AgentFee: 0,
+        AgentBonus: {
+          Value: 0,
+          PaymentType: ['fixed', 'percent'],
+          Currency: ['eur', 'rur', 'usd'],
+        }
+      }
+    },
+    garageRent: {
+      Category: 'garageRent',
+      Garage: {
+        Type: ['box', 'garage', 'parkingPlace'],
+        GarageType: ['builtIn', 'capital', 'samostroy', 'shell'],
+        Material: ['brick', 'metal'],
+        Status: ['byProxy', 'cooperative', 'ownership ']
+      },
+      TotalArea: 0,
+      HasLight: false,
+      HasElectricity: false,
+      HasHeating: false,
+      HasWater: false,
+      HasExtinguishingSystem: false,
+      IsInHiddenBase: false,
+      Building: {
+        Name: '',
+        Parking: {},
+        Infrastructure: {
+          HasCarWash: false,
+          HasCarService: false,
+          HasTire: false,
+          HasInspectionPit: false,
+          HasVideoSurveillance: false,
+          HasHourSecurity: false,
+          HasAutomaticGates: false,
+          HasEntryByPass: false,
+          HasBasement: false
+        }
+      },
+      BargainTerms: {
+        Price: 0,
+        PriceType: ['all', 'hectare', 'sotka', 'squareMeter'],
+        Currency: ['eur', 'rur', 'usd'],
+        PaymentPeriod: ['annual', 'monthly'],
+        LeaseType: ['direct', 'sublease'],
+        IncludedOptions: [{
+          IncludedOptionsEnum: ['operationalCosts', 'utilityCharges']
+        }],
+        LeaseTermType: ['fewMonths', 'longTerm'],
+        MinLeaseTerm: 0,
+        PrepayMonths: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+        ClientFee: 0,
+        SecurityDeposit: 0,
+        AgentBonus: {
+          Value: 0,
+          PaymentType: ['fixed', 'percent'],
+          Currency: ['eur', 'rur', 'usd'],
+        }
+      }
+    },
+    buildingRent: {
+      Category: 'buildingRent',
+      ConditionType: 'typical',
+      Layout: 'cabinet',
+      HasFurniture: false,
+      InputType: [
+        'commonFromStreet',
+        'commonFromYard',
+        'separateFromStreet',
+        'separateFromYard'
+      ],
+      AvailableFrom: '',
+      TaxNumber: 0,
+      IsInHiddenBase: false,
+      Building: {
+        Name: '',
+        FloorsCount: 0,
+        TotalArea: 0,
+        HeatingType: ['autonomous', 'central', 'no'],
+        CeilingHeight: 0,
+        Parking: {},
+        Type: [
+          'administrativeBuilding',
+          'businessCenter',
+          'businessCenter2',
+          'businessHouse',
+          'businessPark',
+          'businessQuarter',
+          'businessQuarter2',
+          'free',
+          'industrialComplex',
+          'industrialPark',
+          'industrialSite',
+          'industrialWarehouseComplex',
+          'logisticsCenter',
+          'logisticsComplex',
+          'logisticsPark',
+          'mansion',
+          'manufactureBuilding',
+          'manufacturingFacility',
+          'modular',
+          'multifunctionalComplex',
+          'officeAndHotelComplex',
+          'officeAndResidentialComplex',
+          'officeAndWarehouse',
+          'officeAndWarehouseComplex',
+          'officeBuilding',
+          'officeCenter',
+          'officeComplex',
+          'officeIndustrialComplex',
+          'officeQuarter',
+          'old',
+          'other',
+          'outlet',
+          'propertyComplex',
+          'residentialComplex',
+          'residentialHouse',
+          'shoppingAndBusinessComplex',
+          'shoppingAndCommunityCenter',
+          'shoppingAndEntertainmentCenter',
+          'shoppingAndWarehouseComplex',
+          'shoppingCenter',
+          'shoppingComplex',
+          'specializedShoppingCenter',
+          'standaloneBuilding',
+          'technopark',
+          'tradeAndExhibitionComplex',
+          'tradingHouse',
+          'tradingOfficeComplex',
+          'warehouse',
+          'warehouseComplex'
+        ],
+        HouseLineType: ['first', 'other', 'second'],
+        ClassType: ['a', 'aPlus', 'b', 'bMinus', 'bPlus', 'c'],
+        Developer: '',
+        ManagementCompany: '',
+        VentilationType: ['central', 'local', 'no'],
+        ExtinguishingSystemType: [
+          'alarm',
+          'gas',
+          'hydrant',
+          'no',
+          'powder',
+          'sprinkler',
+        ],
+        ExtinguishingSystemTypes: [{
+          ExtinguishingSystemTypeEnum: [
+            'alarm',
+            'gas',
+            'hydrant',
+            'no',
+            'powder',
+            'sprinkler'
+          ]
+        }],
+        LiftTypes: [{
+          LiftTypeSchema: {
+            Type: [
+              'cargo',
+              'escalator',
+              'lift',
+              'passenger',
+              'telpher',
+              'travelator'
+            ],
+            AdditionalType: '',
+            Count: 0
+          }
+        }],
+        StatusType: ['operational', 'project', 'underConstruction'],
+      },
+      Land: {
+        Area: 0,
+        AreaUnitType: ['hectare', 'sotka'],
+        Type: ['owned', 'rent ']
+      },
+      BargainTerms: {
+        Price: 0,
+        PriceType: ['all', 'hectare', 'sotka', 'squareMeter'],
+        Currency: ['eur', 'rur', 'usd'],
+        PaymentPeriod: ['annual', 'monthly'],
+        VatType: ['included', 'notIncluded', 'usn'],
+        LeaseType: ['direct', 'sublease'],
+        IncludedOptions: [{
+          IncludedOptionsEnum: ['operationalCosts', 'utilityCharges']
+        }],
+        LeaseTermType: ['fewMonths', 'longTerm'],
+        MinLeaseTerm: 0,
+        PrepayMonths: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+        HasGracePeriod: false,
+        Deposit: 0,
+        ClientFee: 0,
+        SecurityDeposit: 0,
+        AgentFee: 0,
+        AgentBonus: {
+          Value: 0,
+          PaymentType: ['fixed', 'percent'],
+          Currency: ['eur', 'rur', 'usd'],
+        }
+      }
+    },
+    commercialLandRent: {
+      Category: 'commercialLandRent',
+      Layout: 'cabinet',
+      AvailableFrom: '',
+      TaxNumber: 0,
+      IsInHiddenBase: false,
+      Land: {
+        Area: 0,
+        AreaUnitType: ['hectare', 'sotka'],
+        Status: [
+          'forAgriculturalPurposes',
+          'industryTransportCommunications',
+          'settlements'
+        ],
+        PossibleToChangeStatus: false
+      },
+      PermittedUseType: [
+        'agricultural',
+        'businessManagement',
+        'commonUseArea',
+        'highriseBuildings',
+        'hotelAmenities',
+        'individualHousingConstruction',
+        'industry',
+        'leisure',
+        'lowriseHousing',
+        'publicUseOfCapitalConstruction',
+        'serviceVehicles',
+        'shoppingCenters',
+        'warehouses'
+      ],
+      PossibleToChangePermitedUseType: false,
+      HasEncumbrances: false,
+      Electricity: {
+        LocationType: ['border', 'location', 'no'],
+        PossibleToConnect: false,
+        Power: 0
+      },
+      Gas: {
+        LocationType: ['border', 'location', 'no'],
+        PossibleToConnect: false,
+        Capacity: 0,
+        PressureType: ['high', 'low', 'middle']
+      },
+      Drainage: {
+        LocationType: ['border', 'location', 'no'],
+        PossibleToConnect: false,
+        Capacity: 0,
+        Type: ['autonomous', 'central']
+      },
+      Water: {
+        LocationType: ['border', 'location', 'no'],
+        PossibleToConnect: false,
+        Capacity: 0,
+        Type: ['autonomous', 'central', 'pumpingStation', 'waterIntakeFacility', 'waterTower']
+      },
+      DrivewayType: ['asphalt', 'ground', 'no '],
+      BargainTerms: {
+        Price: 0,
+        PriceType: ['all', 'hectare', 'sotka', 'squareMeter'],
+        Currency: ['eur', 'rur', 'usd'],
+        PaymentPeriod: ['annual', 'monthly'],
+        VatType: ['included', 'notIncluded', 'usn'],
+        LeaseType: ['direct', 'sublease'],
+        IncludedOptions: [{
+          IncludedOptionsEnum: ['operationalCosts', 'utilityCharges']
+        }],
+        LeaseTermType: ['fewMonths', 'longTerm'],
+        MinLeaseTerm: 0,
+        PrepayMonths: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+        HasGracePeriod: false,
+        ClientFee: 0,
+        SecurityDeposit: 0,
+        AgentFee: 0,
+        AgentBonus: {
+          Value: 0,
+          PaymentType: ['fixed', 'percent'],
+          Currency: ['eur', 'rur', 'usd'],
+        }
+      }
+    },
+    officeRent: {
+      Category: 'officeRent',
+      TotalArea: 0,
+      MinArea: 0,
+      FloorNumber: 0,
+      AreaParts: [],
+      ConditionType: 'finishing',
+      IsOccupied: false,
+      Layout: 'cabinet',
+      FurniturePresence: 'no',
+      AvailableFrom: '',
+      IsLegalAddressProvided: false,
+      WaterPipesCount: 0,
+      TaxNumber: 0,
+      IsInHiddenBase: false,
+      BusinessShoppingCenter: {
+        id: 0
+      },
+      Building: {
+        Name: '',
+        FloorsCount: 0,
+        BuildYear: 0,
+        MaterialType: [
+          'aerocreteBlock',
+          'block',
+          'boards',
+          'brick',
+          'foamConcreteBlock',
+          'gasSilicateBlock',
+          'monolith',
+          'monolithBrick',
+          'old',
+          'panel',
+          'stalin',
+          'wireframe',
+          'wood'
+        ],
+        TotalArea: 0,
+        HeatingType: ['autonomous', 'central', 'no'],
+        CeilingHeight: 0,
+        Parking: {},
+        Type: [
+          'administrativeBuilding',
+          'businessCenter',
+          'businessCenter2',
+          'businessHouse',
+          'businessPark',
+          'businessQuarter',
+          'businessQuarter2',
+          'free',
+          'industrialComplex',
+          'industrialPark',
+          'industrialSite',
+          'industrialWarehouseComplex',
+          'logisticsCenter',
+          'logisticsComplex',
+          'logisticsPark',
+          'mansion',
+          'manufactureBuilding',
+          'manufacturingFacility',
+          'modular',
+          'multifunctionalComplex',
+          'officeAndHotelComplex',
+          'officeAndResidentialComplex',
+          'officeAndWarehouse',
+          'officeAndWarehouseComplex',
+          'officeBuilding',
+          'officeCenter',
+          'officeComplex',
+          'officeIndustrialComplex',
+          'officeQuarter',
+          'old',
+          'other',
+          'outlet',
+          'propertyComplex',
+          'residentialComplex',
+          'residentialHouse',
+          'shoppingAndBusinessComplex',
+          'shoppingAndCommunityCenter',
+          'shoppingAndEntertainmentCenter',
+          'shoppingAndWarehouseComplex',
+          'shoppingCenter',
+          'shoppingComplex',
+          'specializedShoppingCenter',
+          'standaloneBuilding',
+          'technopark',
+          'tradeAndExhibitionComplex',
+          'tradingHouse',
+          'tradingOfficeComplex',
+          'warehouse',
+          'warehouseComplex'
+        ],
+        ClassType: ['a', 'aPlus', 'b', 'bMinus', 'bPlus', 'c'],
+        Developer: '',
+        ManagementCompany: '',
+        VentilationType: ['forced', 'natural', 'no'],
+        ConditioningType: ['central', 'local', 'no'],
+        ExtinguishingSystemType: [
+          'alarm',
+          'gas',
+          'hydrant',
+          'no',
+          'powder',
+          'sprinkler'
+        ],
+        ExtinguishingSystemTypes: [{
+          ExtinguishingSystemTypeEnum: [
+            'alarm',
+            'gas',
+            'hydrant',
+            'no',
+            'powder',
+            'sprinkler'
+          ]
+        }],
+        StatusType: ['operational', 'project', 'underConstruction'],
+        AccessType: 'free',
+        Infrastructure: {
+          HasCarWash: false,
+          HasBuffet: false,
+          HasCarService: false,
+          HasCanteen: false,
+          HasCentralReception: false,
+          HasHotel: false,
+          HasAtm: false,
+          HasExhibitionAndWarehouseComplex: false,
+          HasPharmacy: false,
+          HasBankDepartment: false,
+          HasCinema: false,
+          HasCafe: false,
+          HasMedicalCenter: false,
+          HasBeautyShop: false,
+          HasStudio: false,
+          HasNotaryOffice: false,
+          HasPool: false,
+          HasClothesStudio: false,
+          HasWarehouse: false,
+          HasPark: false,
+          HasRestaurant: false,
+          HasFitnessCentre: false,
+          HasSupermarket: false,
+          HasMinimarket: false,
+          HasShoppingArea: false,
+          HasConferenceRoom: false
+        }
+      },
+      Land: {
+        Area: 0,
+        AreaUnitType: ['hectare', 'sotka'],
+        Type: ['owned', 'rent ']
+      },
+      BargainTerms: {
+        Price: 0,
+        PriceType: ['all', 'hectare', 'sotka', 'squareMeter'],
+        Currency: ['eur', 'rur', 'usd'],
+        PaymentPeriod: ['annual', 'monthly'],
+        VatType: ['included', 'notIncluded', 'usn'],
+        LeaseType: ['direct', 'sublease'],
+        IncludedOptions: [{
+          IncludedOptionsEnum: ['operationalCosts', 'utilityCharges']
+        }],
+        LeaseTermType: ['fewMonths', 'longTerm'],
+        MinLeaseTerm: 0,
+        PrepayMonths: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+        HasGracePeriod: false,
+        ClientFee: 0,
+        SecurityDeposit: 0,
+        AgentFee: 0,
+        AgentBonus: {
+          Value: 0,
+          PaymentType: ['fixed', 'percent'],
+          Currency: ['eur', 'rur', 'usd'],
+        }
+      }
+
+    },
+    freeAppointmentObjectRent: {
+      Category: 'freeAppointmentObjectRent',
+      TotalArea: 0,
+      MinArea: 0,
+      FloorNumber: 0,
+      ConditionType: 'finishing',
+      IsOccupied: false,
+      Specialty: {
+        Types: {
+          String: ''
+        },
+        AdditionalTypes: {
+          String: ''
+        }
+      },
+      Layout: 'cabinet',
+      InputType: [
+        'commonFromStreet',
+        'commonFromYard',
+        'separateFromStreet',
+        'separateFromYard'
+      ],
+      AvailableFrom: '',
+      HasShopWindows: false,
+      IsLegalAddressProvided: false,
+      WaterPipesCount: 0,
+      TaxNumber: 0,
+      IsInHiddenBase: false,
+      BusinessShoppingCenter: {
+        id: 0
+      },
+      Building: {
+        Name: '',
+        FloorsCount: 0,
+        TotalArea: 0,
+        HeatingType: ['autonomous', 'central', 'no'],
+        Type: [
+          'administrativeBuilding',
+          'businessCenter',
+          'businessCenter2',
+          'businessHouse',
+          'businessPark',
+          'businessQuarter',
+          'businessQuarter2',
+          'free',
+          'industrialComplex',
+          'industrialPark',
+          'industrialSite',
+          'industrialWarehouseComplex',
+          'logisticsCenter',
+          'logisticsComplex',
+          'logisticsPark',
+          'mansion',
+          'manufactureBuilding',
+          'manufacturingFacility',
+          'modular',
+          'multifunctionalComplex',
+          'officeAndHotelComplex',
+          'officeAndResidentialComplex',
+          'officeAndWarehouse',
+          'officeAndWarehouseComplex',
+          'officeBuilding',
+          'officeCenter',
+          'officeComplex',
+          'officeIndustrialComplex',
+          'officeQuarter',
+          'old',
+          'other',
+          'outlet',
+          'propertyComplex',
+          'residentialComplex',
+          'residentialHouse',
+          'shoppingAndBusinessComplex',
+          'shoppingAndCommunityCenter',
+          'shoppingAndEntertainmentCenter',
+          'shoppingAndWarehouseComplex',
+          'shoppingCenter',
+          'shoppingComplex',
+          'specializedShoppingCenter',
+          'standaloneBuilding',
+          'technopark',
+          'tradeAndExhibitionComplex',
+          'tradingHouse',
+          'tradingOfficeComplex',
+          'warehouse',
+          'warehouseComplex'
+        ],
+        Developer: '',
+        ManagementCompany: '',
+        VentilationType: ['forced', 'natural', 'no'],
+        ConditioningType: ['central', 'local', 'no'],
+        ExtinguishingSystemType: [
+          'alarm',
+          'gas',
+          'hydrant',
+          'no',
+          'powder',
+          'sprinkler '
+        ],
+        ExtinguishingSystemTypes: [{
+          ExtinguishingSystemTypeEnum: [
+            'alarm',
+            'gas',
+            'hydrant',
+            'no',
+            'powder',
+            'sprinkler '
+          ]
+        }],
+        StatusType: ['operational', 'project', 'underConstruction']
+      },
+      Land: {
+        Area: 0,
+        AreaUnitType: ['hectare', 'sotka'],
+        Type: ['owned', 'rent ']
+      },
+      BargainTerms: {
+        Price: 0,
+        PriceType: ['all', 'hectare', 'sotka', 'squareMeter'],
+        Currency: ['eur', 'rur', 'usd'],
+        PaymentPeriod: ['annual', 'monthly'],
+        VatType: ['included', 'notIncluded', 'usn'],
+        LeaseType: ['direct', 'sublease'],
+        IncludedOptions: [{
+          IncludedOptionsEnum: ['operationalCosts', 'utilityCharges']
+        }],
+        LeaseTermType: ['fewMonths', 'longTerm'],
+        MinLeaseTerm: 0,
+        PrepayMonths: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+        HasGracePeriod: false,
+        ClientFee: 0,
+        SecurityDeposit: 0,
+        AgentFee: 0,
+        AgentBonus: {
+          Value: 0,
+          PaymentType: ['fixed', 'percent'],
+          Currency: ['eur', 'rur', 'usd'],
+        }
+      }
+
+    },
+    industryRent: {
+      Category: 'industryRent',
+      TotalArea: 0,
+      MinArea: 0,
+      FloorNumber: 0,
+      ConditionType: 'typical',
+      Layout: 'cabinet',
+      AvailableFrom: 0,
+      FloorMaterialTypeType: [
+        'asphalt',
+        'concrete',
+        'laminate',
+        'linoleum',
+        'polymeric',
+        'reinforcedConcrete',
+        'selfLeveling',
+        'tile',
+        'wood'
+      ],
+      IsLegalAddressProvided: false,
+      WaterPipesCount: 0,
+      TaxNumber: '',
+      IsInHiddenBase: false,
+      BusinessShoppingCenter: {
+        id: 0
+      },
+      Building: {
+        Name: '',
+        FloorsCount: 0,
+        BuildYear: 0,
+        TotalArea: 0,
+        HeatingType: ['autonomous', 'central', 'no'],
+        CeilingHeight: 0,
+        Parking: {},
+        Type: [
+          'administrativeBuilding',
+          'businessCenter',
+          'businessCenter2',
+          'businessHouse',
+          'businessPark',
+          'businessQuarter',
+          'businessQuarter2',
+          'free',
+          'industrialComplex',
+          'industrialPark',
+          'industrialSite',
+          'industrialWarehouseComplex',
+          'logisticsCenter',
+          'logisticsComplex',
+          'logisticsPark',
+          'mansion',
+          'manufactureBuilding',
+          'manufacturingFacility',
+          'modular',
+          'multifunctionalComplex',
+          'officeAndHotelComplex',
+          'officeAndResidentialComplex',
+          'officeAndWarehouse',
+          'officeAndWarehouseComplex',
+          'officeBuilding',
+          'officeCenter',
+          'officeComplex',
+          'officeIndustrialComplex',
+          'officeQuarter',
+          'old',
+          'other',
+          'outlet',
+          'propertyComplex',
+          'residentialComplex',
+          'residentialHouse',
+          'shoppingAndBusinessComplex',
+          'shoppingAndCommunityCenter',
+          'shoppingAndEntertainmentCenter',
+          'shoppingAndWarehouseComplex',
+          'shoppingCenter',
+          'shoppingComplex',
+          'specializedShoppingCenter',
+          'standaloneBuilding',
+          'technopark',
+          'tradeAndExhibitionComplex',
+          'tradingHouse',
+          'tradingOfficeComplex',
+          'warehouse',
+          'warehouseComplex'
+        ],
+        ClassType: ['a', 'aPlus', 'b', 'bMinus', 'bPlus', 'c'],
+        Developer: '',
+        ManagementCompany: '',
+        VentilationType: ['forced', 'natural', 'no'],
+        ConditioningType: ['central', 'local', 'no'],
+        ExtinguishingSystemType: [
+          'alarm',
+          'gas',
+          'hydrant',
+          'no',
+          'powder',
+          'sprinkler'
+        ],
+        ExtinguishingSystemTypes: [{
+          ExtinguishingSystemTypeEnum: [
+            'alarm',
+            'gas',
+            'hydrant',
+            'no',
+            'powder',
+            'sprinkler'
+          ]
+        }],
+        LiftTypes: [{
+          LiftTypeSchema: {
+            Type: ['cargo', 'passenger', 'telpher'],
+            AdditionalType: '',
+            Count: 0,
+            LoadCapacity: 0
+          }
+        }],
+        StatusType: ['operational', 'project', 'underConstruction'],
+        CranageTypes: [{
+          CranageTypeSchema: {
+            Type: ['beam', 'gantry', 'overhead', 'railway'],
+            LoadCapacity: 0,
+            Count: 0
+          }
+        }],
+        GatesType: ['atZero', 'dockType', 'onRamp'],
+        ColumnGrid: '',
+        Infrastructure: {
+          HasBuffet: false,
+          HasCanteen: false,
+          HasCentralReception: false,
+          HasHotel: false,
+          HasOfficeSpace: false
+        },
+
+      },
+      Land: {
+        Area: 0,
+        AreaUnitType: ['hectare', 'sotka'],
+        Type: ['owned', 'rent ']
+      },
+      HasSafeCustody: false,
+      IsCustoms: false,
+      HasTransportServices: false,
+      BargainTerms: {
+        Price: 0,
+        PriceType: ['all', 'hectare', 'sotka', 'squareMeter'],
+        Currency: ['eur', 'rur', 'usd'],
+        PaymentPeriod: ['annual', 'monthly'],
+        VatType: ['included', 'notIncluded', 'usn'],
+        LeaseType: ['direct', 'sublease'],
+        IncludedOptions: [{
+          IncludedOptionsEnum: ['operationalCosts', 'utilityCharges']
+        }],
+        LeaseTermType: ['fewMonths', 'longTerm'],
+        MinLeaseTerm: 0,
+        PrepayMonths: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+        HasGracePeriod: false,
+        ClientFee: 0,
+        SecurityDeposit: 0,
+        AgentFee: 0,
+        AgentBonus: {
+          Value: 0,
+          PaymentType: ['fixed', 'percent'],
+          Currency: ['eur', 'rur', 'usd'],
+        }
+      }
+    },
+    warehouseRent: {
+      Category: 'warehouseRent',
+      TotalArea: 0,
+      MinArea: 0,
+      FloorNumber: 0,
+      ConditionType: 'typical',
+      Layout: 'cabinet',
+      AvailableFrom: 0,
+      FloorMaterialTypeType: [
+        'asphalt',
+        'concrete',
+        'laminate',
+        'linoleum',
+        'polymeric',
+        'reinforcedConcrete',
+        'selfLeveling',
+        'tile',
+        'wood'
+      ],
+      IsLegalAddressProvided: false,
+      WaterPipesCount: 0,
+      TaxNumber: '',
+      IsInHiddenBase: false,
+      BusinessShoppingCenter: {
+        id: 0
+      },
+      Building: {
+        Name: '',
+        FloorsCount: 0,
+        BuildYear: 0,
+        TotalArea: 0,
+        HeatingType: ['autonomous', 'central', 'no'],
+        CeilingHeight: 0,
+        Parking: {},
+        Type: [
+          'administrativeBuilding',
+          'businessCenter',
+          'businessCenter2',
+          'businessHouse',
+          'businessPark',
+          'businessQuarter',
+          'businessQuarter2',
+          'free',
+          'industrialComplex',
+          'industrialPark',
+          'industrialSite',
+          'industrialWarehouseComplex',
+          'logisticsCenter',
+          'logisticsComplex',
+          'logisticsPark',
+          'mansion',
+          'manufactureBuilding',
+          'manufacturingFacility',
+          'modular',
+          'multifunctionalComplex',
+          'officeAndHotelComplex',
+          'officeAndResidentialComplex',
+          'officeAndWarehouse',
+          'officeAndWarehouseComplex',
+          'officeBuilding',
+          'officeCenter',
+          'officeComplex',
+          'officeIndustrialComplex',
+          'officeQuarter',
+          'old',
+          'other',
+          'outlet',
+          'propertyComplex',
+          'residentialComplex',
+          'residentialHouse',
+          'shoppingAndBusinessComplex',
+          'shoppingAndCommunityCenter',
+          'shoppingAndEntertainmentCenter',
+          'shoppingAndWarehouseComplex',
+          'shoppingCenter',
+          'shoppingComplex',
+          'specializedShoppingCenter',
+          'standaloneBuilding',
+          'technopark',
+          'tradeAndExhibitionComplex',
+          'tradingHouse',
+          'tradingOfficeComplex',
+          'warehouse',
+          'warehouseComplex'
+        ],
+        ClassType: ['a', 'b', 'c', 'd'],
+        Developer: '',
+        ManagementCompany: '',
+        VentilationType: ['forced', 'natural', 'no'],
+        ConditioningType: ['central', 'local', 'no'],
+        ExtinguishingSystemType: [
+          'alarm',
+          'gas',
+          'hydrant',
+          'no',
+          'powder',
+          'sprinkler'
+        ],
+        ExtinguishingSystemTypes: [{
+          ExtinguishingSystemTypeEnum: [
+            'alarm',
+            'gas',
+            'hydrant',
+            'no',
+            'powder',
+            'sprinkler'
+          ]
+        }],
+        LiftTypes: [{
+          LiftTypeSchema: {
+            Type: ['cargo', 'passenger', 'telpher'],
+            AdditionalType: '',
+            Count: 0,
+            LoadCapacity: 0
+          }
+        }],
+        StatusType: ['operational', 'project', 'underConstruction'],
+        CranageTypes: [{
+          CranageTypeSchema: {
+            Type: ['beam', 'gantry', 'overhead', 'railway'],
+            LoadCapacity: 0,
+            Count: 0
+          }
+        }],
+        GatesType: ['atZero', 'dockType', 'onRamp'],
+        ColumnGrid: '',
+        Infrastructure: {
+          HasBuffet: false,
+          HasCanteen: false,
+          HasCentralReception: false,
+          HasHotel: false,
+          HasOfficeSpace: false
+        },
+
+      },
+      Land: {
+        Area: 0,
+        AreaUnitType: ['hectare', 'sotka'],
+        Type: ['owned', 'rent ']
+      },
+      HasSafeCustody: false,
+      IsCustoms: false,
+      HasTransportServices: false,
+      BargainTerms: {
+        Price: 0,
+        PriceType: ['all', 'hectare', 'sotka', 'squareMeter'],
+        Currency: ['eur', 'rur', 'usd'],
+        PaymentPeriod: ['annual', 'monthly'],
+        VatType: ['included', 'notIncluded', 'usn'],
+        LeaseType: ['direct', 'sublease'],
+        IncludedOptions: [{
+          IncludedOptionsEnum: ['operationalCosts', 'utilityCharges']
+        }],
+        LeaseTermType: ['fewMonths', 'longTerm'],
+        MinLeaseTerm: 0,
+        PrepayMonths: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+        HasGracePeriod: false,
+        ClientFee: 0,
+        SecurityDeposit: 0,
+        AgentFee: 0,
+        AgentBonus: {
+          Value: 0,
+          PaymentType: ['fixed', 'percent'],
+          Currency: ['eur', 'rur', 'usd'],
+        }
+      }
+    },
+    shoppingAreaRent: {
+      Category: 'shoppingAreaRent',
+      PlacementType: ['shoppingMall', 'streetRetail'],
+      TotalArea: 0,
+      MinArea: 0,
+      FloorNumber: 0,
+      ConditionType: 'finishing',
+      Specialty: [{
+        Types: {
+          String: ''
+        },
+        AdditionalTypes: {
+          String: ''
+        }
+      }],
+      Layout: 'cabinet',
+      HasInternet: false,
+      HasFurniture: false,
+      InputType: [
+        'commonFromStreet',
+        'commonFromYard',
+        'separateFromStreet',
+        'separateFromYard'
+      ],
+      AvailableFrom: 0,
+      HasShopWindows: false,
+      IsLegalAddressProvided: false,
+      WaterPipesCount: 0,
+      TaxNumber: 0,
+      IsInHiddenBase: false,
+      BusinessShoppingCenter: {
+        id: 0
+      },
+      Building: {
+        Name: '',
+        FloorsCount: 0,
+        TotalArea: 0,
+        HeatingType: [
+          'autonomous',
+          'autonomousGas',
+          'boiler',
+          'central',
+          'centralCoal',
+          'centralGas',
+          'diesel',
+          'electric',
+          'fireplace',
+          'no',
+          'other',
+          'solidFuelBoiler',
+          'stove'
+        ],
+        CeilingHeight: 0,
+        Type: [
+          'administrativeBuilding',
+          'businessCenter',
+          'businessCenter2',
+          'businessHouse',
+          'businessPark',
+          'businessQuarter',
+          'businessQuarter2',
+          'free',
+          'industrialComplex',
+          'industrialPark',
+          'industrialSite',
+          'industrialWarehouseComplex',
+          'logisticsCenter',
+          'logisticsComplex',
+          'logisticsPark',
+          'mansion',
+          'manufactureBuilding',
+          'manufacturingFacility',
+          'modular',
+          'multifunctionalComplex',
+          'officeAndHotelComplex',
+          'officeAndResidentialComplex',
+          'officeAndWarehouse',
+          'officeAndWarehouseComplex',
+          'officeBuilding',
+          'officeCenter',
+          'officeComplex',
+          'officeIndustrialComplex',
+          'officeQuarter',
+          'old',
+          'other',
+          'outlet',
+          'propertyComplex',
+          'residentialComplex',
+          'residentialHouse',
+          'shoppingAndBusinessComplex',
+          'shoppingAndCommunityCenter',
+          'shoppingAndEntertainmentCenter',
+          'shoppingAndWarehouseComplex',
+          'shoppingCenter',
+          'shoppingComplex',
+          'specializedShoppingCenter',
+          'standaloneBuilding',
+          'technopark',
+          'tradeAndExhibitionComplex',
+          'tradingHouse',
+          'tradingOfficeComplex',
+          'warehouse',
+          'warehouseComplex'
+        ],
+        HouseLineType: [
+          'first', 'other', 'second'
+        ],
+        ClassType: ['a', 'aPlus', 'b', 'bMinus', 'bPlus', 'c'],
+        Developer: '',
+        ManagementCompany: '',
+        VentilationType: ['forced', 'natural', 'no'],
+        ConditioningType: ['central', 'local', 'no'],
+        ExtinguishingSystemType: [
+          'alarm',
+          'gas',
+          'hydrant',
+          'no',
+          'powder',
+          'sprinkler'
+        ],
+        ExtinguishingSystemTypes: [{
+          ExtinguishingSystemTypeEnum: [
+            'alarm',
+            'gas',
+            'hydrant',
+            'no',
+            'powder',
+            'sprinkler'
+          ]
+        }],
+        LiftTypes: [{
+          LiftTypeSchema: {
+            Type: ['escalator', 'lift', 'travelator'],
+            Count: 0,
+          }
+        }],
+        StatusType: ['operational', 'project', 'underConstruction'],
+        CranageTypes: [{
+          CranageTypeSchema: {
+            Type: ['beam', 'gantry', 'overhead', 'railway'],
+            LoadCapacity: 0,
+            Count: 0
+          }
+        }],
+        Infrastructure: {
+          HasCarWash: false,
+          HasBuffet: false,
+          HasCarService: false,
+          HasCanteen: false,
+          HasCentralReception: false,
+          HasHotel: false,
+          HasAtm: false,
+          HasFoodCourt: false,
+          HasPharmacy: false,
+          HasBankDepartment: false,
+          HasSlotMachines: false,
+          HasCinema: false,
+          HasAquapark: false,
+          HasBabySitting: false,
+          HasRink: false,
+          HasCafe: false,
+          HasBowling: false,
+          HasMedicalCenter: false,
+          HasBuffet: false,
+          HasBeautyShop: false,
+          HasStudio: false,
+          HasPool: false,
+          HasClothesStudio: false,
+          HasWarehouse: false,
+          HasRestaurant: false,
+          HasFitnessCentre: false,
+          HasSupermarket: false,
+          HasMinimarket: false,
+          HasGameRoom: false
+        },
+        WorkingDaysType: ['everyday', 'weekdays', 'weekends'],
+        Tenants: '',
+        OpeningHours: {
+          From: '',
+          To: '',
+          Type: ['roundTheClock', 'specific']
+        }
+      },
+      Land: {
+        Area: 0,
+        AreaUnitType: ['hectare', 'sotka'],
+        Type: ['owned', 'rent ']
+      },
+      BargainTerms: {
+        Price: 0,
+        PriceType: ['all', 'hectare', 'sotka', 'squareMeter'],
+        Currency: ['eur', 'rur', 'usd'],
+        PaymentPeriod: ['annual', 'monthly'],
+        VatType: ['included', 'notIncluded', 'usn'],
+        LeaseType: ['direct', 'sublease'],
+        IncludedOptions: [{
+          IncludedOptionsEnum: ['operationalCosts', 'utilityCharges']
+        }],
+        LeaseTermType: ['fewMonths', 'longTerm'],
+        MinLeaseTerm: 0,
+        PrepayMonths: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+        HasGracePeriod: false,
+        ClientFee: 0,
+        SecurityDeposit: 0,
+        AgentFee: 0,
+        AgentBonus: {
+          Value: 0,
+          PaymentType: ['fixed', 'percent'],
+          Currency: ['eur', 'rur', 'usd'],
+        }
+      }
+    }
+  },
+  sale: {
+
+  }
+}
+
+const connection = mysql.createConnection({
+  host: db.config.HOST,
+  user: db.config.USER,
+  password: db.config.PASSWORD,
+  database: db.config.DB,
+  debug: false
+});
+
+function findAddress(inUID, func) {
+  db.rent21address.findAll({
+    where: {
+      uid: inUID,
+    },
+  }).then(items => {
+    if (items.length === 0) {
+      let sql = `select * from fields where UID = '` + inUID + `'`;
+      connection.query(sql, [], function(err, result) {
+        const ob = {}
+        const metro = []
+        result.forEach(item => {
+          item.TITLE = item.TITLE.trim();
+          switch (item.TITLE) {
+            case "METRO":
+            case "GLMETRO":
+            case "UD":
+            case "UDTIP":
+              if (!metro[item.PUID]) {
+                metro[item.PUID] = {}
+              }
+              metro[item.PUID][item.TITLE] = item.VAL;
+              break;
+            default:
+              ob[item.TITLE] = item.VAL;
+          }
+        })
+
+        if (Object.keys(metro).length > 0) {
+          ob['METRO'] = [];
+          Object.values(metro).forEach(valM => {
+            ob['METRO'].push({
+              NAME: valM.METRO,
+              GLMETRO: valM.GLMETRO,
+              UD: valM.UD,
+              UDTIP: valM.UDTIP,
+            })
+          })
+        }
+
+
+
+        if (ob.UID !== '' && ob.UID !== null) {
+          db.rent21address.create({
+            uid: ob.UID,
+            metro: ob.METRO,
+            fields: ob
+          }).then(() => {
+            // console.log('findAddress')
+            func();
+          })
+        }
+        else {
+          // console.log('findAddress')
+          func();
+        }
+      })
+    }
+    else {
+      // console.log('findAddress')
+      func();
+    }
+  })
+}
+
+function findBuild(inUID, func) {
+  db.rent21building.findAll({
+    where: {
+      uid: inUID,
+    },
+  }).then(items => {
+    if (items.length === 0) {
+      // нет такого дома
+      let sql = `select * from fields where UID = '` + inUID + `'`;
+      connection.query(sql, [], function(err, result) {
+        if (result) {
+          const ob = {}
+          result.forEach(item => {
+            item.TITLE = item.TITLE.trim();
+            ob[item.TITLE] = item.VAL
+          })
+          // console.log('=======1=======')
+          // теперь смотрим какой адрес
+          sql = "select * from `fields` WHERE `VAL` = '" + inUID + "' AND TIP ='linc21'";
+          connection.query(sql, [], function(err, result) {
+            if (result) {
+              if(result.length > 0 && result[0].PUID){
+                const addrUid = result[0].PUID
+                db.rent21building.update({
+                  uid: ob.UID,
+                  address: addrUid,
+                  fields: ob
+                }, {
+                  where: {
+                    uid: ob.UID,
+                  },
+
+                }).then(items => {
+                  if (items[0] === 0) {
+                    db.rent21building.create({
+                      uid: ob.UID,
+                      address: addrUid,
+                      fields: ob
+                    }).then(items => {
+                      findAddress(addrUid, () => {
+                        // console.log('=======4=======')
+                        func();
+                      })
+                    })
+                  }
+                  else {
+                    findAddress(addrUid, () => {
+                      // console.log('=======3=======')
+                      func();
+                    })
+                  }
+                })
+
+              }
+              else {
+                func();
+              }
+            }
+          })
+        }
+      });
+    }
+    else {
+      // console.log('=======2=======')
+      func();
+    }
+  })
+}
+
+
+function getExports(uids, fun) {
+  const ob = {}
+  const sql = "select * from `export` WHERE `UID` in ('" + uids.join("','") + "')";
+  connection.query(sql, [], function(err, result) {
+    //console.log(result)
+    result.forEach(item => {
+      if (!ob[item.UID]) ob[item.UID] = {}
+      if (!ob[item.UID][item.TIP]) ob[item.UID][item.TIP] = {}
+      switch (item.TITLE) {
+        case "PHOTO":
+          if (!ob[item.UID][item.TIP].PHOTO) ob[item.UID][item.TIP].PHOTO = [];
+          ob[item.UID][item.TIP].PHOTO.push({
+            uid: item.PUID,
+            title: item.VAL
+          })
+          break;
+        default:
+          ob[item.UID][item.TIP][item.TITLE] = item.VAL;
+      }
+    })
+    fun(ob)
+  })
+}
+
+function findObfromBuild(inUID, func) {
+  let sql = "select * from `fields` WHERE `PUID` = '" + inUID + "' AND TIP ='linc21'";
+  connection.query(sql, [], function(err, result) {
+    const uids = []
+    result.forEach(item => {
+      uids.push(item.VAL)
+    })
+    sql = "select * from `fields` WHERE `UID` in ('" + uids.join("','") + "')";
+    getExports(uids, (exports) => {
+      connection.query(sql, [], function(err, result) {
+        const outOb = {};
+        // console.log(exports)
+        result.forEach(item => {
+          if (!outOb[item.TIP]) outOb[item.TIP] = {};
+          if (!outOb[item.TIP][item.UID]) outOb[item.TIP][item.UID] = {};
+          switch (item.TIP) {
+            case 'ob21':
+              if (item.TITLE === 'MPL' && item.VAL != '') {
+                try {
+                  outOb[item.TIP][item.UID][item.TITLE] = JSON.parse(item.VAL)
+                }catch{
+                  outOb[item.TIP][item.UID][item.TITLE] = item.VAL;
+                }
+              }
+              else {
+                outOb[item.TIP][item.UID][item.TITLE] = item.VAL;
+              }
+              break;
+            default:
+              outOb[item.TIP][item.UID][item.TITLE] = item.VAL;
+
+          }
+        })
+        if (outOb.ob21) {
+          const ownersUID = []
+          Object.values(outOb.ob21).forEach(ob => {
+            var category = ''
+            if (ob.OPP === '') {
+              ob.OPP = 'Аренда'
+            }
+            let cian = null
+            if (ob.OPP === 'Аренда') {
+              if (ob.TIP === 'Офис') {
+                category = 'officeRent'
+              }
+              if (ob.TIP === 'Помещение свободного назначения') {
+                category = 'freeAppointmentObjectRent'
+              }
+              if (ob.TIP === 'Здание') {
+                category = 'buildingRent'
+              }
+              if (ob.TIP === 'Квартира') {
+                category = 'flatRent'
+              }
+              if (ob.TIP === 'Торговая площадь') {
+                category = 'shoppingAreaRent'
+              }
+              if (ob.TIP === 'Склад') {
+                category = 'warehouseRent'
+              }
+              if (ob.TIP === 'Производство') {
+                category = 'industryRent'
+              }
+              if (ob.TIP === 'Гараж') {
+                category = 'garageRent'
+              }
+              if (ob.TIP === 'Дом/дача') {
+                category = 'houseRent'
+              }
+              cian = cianItems.rent[category]
+            }
+            if (ob.OPP === 'Продажа') {
+              if (ob.TIP === 'Офис') {
+                category = 'officeSale'
+              }
+              if (ob.TIP === 'Помещение свободного назначения') {
+                category = 'freeAppointmentObjectSale'
+              }
+              if (ob.TIP === 'Здание') {
+                category = 'buildingSale'
+              }
+              if (ob.TIP === 'Квартира') {
+                category = 'flatSale'
+              }
+              if (ob.TIP === 'Торговая площадь') {
+                category = 'shoppingAreaSale'
+              }
+              if (ob.TIP === 'Склад') {
+                category = 'warehouseSale'
+              }
+              if (ob.TIP === 'Квартира новостройка') {
+                category = 'newBuildingFlatSale'
+              }
+              if (ob.TIP === 'Готовый бизнес') {
+                category = 'businessSale'
+              }
+              if (ob.TIP === 'Производство') {
+                category = 'industrySale'
+              }
+              if (ob.TIP === 'Гараж') {
+                category = 'garageSale'
+              }
+              if (ob.TIP === 'Дом/дача') {
+                category = 'houseSale'
+              }
+            }
+            if (ob.Category && ob.Category !== '') {
+              category = ob.Category
+            }
+            // console.log(exports)
+            ownersUID.push(ob.SOBST)
+            db.rent21ob.create({
+              uid: ob.UID,
+              build: inUID,
+              fields: ob,
+              owner: ob.SOBST,
+              category: category,
+              cian: cian,
+              exports: exports[ob.UID]
+            }).then(() => {
+              // console.log('добавление итема ob21 в здание')
+            })
+
+          })
+          // mergeOwner(ownersUID, () => {})
+        }
+        else{
+          console.log('Нет обьектов', inUID)
+        }
+        func(outOb);
+
+      });
+
+    })
+
+  });
+
+}
+
+function mergeAll(i, result, func){
+  console.log(i)
+  findBuild(result[i].UID,()=>{
+    findObfromBuild(result[i].UID,()=>{
+      i--
+      if(i!==0){
+        mergeAll(i, result,func)
+      }else{
+        func()
+      }
+    })
+  })
+}
+
 db.rent21ob.sync({ force: true }).then(item =>{
-  res.json({status:true})
+  db.rent21owner.sync({ force: true }).then(item =>{
+    db.rent21address.sync({ force: true }).then(item =>{
+      db.rent21building.sync({ force: true }).then(item =>{
+        const connection = mysql.createConnection({
+          host: db.config.HOST,
+          user: db.config.USER,
+          password: db.config.PASSWORD,
+          database: db.config.DB,
+          debug: false
+        });
+        // Выбираем все здания из базы mysql
+        let sql = `SELECT DISTINCT UID FROM fields WHERE TIP = 'buid21' `
+        connection.query(sql, [], function(err, result) {
+          let i = result.length -1
+          mergeAll(i, result,()=>{
+            res.json({rows:12345})
+          });
+          //result.forEach(item=>{
+
+
+          //})
+        })
+      })
+    })
+  })
 })

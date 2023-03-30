@@ -54,7 +54,7 @@ if(req.user && (req.user.isAdmin || req.user.isRieltor) && req.user.DOSTUP.index
                         req.body.export.uid,
                         item.title,
                         'PHOTO',
-                        puid,
+                        item.uid,
                         tip,
                         step
                       ])

@@ -40,7 +40,7 @@ export default {
     },
     createOb(){
       this.$axios.get("/api/rent21/setings/db/ob/create").then(item=>{
-        window.alert('Таблица помещений создана')
+        console.log(item)
       })
     }
 

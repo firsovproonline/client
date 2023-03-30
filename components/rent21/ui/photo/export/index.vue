@@ -32,6 +32,7 @@
       <div v-for="(item, index) in itemsAll" :key="index" :style="items.find(el => el.uid === item.UID && el.title === item.TITLE)? 'display: none':''" >
           <div  :step="index" v-if="! items.find(el => el.uid === item.UID && el.title === item.TITLE)" class="MainphotoBox"
                @click="active = item.ID"
+                @dblclick="insert(item)"
                :class="active === item.ID? 'fotoBox active':'fotoBox'"
                :style="'background-image: url(/api/rent21/photo/get/'+item.UID+'/'+item.TITLE+')'"
           >
@@ -67,6 +68,10 @@ export default {
     delit(id){
       console.log(id)
       this.items.splice(id, 1)
+    },
+    insert(item){
+      console.log(item, this.items)
+      this.items.push({title:item.TITLE,uid:item.UID})
     }
   }
 }
