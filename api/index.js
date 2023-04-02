@@ -179,11 +179,17 @@ app.get('/auth/yandex/callback',
   function(req, res) {
     res.redirect('/');
   });
+// progress
+app.get('/progress', function(req, res){
+  res.json(db.progress)
+});
 
 app.get('/logout', function(req, res){
   req.logout();
   res.redirect('/');
 });
+
+
 require('./routes/main')(app);
 require('./routes/impressions')(app);
 require('./routes/recentcalls')(app);

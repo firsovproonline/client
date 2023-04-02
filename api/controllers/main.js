@@ -365,6 +365,9 @@ exports.spr = (req, res) => {
   res.json(outOb)
 }
 
+exports.progress1111 = (req, res) => {
+  res.json(db.progress)
+}
 
 exports.user = (req, res) => {
   res.json(req.user)

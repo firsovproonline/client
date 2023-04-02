@@ -20,6 +20,7 @@ const sequelizeMysql = new Sequelize(
   }
 );
 const db = {};
+db.progress = {total: 0,current:0}
 db.config = config
 db.Op = Op
 db.sequelizePg = new Sequelize(config.postgress.db,

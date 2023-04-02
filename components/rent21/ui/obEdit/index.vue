@@ -1,12 +1,12 @@
 <template>
-  <div class="row rowCart" style="display: flex;width: 1200px">
+  <div class="row rowCart" style="display: flex;width: 100%">
     <div v-if="innerWidth <1000" class="rowCol" style="padding-right: 12px">
       <div ref="address"  ></div>
     </div>
     <div v-if="innerWidth <1000" class="rowCol" style="padding-right: 12px">
       <div ref="ob21"  ></div>
     </div>
-    <div v-if="innerWidth > 1000">
+    <div v-if="innerWidth > 1000 && innerWidth < 1800">
       <div class="rowCol scroll21" style="display: flex;width: 98%; overflow: hidden" ref="main">
         <div style="border-right: 1px solid;">
           <div v-if="edit=='ob21'" class="modalDivLocal" style="width: 400px"></div>
@@ -53,21 +53,7 @@
                       <div style="margin-left: 3px">{{itemOb.OPP}}</div>
                       <div style="margin-left: 3px">{{itemOb.PLALL}}</div>
                     </div>
-                    <!--
-                    <div style="display: flex;margin-left: 15px;align-items: center;">
-                      <i class="fa-map-marker fa"  aria-hidden="true"
-                         style="color:#68c8d8;font-size:14px;margin-left:-3px;"></i>
-                      <i class="fa-map-marker fa"  aria-hidden="true"
-                         style="color:blue;font-size:14px;margin-left:3px;"></i>
-                      <i class="fa-map-marker fa" aria-hidden="true"
-                         style="color:green;font-size:14px;margin-left:3px;"></i>
-                      <i class="fa-map-marker far" aria-hidden="true"
-                         style="color:red;font-size:14px;margin-left:3px;"></i>
-                    </div>
-                    -->
-
                     <indicator v-if="1==1" :uid="itemOb.UID" :item="getExport(itemOb.UID)" />
-
                   </div>
                 </div>
               </div>
@@ -77,11 +63,8 @@
             </div>
           </div>
         </div>
-
-
         <div>
-          <div v-if="edit=='address' || edit=='build'" class="modalDivLocal" style="width: 400px"></div>
-
+          <div v-if="edit=='address' || edit=='build' || edit=='Noob21'" class="modalDivLocal" style="width: 400px"></div>
           <div style="display: flex;padding: 5px">
             <div :class="activeOb21 == 'main' ? 'tabBt active':'tabBt'" @click="activeOb21 = 'main'">Основные поля</div>
             <div :class="activeOb21 == 'photo' ? 'tabBt active':'tabBt'" @click="activeOb21 = 'photo'" >Фото</div>
@@ -103,9 +86,76 @@
 
         </div>
       </div>
-      <!--
-      <div class="rowCol" ref="maintab" style="height: 800px;width: 98%;padding: 40px">obEdit</div>
-      -->
+    </div>
+    <div v-if="innerWidth > 1000 && innerWidth >= 1799">
+      <div class="rowCol scroll21" style="display: flex;width: 98%; overflow: hidden" ref="main">
+        <div style="border-right: 1px solid;">
+          <div v-if="edit=='ob21'" class="modalDivLocal" style="width: 400px"></div>
+          <div style="display: flex;padding: 5px">
+            <div :class="activeAddress == 'main' ? 'tabBt active':'tabBt'"
+                 @click="activeAddress = 'main'">Основные поля</div>
+            <div :class="activeAddress == 'photo' ? 'tabBt active':'tabBt'"
+                 @click="activeAddress = 'photo'" >Фото</div>
+          </div>
+          <div ref="mainaddress" class="scroll21" style="overflow: auto;width: 400px;overflow-x: hidden;background-color: white">
+            <div v-show="activeAddress==='main'" ref="address" ></div>
+            <div v-show="activeAddress==='photo'"  ref="ob21Photo"  >
+              <div v-if="item.building">
+                <ListPhoto v-show="item.building && item.building.UID" :uid="item.building.UID" />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="border-right: 1px solid;width: 350px">
+          <div v-if="edit=='ob21' || edit=='address' || edit=='build'" class="modalDivLocal" style="width: 350px"></div>
+          <OwnerList :items="owners" />
+        </div>
+        <div style="border-right: 1px solid;width: 350px">
+          <div v-if="edit=='ob21' || edit=='address' || edit=='build'" class="modalDivLocal" style="width: 350px"></div>
+          <div ref="floor" style="overflow: auto;overflow-x: hidden;background-color: white;width: 348px">
+            <div v-show="activeFloor==='floor'">
+              <div v-for="(item, index) in floors" :key="index" style="padding-left: 11px">
+                <div>Этаж {{item.ETAG}}</div>
+                <div v-for="(itemOb, index) in item.ob21" :key="index">
+                  <div :class="uidOb === itemOb.UID?'active':''" @click="uidOb=itemOb.UID" style="display: flex;padding-left: 12px;cursor: pointer">
+                    <div style="display: flex;align-items: center;max-width: 170px;min-width: 170px">
+                      <div style="width: 100px;overflow: hidden;white-space:normal">{{replaceTip(itemOb.TIP)}}</div>
+                      <div style="margin-left: 3px">{{itemOb.OPP}}</div>
+                      <div style="margin-left: 3px">{{itemOb.PLALL}}</div>
+                    </div>
+                    <indicator v-if="1==1" :uid="itemOb.UID" :item="getExport(itemOb.UID)" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <div>
+          <div v-if="edit=='address' || edit=='build' || edit=='Noob21'" class="modalDivLocal" style="width: 400px"></div>
+          <div style="display: flex;padding: 5px">
+            <div :class="activeOb21 == 'main' ? 'tabBt active':'tabBt'" @click="activeOb21 = 'main'">Основные поля</div>
+            <div :class="activeOb21 == 'photo' ? 'tabBt active':'tabBt'" @click="activeOb21 = 'photo'" >Фото</div>
+            <div :class="activeOb21 == 'showcase' ? 'tabBt active':'tabBt'" @click="activeOb21 = 'showcase'" >Витрина</div>
+            <div :class="activeOb21 == 'export' ? 'tabBt active':'tabBt'" @click="showExport" style="margin-left: 8px;display: flex">
+              <div>Экспорт</div>
+              <indicator style="margin-top: -3px" :uid="uidOb" :item="activeExport" />
+            </div>
+          </div>
+          <div ref="mainob21" class="scroll21" style="padding-right: 6px; overflow: auto;width: 400px;overflow-x: hidden;background-color: white">
+            <div v-show="activeOb21==='main'"  ref="ob21"  ></div>
+            <div v-show="activeOb21==='photo'"  ref="ob21Photo"  >
+              <ListPhoto :uid="uidOb" />
+            </div>
+            <div v-show="activeOb21==='showcase'" >
+              <showcase :uid="uidOb" />
+            </div>
+          </div>
+
+        </div>
+
+      </div>
     </div>
   </div>
 </template>
@@ -2044,12 +2094,13 @@ export default {
 
 
            */
-
-          this.ob21Form = new dhtmlXForm(this.$refs.ob21, [{
-            type: "ob21",
-            name: "obfields"
-          }]);
-          this.ob21Form.pchange = this.onChange
+          if(this.$refs.ob21){
+            this.ob21Form = new dhtmlXForm(this.$refs.ob21, [{
+              type: "ob21",
+              name: "obfields"
+            }]);
+            this.ob21Form.pchange = this.onChange
+          }
           this.addressForm = new dhtmlXForm(this.$refs.address,[
             {
               type: "settings",
@@ -3145,13 +3196,13 @@ export default {
         const h = window.innerHeight - this.$refs.main.getBoundingClientRect().top;
         const w = window.innerWidth - this.$refs.main.getBoundingClientRect().left;
         this.$refs.main.style.height = (h- 20) + 'px';
-        this.$refs.mainaddress.style.height = (h- 60) + 'px';
-        this.$refs.mainob21.style.height = (h- 60) + 'px';
-        this.$refs.floor.style.height = (h- 60) + 'px';
+        if(this.$refs.mainaddress) this.$refs.mainaddress.style.height = (h- 60) + 'px';
+        if(this.$refs.mainob21) this.$refs.mainob21.style.height = (h- 60) + 'px';
+        if(this.$refs.floor) this.$refs.floor.style.height = (h- 60) + 'px';
       }
     },
     initForms(ob21){
-      if(this.uidOb ===''){
+      if(this.uidOb ==='' && this.item.ob21[0]){
         this.uidOb = this.item.ob21[0].UID
       }
       this.floors = []
@@ -3172,17 +3223,6 @@ export default {
       })
       this.floors = window.sort_by_key(this.floors,'ETAGSORT')
       if(this.innerWidth >1000) {
-/*
-        for (let key in this.item.building) {
-          if (this.win.dhxTabbar.layout.cells('a').form.isItem('field_' + key)) {
-            this.win.dhxTabbar.layout.cells('a').form.setItemValue('field_' + key, this.item.building[key]);
-          }
-        }
-        const lat = this.item.address.LAT
-        const lng = this.item.address.LNG
-        this.win.dhxTabbar.layout.cells('a').form.setItemValue('adres', this.item.address)
-        this.win.dhxTabbar.layout.cells('d').formOb.setItemValue('obfields',{pchange:this.onChange,data:this.item.fields});
-*/
         if(!ob21){
           this.addressForm.setItemValue('adres', this.item.address)
           for (let key in this.item.building) {
@@ -3191,10 +3231,16 @@ export default {
             }
           }
         }
-        console.log('============================',this.item.ob21.find(el => el.UID === this.uidOb))
-        this.ob21Form.setItemValue('obfields',{pchange:this.onChange,data:this.item.ob21.find(el => el.UID === this.uidOb)});
+        if(this.item.ob21.length > 0 && this.ob21Form){
+          // console.log('============================',this.item.ob21.find(el => el.UID === this.uidOb))
+          this.ob21Form.setItemValue('obfields',{pchange:this.onChange,data:this.item.ob21.find(el => el.UID === this.uidOb)});
+        }else {
+          this.edit = 'Noob21'
+        }
       }else{
-        this.ob21Form.setItemValue('obfields',{pchange:this.onChange,data:this.item.ob21.find(el => el.UID === this.uidOb)});
+        if(this.ob21Form){
+          this.ob21Form.setItemValue('obfields',{pchange:this.onChange,data:this.item.ob21.find(el => el.UID === this.uidOb)});
+        }
         this.addressForm.setItemValue('adres', this.item.address)
         for (let key in this.item.building) {
           if (this.addressForm.isItem('field_' + key)) {

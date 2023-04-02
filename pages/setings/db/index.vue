@@ -1,24 +1,17 @@
 <template>
   <div class="row rowCart" style="width: 1200px">
-    <div class="rowCol" style="padding-right: 12px">
-      <div>Настройки DB</div>
-      <div class="item">
-        <div style="width: 120px">Адрес</div>
-        <button>Очистить</button>
-        <button>Удалить</button>
-        <button @click="createAddress">Создать</button>
-      </div>
-      <div class="item">
-        <div style="width: 120px">Здания</div>
-        <button>Очистить</button>
-        <button>Удалить</button>
-        <button @click="createBuild">Создать</button>
+    <div class="rowCol" style="padding-right: 12px;padding-bottom: 22px;">
+      <div style="padding-bottom: 18px;padding-top: 12px">Настройки DB</div>
+      <div class="item"  >
+        <div style="width: 120px">Собственики</div>
+        <button>Импорт</button>
       </div>
       <div class="item">
         <div style="width: 120px">Помещения</div>
-        <button>Очистить</button>
-        <button>Удалить</button>
-        <button @click="createOb">Создать</button>
+        <button v-if="!progress.status || progress.status == ''" @click="createOb">Импорт</button>
+        <div v-if="progress.status == 'Импорт помещений'">
+          {{progress.status}}: Осталось {{progress.current}} записей
+        </div>
       </div>
     </div>
   </div>
@@ -27,19 +20,20 @@
 <script>
 export default {
   name: 'indexSetingsDb',
+  data: () => ({
+    progress: { },
+    interval: 0
+  }),
   methods:{
-    createBuild(){
-      this.$axios.get("/api/rent21/setings/db/build/create").then(item=>{
-        window.alert('Таблица зданий создана')
-      })
-    },
-    createAddress(){
-      this.$axios.get("/api/rent21/setings/db/address/create").then(item=>{
-        window.alert('Таблица адресов создана')
-      })
-    },
     createOb(){
+      this.interval = setInterval(() => {
+        this.$axios.get("/api/progress").then(item=>{
+          this.progress = item.data
+        })
+      }, 400);
       this.$axios.get("/api/rent21/setings/db/ob/create").then(item=>{
+        clearTimeout(this.interval);
+        this.progress = item.data
         console.log(item)
       })
     }

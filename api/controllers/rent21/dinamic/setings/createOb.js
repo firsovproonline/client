@@ -1,4 +1,5 @@
 const mysql = require('mysql')
+const Sequelize = require("sequelize")
 const cianItems = {
   rent: {
     flatRent: {
@@ -1747,6 +1748,223 @@ const connection = mysql.createConnection({
   debug: false
 });
 
+function findOwner(inOb, func){
+  inOb.connectionf = mysql.createConnection({
+    host: db.config.HOST,
+    user: db.config.USER,
+    password: db.config.PASSWORD,
+    database: db.config.DB,
+    debug: false
+  });
+
+  let sql = "select * from `fields` WHERE `PUID` = '" + inOb.ob.UID + "' AND TIP ='linc21'";
+  inOb.connectionf.query(sql, [], (err, result)=> {
+    if(result.length == 0){
+      inOb.owners = []
+      func(inOb)
+    }else{
+      const uids = []
+      inOb.links = {}
+      result.forEach(item=>{
+        if(!inOb.links[item.VAL]){
+          inOb.links[item.VAL] = {}
+        }
+        if(item.VAL !=''){
+          // if(!inOb.links[item.PUID][item.VAL]) inOb.links[item.PUID][item.VAL] = {}
+          if(uids.indexOf(item.VAL)=== -1){
+            uids.push(item.VAL)
+          }
+
+        }
+      })
+      if(uids.length > 0){
+        sql = "select * from `fields` WHERE `UID` in ('" + uids.join("','") + "') AND TIP='soBst21'";
+        inOb.connectionf.query(sql, [], (err, result)=> {
+          inOb.owners = {}
+          result.forEach(item=>{
+            if(item.UID && item.UID!==''){
+              if(!inOb.owners[item.UID])inOb.owners[item.UID] = { fields: {}, contacts:[] }
+              item.TITLE = item.TITLE.trim();
+              inOb.owners[item.UID].fields[item.TITLE] = item.VAL;
+            }
+          })
+
+          // получаем всех собственников принадл. полученым owners
+          if(Object.keys(inOb.owners).length>0){
+            sql = "select * from `fields` WHERE `PUID` in ('" + Object.keys(inOb.owners).join("','") + "')";
+            inOb.connectionf.query(sql, [], (err, result)=> {
+              const uids = []
+              result.forEach(item=>{
+                if(item.VAL!==''){
+                  if(uids.indexOf(item.VAL)==-1){
+                    if(!inOb.links[item.PUID][item.VAL]){
+                      inOb.links[item.PUID][item.VAL] = {}
+                    }
+                    uids.push(item.VAL)
+                  }
+                }
+              })
+              sql = "select * from `fields` WHERE `UID` in ('" + uids.join("','") + "')";
+              inOb.connectionf.query(sql, [], (err, result)=> {
+                const contacts = {}
+                result.forEach(item=>{
+                  if(!contacts[item.UID]){
+                    contacts[item.UID] = {
+                      phone: {},
+                      website: {},
+                      email: {},
+                      messenger: {}
+                    }
+                  }
+                  item.TITLE = item.TITLE.trim()
+                  switch (item.TITLE) {
+                    case "PHONE":
+                    case "PHONEREM":
+                      if (!contacts[item.UID].phone[item.PUID]) {
+                        contacts[item.UID].phone[item.PUID] = {}
+                      }
+                      contacts[item.UID].phone[item.PUID][item.TITLE] = item.VAL;
+                      break;
+                    case "SITE":
+                    case "SITEREM":
+                      if (!contacts[item.UID].website[item.PUID]) {
+                        contacts[item.UID].website[item.PUID] = {}
+                      }
+                      contacts[item.UID].website[item.PUID][item.TITLE] = item.VAL;
+                      break;
+                    case "EMAIL":
+                    case "EMAILREM":
+                      if (!contacts[item.UID].email[item.PUID]) {
+                        contacts[item.UID].email[item.PUID] = {}
+                      }
+                      contacts[item.UID].email[item.PUID][item.TITLE] = item.VAL;
+                      break;
+                    case "MESSENGER":
+                    case "MESSENGERREM":
+                      if (!contacts[item.UID].messenger[item.PUID]) {
+                        contacts[item.UID].messenger[item.PUID] = {}
+                      }
+                      contacts[item.UID].messenger[item.PUID][item.TITLE] = item.VAL;
+                      break;
+                    default:
+                      contacts[item.UID][item.TITLE] = item.VAL;
+                  }
+                })
+                for (let keyUID in contacts) {
+                  if (Object.keys(contacts[keyUID].phone).length > 0) {
+                    contacts[keyUID]['PHONE'] = [];
+                    Object.values(contacts[keyUID].phone).forEach(valM => {
+                      contacts[keyUID]['PHONE'].push({
+                        VAL: valM.PHONE,
+                        REM: valM.PHONEREM,
+                      })
+                    })
+                  }else {
+                    contacts[keyUID]['PHONE'] = [];
+                  }
+                  if (Object.keys(contacts[keyUID].website).length > 0) {
+                    contacts[keyUID]['WEBSITE'] = [];
+                    Object.values(contacts[keyUID].website).forEach(valM => {
+                      contacts[keyUID]['WEBSITE'].push({
+                        VAL: valM.WEBSITE,
+                        REM: valM.WEBSITEREM,
+                      })
+                    })
+                  }else{
+                    contacts[keyUID]['WEBSITE'] = [];
+                  }
+                  if (Object.keys(contacts[keyUID].email).length > 0) {
+                    contacts[keyUID]['EMAIL'] = [];
+                    Object.values(contacts[keyUID].email).forEach(valM => {
+                      contacts[keyUID]['EMAIL'].push({
+                        VAL: valM.EMAIL,
+                        REM: valM.EMAILREM,
+                      })
+                    })
+                  }else {
+                    contacts[keyUID]['EMAIL'] = [];
+                  }
+                  if (Object.keys(contacts[keyUID].messenger).length > 0) {
+                    contacts[keyUID]['MESSENGER'] = [];
+                    Object.values(contacts[keyUID].messenger).forEach(valM => {
+                      contacts[keyUID]['MESSENGER'].push({
+                        VAL: valM.MESSENGER,
+                        REM: valM.MESSENGERREM,
+                      })
+                    })
+                  }else{
+                    contacts[keyUID]['MESSENGER'] = [];
+                  }
+                  delete contacts[keyUID].messenger
+                  delete contacts[keyUID].email
+                  delete contacts[keyUID].phone
+                  delete contacts[keyUID].website
+                }
+                for(let key in inOb.owners){
+                  db.rent21owner.findOne({
+                    where: {
+                      uid: key,
+                    },
+                  }).then(items => {
+                    if (! items) {
+                      const sobst = []
+                      Object.keys(inOb.links[key]).forEach(item=>{
+                        sobst.push(contacts[item])
+                      })
+                      if(inOb.owners[key].fields){
+                        db.rent21owner.create({
+                          uid: key,
+                          contacts: sobst,
+                          fields: inOb.owners[key].fields
+                        }).then(item => {
+                          console.log('создание итема soBst21',key)
+                          func(inOb)
+                        })
+                      }else{
+                        func(inOb)
+                      }
+                    }else{
+                      func(inOb)
+                    }
+                  })
+                }
+              })
+            })
+          }else{
+            func(inOb)
+          }
+        })
+      }else{
+        cosole.error('нет собственника', inOb.ob.UID)
+        inOb.owners = []
+        func(inOb)
+      }
+    }
+//    console.error(result)
+//    const uids1 = []
+    //result.forEach(item=>{
+      //if(item.VAL !='' && uids1.indexOf(item.VAL)=== -1){
+      //  uids1.push(item.VAL)
+      //}
+    //})
+    //if(uids.length > 0){
+      /*
+      sql = "select * from `fields` WHERE `UID` in ('" + uids.join("','") + "') AND TIP='soBst21'";
+      connection.query(sql, [], function(err, result) {
+        console.error(result.length)
+        inOb.owners = []
+        func(inOb)
+        return
+      })
+
+       */
+
+    //}
+
+
+  })
+}
+
 function findAddress(inUID, func) {
   db.rent21address.findAll({
     where: {
@@ -1846,14 +2064,18 @@ function findBuild(inUID, func) {
 
                 }).then(items => {
                   if (items[0] === 0) {
-                    db.rent21building.create({
-                      uid: ob.UID,
-                      address: addrUid,
-                      fields: ob
-                    }).then(items => {
-                      findAddress(addrUid, () => {
-                        // console.log('=======4=======')
-                        func();
+                    // пытаемся найти собственников
+                    findOwner({ob: ob, address:addrUid}, (item)=>{
+                      db.rent21building.create({
+                        uid: item.ob.UID,
+                        address: item.address,
+                        fields: item.ob
+                      }).then(items => {
+                        item.connectionf.end()
+                        findAddress(addrUid, () => {
+                          // console.log('=======4=======')
+                          func();
+                        })
                       })
                     })
                   }
@@ -2046,13 +2268,15 @@ function findObfromBuild(inUID, func) {
 }
 
 function mergeAll(i, result, func){
-  console.log(i)
+  //console.log(i)
   findBuild(result[i].UID,()=>{
     findObfromBuild(result[i].UID,()=>{
       i--
+      db.progress.current--
       if(i!==0){
         mergeAll(i, result,func)
       }else{
+        db.progress.status = ''
         func()
       }
     })
@@ -2073,14 +2297,16 @@ db.rent21ob.sync({ force: true }).then(item =>{
         // Выбираем все здания из базы mysql
         let sql = `SELECT DISTINCT UID FROM fields WHERE TIP = 'buid21' `
         connection.query(sql, [], function(err, result) {
-          let i = result.length -1
-          mergeAll(i, result,()=>{
-            res.json({rows:12345})
+          //console.log(db)
+          db.progress.total = result.length -1
+          db.progress.current = result.length -1
+          //db.progress.total = 200
+          //db.progress.current = 200
+          db.progress.status = 'Импорт помещений'
+          mergeAll(db.progress.current, result,()=>{
+            res.json(db.progress)
           });
-          //result.forEach(item=>{
 
-
-          //})
         })
       })
     })

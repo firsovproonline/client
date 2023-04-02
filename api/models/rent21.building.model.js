@@ -20,6 +20,9 @@ module.exports = (sequelize, Sequelize) => {
     },
     fields: {
       type: Sequelize.JSON
+    },
+    owners: {
+      type: Sequelize.JSON
     }
   });
   return Rent21_building;
