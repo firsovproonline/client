@@ -9,6 +9,7 @@ if(req.user && (req.user.isAdmin || req.user.isRieltor) && req.user.DOSTUP.index
     raw: true
   }).then((items) => {
     outOb.building = items[0][0].fields
+    outOb.owners = items[0][0].owners
     sql =`SELECT *
     FROM rent21_addresses
     WHERE rent21_addresses.uid='`+items[0][0].address+`'`
@@ -30,22 +31,33 @@ if(req.user && (req.user.isAdmin || req.user.isRieltor) && req.user.DOSTUP.index
         outOb.ob21 = []
         const uids = []
         items[0].forEach(item=>{
-          //console.error(item.exports)
-          if(item.owner === null){
-            item.owner = {}
-          }
-          if(item.contacts === null){
-            item.contacts =[]
-          }
-          item.owner.contacts = item.contacts
-          item.fields.owner = item.owner
           item.fields.exports = item.exports
           if(uids.indexOf(item.fields.UID)===-1){
             uids.push(item.fields.UID)
           }
           outOb.ob21.push(item.fields)
         })
-        res.json({row : outOb})
+
+        sql =`SELECT *
+          FROM rent21_owners
+          WHERE rent21_owners.uid in ('` + outOb.owners.join("','") + `')`
+        db.sequelizePg.query(sql, {
+          raw: true
+        }).then(items=>{
+          outOb.owners = []
+          items[0].forEach(item=>{
+            item.fields.contacts = item.contacts
+            outOb.owners.push(item.fields)
+          })
+          res.json({row : outOb})
+
+        })
+
+
+
+
+
+        // outOb.owners = {}
 
         /*
         sql = "select * from rent21_exports where uid in ('" + uids.join("','") + "')"

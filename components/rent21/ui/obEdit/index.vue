@@ -108,10 +108,13 @@
         </div>
         <div style="border-right: 1px solid;width: 350px">
           <div v-if="edit=='ob21' || edit=='address' || edit=='build'" class="modalDivLocal" style="width: 350px"></div>
-          <OwnerList :items="owners" />
+          <div style="display: flex;padding: 5px;height: 38px">Собственики</div>
+          <OwnerList :items="owners" style="background-color: #ffffff" />
         </div>
         <div style="border-right: 1px solid;width: 350px">
           <div v-if="edit=='ob21' || edit=='address' || edit=='build'" class="modalDivLocal" style="width: 350px"></div>
+          <div style="padding: 5px;height: 38px">Помещения</div>
+
           <div ref="floor" style="overflow: auto;overflow-x: hidden;background-color: white;width: 348px">
             <div v-show="activeFloor==='floor'">
               <div v-for="(item, index) in floors" :key="index" style="padding-left: 11px">
@@ -1356,6 +1359,7 @@ export default {
         //console.log(item.data)
         this.$store.dispatch('ob21edit/item',item.data.row)
         console.log('ob', item.data.row)
+        this.owners = item.data.row.owners
         if(this.innerWidth >1000){
           /*
                   this.win.dhxTabbar = new window.dhtmlXTabBar({
@@ -3206,19 +3210,22 @@ export default {
         this.uidOb = this.item.ob21[0].UID
       }
       this.floors = []
-      this.owners = []
+      // this.owners = []
       const tempAr = []
       this.item.ob21.forEach(item=>{
         if(!this.floors.find(el => el.ETAG === item.ETAG)){
           item.ETAGSORT = item.ETAG*1
           this.floors.push({ETAG: item.ETAG,ETAGSORT:item.ETAGSORT,ob21:[]})
         }
+/*
         if(item.owner){
           if(tempAr.indexOf(item.owner.UID)=== -1){
             this.owners.push(item.owner)
           }
           tempAr.push(item.owner.UID)
         }
+
+ */
         this.floors.find(el => el.ETAG === item.ETAG).ob21.push(item)
       })
       this.floors = window.sort_by_key(this.floors,'ETAGSORT')

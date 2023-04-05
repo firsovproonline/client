@@ -1,5 +1,11 @@
 const mysql = require('mysql')
 const Sequelize = require("sequelize")
+const dbOwners = {}
+const dbBuildings = {}
+const dbContacts = {}
+const dbAddress = {}
+const dbOb = {}
+const dbLinks = {}
 const cianItems = {
   rent: {
     flatRent: {
@@ -2295,19 +2301,344 @@ db.rent21ob.sync({ force: true }).then(item =>{
           debug: false
         });
         // Выбираем все здания из базы mysql
-        let sql = `SELECT DISTINCT UID FROM fields WHERE TIP = 'buid21' `
+        let sql = `SELECT * FROM fields WHERE TIP = 'buid21' `
+        connection.query(sql, [], (err, result) => {
+          result.forEach(item=>{
+            if(!dbBuildings[item.UID]) dbBuildings[item.UID] = {}
+            item.TITLE = item.TITLE.trim();
+            dbBuildings[item.UID][item.TITLE] = item.VAL
+          })
+          console.log('length buildings',Object.keys(dbBuildings).length)
+          //dbContacts
+          sql = `SELECT * FROM fields WHERE TIP = 'koNt21' `
+          connection.query(sql, [], (err, result) => {
+            result.forEach(item=>{
+              if(!dbContacts[item.UID]) dbContacts[item.UID] = {
+                phone: {},
+                website: {},
+                email: {},
+                messenger: {}
+              }
+              item.TITLE = item.TITLE.trim();
+              switch (item.TITLE) {
+                case "PHONE":
+                case "PHONEREM":
+                  if (!dbContacts[item.UID].phone[item.PUID]) {
+                    dbContacts[item.UID].phone[item.PUID] = {}
+                  }
+                  dbContacts[item.UID].phone[item.PUID][item.TITLE] = item.VAL;
+                  break;
+                case "SITE":
+                case "SITEREM":
+                  if (!dbContacts[item.UID].website[item.PUID]) {
+                    dbContacts[item.UID].website[item.PUID] = {}
+                  }
+                  dbContacts[item.UID].website[item.PUID][item.TITLE] = item.VAL;
+                  break;
+                case "EMAIL":
+                case "EMAILREM":
+                  if (!dbContacts[item.UID].email[item.PUID]) {
+                    dbContacts[item.UID].email[item.PUID] = {}
+                  }
+                  dbContacts[item.UID].email[item.PUID][item.TITLE] = item.VAL;
+                  break;
+                case "MESSENGER":
+                case "MESSENGERREM":
+                  if (!dbContacts[item.UID].messenger[item.PUID]) {
+                    dbContacts[item.UID].messenger[item.PUID] = {}
+                  }
+                  dbContacts[item.UID].messenger[item.PUID][item.TITLE] = item.VAL;
+                  break;
+                default:
+                  dbContacts[item.UID][item.TITLE] = item.VAL;
+              }
+
+            })
+            for (let keyUID in dbContacts) {
+              if (Object.keys(dbContacts[keyUID].phone).length > 0) {
+                dbContacts[keyUID]['PHONE'] = [];
+                Object.values(dbContacts[keyUID].phone).forEach(valM => {
+                  dbContacts[keyUID]['PHONE'].push({
+                    VAL: valM.PHONE,
+                    REM: valM.PHONEREM,
+                  })
+                })
+              }else {
+                dbContacts[keyUID]['PHONE'] = [];
+              }
+              if (Object.keys(dbContacts[keyUID].website).length > 0) {
+                dbContacts[keyUID]['WEBSITE'] = [];
+                Object.values(dbContacts[keyUID].website).forEach(valM => {
+                  dbContacts[keyUID]['WEBSITE'].push({
+                    VAL: valM.WEBSITE,
+                    REM: valM.WEBSITEREM,
+                  })
+                })
+              }else{
+                dbContacts[keyUID]['WEBSITE'] = [];
+              }
+              if (Object.keys(dbContacts[keyUID].email).length > 0) {
+                dbContacts[keyUID]['EMAIL'] = [];
+                Object.values(dbContacts[keyUID].email).forEach(valM => {
+                  dbContacts[keyUID]['EMAIL'].push({
+                    VAL: valM.EMAIL,
+                    REM: valM.EMAILREM,
+                  })
+                })
+              }else {
+                dbContacts[keyUID]['EMAIL'] = [];
+              }
+              if (Object.keys(dbContacts[keyUID].messenger).length > 0) {
+                dbContacts[keyUID]['MESSENGER'] = [];
+                Object.values(dbContacts[keyUID].messenger).forEach(valM => {
+                  dbContacts[keyUID]['MESSENGER'].push({
+                    VAL: valM.MESSENGER,
+                    REM: valM.MESSENGERREM,
+                  })
+                })
+              }else{
+                dbContacts[keyUID]['MESSENGER'] = [];
+              }
+              delete dbContacts[keyUID].messenger
+              delete dbContacts[keyUID].email
+              delete dbContacts[keyUID].phone
+              delete dbContacts[keyUID].website
+            }
+            console.log('length Contacts',Object.keys(dbContacts).length)
+            // dbOwners
+            let sql = `SELECT * FROM fields WHERE TIP = 'soBst21' `
+            connection.query(sql, [], (err, result) => {
+              result.forEach(item => {
+                if (!dbOwners[item.UID]) dbOwners[item.UID] = {}
+                item.TITLE = item.TITLE.trim();
+                dbOwners[item.UID][item.TITLE] = item.VAL
+              })
+              console.log('length Owners', Object.keys(dbOwners).length)
+              // dbAddress adRes21
+              let sql = `SELECT * FROM fields WHERE TIP = 'adRes21' `
+              connection.query(sql, [], (err, result) => {
+                result.forEach(item => {
+                  if (!dbAddress[item.UID]) dbAddress[item.UID] = { metro: { }}
+                  item.TITLE = item.TITLE.trim();
+                  switch (item.TITLE) {
+                    case "METRO":
+                    case "GLMETRO":
+                    case "UD":
+                    case "UDTIP":
+                      if (!dbAddress[item.UID].metro[item.PUID]) {
+                        dbAddress[item.UID].metro[item.PUID] = {}
+                      }
+                      dbAddress[item.UID].metro[item.PUID][item.TITLE] = item.VAL;
+                      break;
+                    default:
+                      dbAddress[item.UID][item.TITLE] = item.VAL;
+                  }
+                })
+                for(let uid in dbAddress){
+                  if (Object.keys(dbAddress[uid].metro).length > 0) {
+                    dbAddress[uid]['METRO'] = [];
+                    Object.values(dbAddress[uid].metro).forEach(valM => {
+                      dbAddress[uid]['METRO'].push({
+                        NAME: valM.METRO,
+                        GLMETRO: valM.GLMETRO,
+                        UD: valM.UD,
+                        UDTIP: valM.UDTIP,
+                      })
+                    })
+                  }
+                  delete dbAddress[uid].metro
+                  db.rent21address.create({
+                    uid: uid,
+                    metro: dbAddress[uid]['METRO'],
+                    fields: dbAddress[uid]
+                  })
+                }
+                console.log('length Address', Object.keys(dbAddress).length)
+
+                // dbLinks
+                sql = "select * from `fields` WHERE TIP ='linc21'";
+                connection.query(sql, [], (err, result) => {
+                  result.forEach(item => {
+                    if(!dbLinks[item.PUID]) dbLinks[item.PUID] = []
+                    if(dbLinks[item.PUID].indexOf(item.VAL)===-1){
+                      dbLinks[item.PUID].push(item.VAL)
+                    }
+                  })
+                  console.log('length dbLinks', Object.keys(dbLinks).length)
+                  for(let uid in dbAddress){
+                    if(dbLinks[uid]){
+                      const arrOwners = []
+                      let building  = null
+                      dbLinks[uid].forEach(children=>{
+                        if(dbBuildings[children]){
+                          building = dbBuildings[children]
+                          if(dbLinks[children]){
+                            dbLinks[children].forEach(uidOwner=>{
+                              if(dbOwners[uidOwner])
+                                arrOwners.push(uidOwner)
+                            })
+                          }
+                        }
+                      })
+                      if(building){
+                        db.rent21building.create({
+                          uid: building.UID,
+                          address: uid,
+                          fields: building,
+                          owners: arrOwners
+                        })
+                      }
+                    }
+                  }
+                  for(let uid in dbOwners){
+                    const arrContacts = []
+                    if(dbLinks[uid]){
+                      dbLinks[uid].forEach(childrenUID=>{
+                        if(dbContacts[childrenUID]){
+                          arrContacts.push(dbContacts[childrenUID])
+                        }
+                      })
+                      db.rent21owner.create({
+                        uid: uid,
+                        contacts: arrContacts,
+                        fields: dbOwners[uid]
+                      })
+                    }
+                  }
+                  sql = `SELECT * FROM fields WHERE TIP = 'ob21' `
+                  connection.query(sql, [], (err, result) => {
+                    result.forEach(item=>{
+                      if (!dbOb[item.UID]) dbOb[item.UID] = {}
+                      item.TITLE = item.TITLE.trim();
+                      if (item.TITLE === 'MPL' && item.VAL != '') {
+                        try {
+                          dbOb[item.UID][item.TITLE] = JSON.parse(item.VAL)
+                        }catch{
+                          dbOb[item.UID][item.TITLE] = item.VAL;
+                        }
+                      }
+                      else {
+                        dbOb[item.UID][item.TITLE] = item.VAL;
+                      }
+                    })
+
+                    for(let uid in dbBuildings){
+                      if(dbLinks[uid]){
+                        dbLinks[uid].forEach(childrenUID=>{
+                          if(dbOb[childrenUID]){
+                            let category = ''
+                            if (dbOb[childrenUID].OPP === '') {
+                              dbOb[childrenUID].OPP = 'Аренда'
+                            }
+                            let cian = {}
+                            if (dbOb[childrenUID].OPP === 'Аренда') {
+                              if (dbOb[childrenUID].TIP === 'Офис') {
+                                category = 'officeRent'
+                              }
+                              if (dbOb[childrenUID].TIP === 'Помещение свободного назначения') {
+                                category = 'freeAppointmentObjectRent'
+                              }
+                              if (dbOb[childrenUID].TIP === 'Здание') {
+                                category = 'buildingRent'
+                              }
+                              if (dbOb[childrenUID].TIP === 'Квартира') {
+                                category = 'flatRent'
+                              }
+                              if (dbOb[childrenUID].TIP === 'Торговая площадь') {
+                                category = 'shoppingAreaRent'
+                              }
+                              if (dbOb[childrenUID].TIP === 'Склад') {
+                                category = 'warehouseRent'
+                              }
+                              if (dbOb[childrenUID].TIP === 'Производство') {
+                                category = 'industryRent'
+                              }
+                              if (dbOb[childrenUID].TIP === 'Гараж') {
+                                category = 'garageRent'
+                              }
+                              if (dbOb[childrenUID].TIP === 'Дом/дача') {
+                                category = 'houseRent'
+                              }
+                              cian = cianItems.rent[category]
+                            }
+                            if (dbOb[childrenUID].OPP === 'Продажа') {
+                              if (dbOb[childrenUID].TIP === 'Офис') {
+                                category = 'officeSale'
+                              }
+                              if (dbOb[childrenUID].TIP === 'Помещение свободного назначения') {
+                                category = 'freeAppointmentObjectSale'
+                              }
+                              if (dbOb[childrenUID].TIP === 'Здание') {
+                                category = 'buildingSale'
+                              }
+                              if (dbOb[childrenUID].TIP === 'Квартира') {
+                                category = 'flatSale'
+                              }
+                              if (dbOb[childrenUID].TIP === 'Торговая площадь') {
+                                category = 'shoppingAreaSale'
+                              }
+                              if (dbOb[childrenUID].TIP === 'Склад') {
+                                category = 'warehouseSale'
+                              }
+                              if (dbOb[childrenUID].TIP === 'Квартира новостройка') {
+                                category = 'newBuildingFlatSale'
+                              }
+                              if (dbOb[childrenUID].TIP === 'Готовый бизнес') {
+                                category = 'businessSale'
+                              }
+                              if (dbOb[childrenUID].TIP === 'Производство') {
+                                category = 'industrySale'
+                              }
+                              if (dbOb[childrenUID].TIP === 'Гараж') {
+                                category = 'garageSale'
+                              }
+                              if (dbOb[childrenUID].TIP === 'Дом/дача') {
+                                category = 'houseSale'
+                              }
+                            }
+                            if (dbOb[childrenUID].Category && dbOb[childrenUID].Category !== '') {
+                              category = dbOb[childrenUID].Category
+                            }
+
+                            db.rent21ob.create({
+                              uid: childrenUID,
+                              build: uid,
+                              fields: dbOb[childrenUID],
+                              owner: dbOb[childrenUID].SOBST,
+                              category: category,
+                              cian: cian,
+                              //exports:[1]
+                            })
+
+
+                          }
+
+
+
+                        })
+                      }
+                    }
+
+
+                    res.json(db.progress)
+                  })
+                })
+              })
+            })
+          })
+        })
+
+/*
+        sql = `SELECT DISTINCT UID FROM fields WHERE TIP = 'buid21' `
         connection.query(sql, [], function(err, result) {
-          //console.log(db)
           db.progress.total = result.length -1
           db.progress.current = result.length -1
-          //db.progress.total = 200
-          //db.progress.current = 200
           db.progress.status = 'Импорт помещений'
           mergeAll(db.progress.current, result,()=>{
             res.json(db.progress)
           });
-
         })
+*/
       })
     })
   })
