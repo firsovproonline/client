@@ -179,6 +179,2281 @@ var arType = {
         text: "Складской комплекс"
     }]
 };
+dhtmlXForm.prototype.items.koNt21 = {
+  render: function(item, data) {
+    //console.log('=============', data)
+    item.tipFS = data.tip;
+    item.uid = generateUID();
+    if (data.value.UID) {
+      item.uid = data.value.UID;
+    }
+    $(item).data('data', data);
+    item._type = "koNt21";
+    item._enabled = true;
+    $('<hr>').appendTo($(item));
+    var title = $('<div>').appendTo($(item));
+    var cont = $('<div>').appendTo($(item));
+    item.form21 = new dhtmlXForm(cont[0], [{
+      type: "settings",
+      inputWidth: 300,
+      inputHeight: 25,
+      position: "label-top"
+    }, {
+      type: 'hidden',
+      name: 'UID',
+      value: item.uid,
+      userdata: {
+        flabel: 'UID'
+      }
+    }, {
+      type: 'button',
+      name: 'delete',
+      value: '-',
+      offsetLeft: 450
+    }, {
+      type: "input",
+      label: "Фамилия",
+      position: "label-left",
+      labelWidth: 70,
+      inputWidth: 250,
+      value: '',
+      userdata: {
+        flabel: 'LASTNAME'
+      }
+    }, {
+      type: "input",
+      label: "Имя",
+      position: "label-left",
+      labelWidth: 70,
+      inputWidth: 250,
+      value: '',
+      userdata: {
+        flabel: 'FIRSTNAME'
+      }
+    }, {
+      type: "block",
+      name: "blphone",
+      blockOffset: 0,
+      inputWidth: 500,
+      list: []
+    },
+      /*
+                  {
+                      type: "input",
+                      name: "SITE",
+                      label: "Сайт",
+                      position: "label-left",
+                      labelWidth: 70,
+                      inputWidth: 250,
+                      userdata: {
+                          flabel: 'SITE'
+                      }
+                  }, {
+                      type: "input",
+                      name: "EMAIL",
+                      label: "Email",
+                      position: "label-left",
+                      labelWidth: 70,
+                      inputWidth: 250,
+                      userdata: {
+                          flabel: 'EMAIL'
+                      }
+                  },
+      */
+
+      {
+        type: "block",
+        name: "blemail",
+        blockOffset: 0,
+        inputWidth: 500,
+        list: []
+      }, {
+        type: "block",
+        name: "blsite",
+        blockOffset: 0,
+        inputWidth: 500,
+        list: []
+      }, {
+        type: "block",
+        name: "blmessenger",
+        blockOffset: 0,
+        inputWidth: 500,
+        list: []
+      }
+
+      , {
+        type: "block",
+        name: "ButAddBl",
+        inputWidth: 500,
+        blockOffset: 0,
+        list: [{
+          type: 'label',
+          label: 'Добавить',
+          offsetTop: 12,
+          offsetLeft: 180
+        }, , {
+          type: 'newcolumn'
+        },
+
+          {
+            type: 'button',
+            name: 'addPhone',
+            value: '<i class="far fa-phone"></i>',
+            //offsetLeft: 110
+          }, {
+            type: 'newcolumn'
+          }, {
+            type: 'button',
+            name: 'addEmail',
+            value: '<i class="fal fa-envelope"></i>',
+            //offsetLeft: 410
+          }, {
+            type: 'newcolumn'
+          }, {
+            type: 'button',
+            name: 'addSite',
+            value: '<i class="fab fa-internet-explorer"></i>',
+            //offsetLeft: 410
+          }, {
+            type: 'newcolumn'
+          }, {
+            type: 'button',
+            name: 'addMessenger',
+            value: '<i class="fab fa-facebook-messenger"></i>',
+            //offsetLeft: 410
+          }
+        ]
+      },
+
+
+
+    ]);
+    item.form21.attachEvent("onButtonClick", function(name) {
+      if (name.indexOf('addPhone') != -1) {
+        item.addPhone({
+          PUID: generateUID()
+        })
+        return;
+      }
+      if (name.indexOf('addEmail') != -1) {
+        item.addEmail({
+          PUID: generateUID()
+        })
+        return;
+      }
+      if (name.indexOf('addSite') != -1) {
+        item.addSite({
+          PUID: generateUID()
+        })
+        return;
+      }
+      if (name.indexOf('addMessenger') != -1) {
+        item.addMessenger({
+          PUID: generateUID()
+        })
+        return;
+      }
+
+      if (name.indexOf('delPhone') != -1) {
+        dhtmlx.confirm({
+          type: "confirm",
+          text: "Удалить телефон из контакта ?",
+          callback: function(result) {
+            if (result) {
+              var itemForm = item.form21.getUserData(name, 'puid');
+              item.form21.removeItem('userP' + itemForm);
+
+              console.log(itemForm);
+            }
+          }
+        });
+
+
+
+        //this.removeItem('userP');
+
+        return;
+      }
+      var form = $(this.fsitem).data('data');
+      dhtmlx.confirm({
+        type: "confirm",
+        text: "Отвязать контакт ?",
+        callback: function(result) {
+          if (result) {
+            // отправляем запрос на удаление линка
+            console.log(form.fsform.getFormData().UID, item.form21.getFormData().UID)
+
+            $.post({
+              url: '/api/',
+              type: 'POST',
+              contentType: 'application/json',
+              data: JSON.stringify({
+                opp: 'deletelinc',
+                item: 'linc21',
+                BUILD: form.fsform.getFormData().UID,
+                ADRES: item.form21.getFormData().UID
+              }),
+              success: function(data) {
+                form.fsform.removeItem(form.name);
+
+              },
+              error: function(err) {
+                console.log('ribbon err', err);
+              }
+            });
+          }
+        }
+      });
+
+
+      //console.log(form)
+    });
+
+    item.form21.fsitem = item;
+    item.form21.attachEvent("onChange", function(name, value, state) {
+      item.form21.fsitem.callEvent("onChange", [item._idd, '']);
+
+    });
+
+
+
+    title.html(data.label);
+    item.AddItem = function() {
+
+    }
+    item.addMessenger = function(ob) {
+      item.form21.addItem('blmessenger', {
+        type: "block",
+        blockOffset: 0,
+        inputWidth: 500,
+        name: 'userP' + ob.PUID,
+        list: [{
+          type: "input",
+          inputWidth: 160,
+          label: "Месенжер",
+          value: ob.MESSENGER,
+          userdata: {
+            flabel: 'MESSENGER',
+            puid: ob.PUID
+          }
+        }, {
+          type: "newcolumn"
+        }, {
+          type: "input",
+          inputWidth: 220,
+          offsetLeft: 12,
+          label: "Описание",
+          value: ob.MESSENGERREM,
+          userdata: {
+            flabel: 'MESSENGERREM',
+            puid: ob.PUID
+          }
+        }, , {
+          type: "newcolumn"
+        }, {
+          type: 'button',
+          offsetLeft: 12,
+          offsetTop: 28,
+          name: 'delPhone' + ob.PUID,
+          value: '-<i class="fab fa-facebook-messenger"></i>',
+          userdata: {
+            puid: ob.PUID
+          }
+        }
+
+        ]
+      })
+    }
+
+    item.addSite = function(ob) {
+      item.form21.addItem('blsite', {
+        type: "block",
+        blockOffset: 0,
+        inputWidth: 500,
+        name: 'userP' + ob.PUID,
+        list: [{
+          type: "input",
+          inputWidth: 160,
+          label: "Сайт",
+          value: ob.SITE,
+          userdata: {
+            flabel: 'SITE',
+            puid: ob.PUID
+          }
+        }, {
+          type: "newcolumn"
+        }, {
+          type: "input",
+          inputWidth: 220,
+          offsetLeft: 12,
+          label: "Описание",
+          value: ob.SITEREM,
+          userdata: {
+            flabel: 'SITEREM',
+            puid: ob.PUID
+          }
+        }, , {
+          type: "newcolumn"
+        }, {
+          type: 'button',
+          offsetLeft: 12,
+          offsetTop: 28,
+          name: 'delPhone' + ob.PUID,
+          value: '-<i class="fab fa-internet-explorer"></i>',
+          userdata: {
+            puid: ob.PUID
+          }
+        }
+
+        ]
+      })
+    }
+    item.addEmail = function(ob) {
+      item.form21.addItem('blemail', {
+        type: "block",
+        blockOffset: 0,
+        inputWidth: 500,
+        name: 'userP' + ob.PUID,
+        list: [{
+          type: "input",
+          inputWidth: 160,
+          label: "Емаил",
+          value: ob.EMAIL,
+          userdata: {
+            flabel: 'EMAIL',
+            puid: ob.PUID
+          }
+        }, {
+          type: "newcolumn"
+        }, {
+          type: "input",
+          inputWidth: 220,
+          offsetLeft: 12,
+          label: "Описание",
+          value: ob.EMAILREM,
+          userdata: {
+            flabel: 'EMAILREM',
+            puid: ob.PUID
+          }
+        }, , {
+          type: "newcolumn"
+        }, {
+          type: 'button',
+          offsetLeft: 12,
+          offsetTop: 28,
+          name: 'delPhone' + ob.PUID,
+          value: '-<i class="fal fa-envelope"></i>',
+          userdata: {
+            puid: ob.PUID
+          }
+        }
+
+        ]
+      })
+    }
+    item.addPhone = function(ob) {
+
+      item.form21.addItem('blphone', {
+        type: "block",
+        blockOffset: 0,
+        inputWidth: 500,
+        name: 'userP' + ob.PUID,
+        list: [{
+          type: "input",
+          inputWidth: 110,
+          label: "Телефон",
+          value: ob.PHONE,
+          userdata: {
+            'mask': '-',
+            flabel: 'PHONE',
+            puid: ob.PUID
+          }
+        }, {
+          type: "newcolumn"
+        }, {
+          type: "input",
+          inputWidth: 270,
+          offsetLeft: 12,
+          label: "Описание",
+          value: ob.PHONEREM,
+          userdata: {
+            flabel: 'PHONEREM',
+            puid: ob.PUID
+          }
+        }, , {
+          type: "newcolumn"
+        }, {
+          type: 'button',
+          offsetLeft: 12,
+          offsetTop: 28,
+          name: 'delPhone' + ob.PUID,
+          value: '-<i class="far fa-phone"></i>',
+          userdata: {
+            puid: ob.PUID
+          }
+        }
+
+        ]
+      })
+      var data = item.form21.getFormData();
+      var form = item.form21;
+      for (var key in data) {
+        if (item.form21.getUserData(key, "mask") == '-') {
+          $($(item.form21._getItemByName(key)).find('input')).inputmask({
+            "mask": "(999) 999-99-99",
+            oncomplete: function(e) {
+              // проверяем или есть такой телефон
+              //console.log('complete phone kontakt', $(e.target).val())
+              form.lock();
+
+              $.post({
+                url: '/api/',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                  opp: 'getitem',
+                  like: $(e.target).val()
+                }),
+                success: function(data) {
+                  /*
+                                                      if (data.atate != null) {
+                                                          data = data.atate;
+
+                                                          for (var i = 0; i < data.length; i++) {
+                                                              if (form.isItem(data[i].TITLE)) {
+                                                                  form.setItemValue(data[i].TITLE, data[i].VAL)
+                                                              }
+                                                          }
+
+                                                          var fd = item.form21.getFormData();
+                                                          for (var key in fd) {
+                                                              var flabel = item.form21.getUserData(key, 'flabel');
+                                                              for (var i = 0; i < data.length; i++) {
+                                                                  if (flabel == data[i].TITLE) {
+                                                                      item.form21.setItemValue(key, data[i].VAL)
+                                                                  }
+                                                              }
+                                                          }
+                                                      }
+                  */
+                  form.unlock();
+
+                  console.log(data, form.getFormData())
+                },
+                error: function(err) {
+                  console.log('ribbon err', err);
+                }
+              });
+            }
+          });
+        }
+      }
+
+
+
+    }
+
+    if (data.value.data != undefined) {
+      console.log('data.value.data', data.value.data)
+      for (var i = 0; i < data.value.data.length; i++) {
+        if (data.value.data[i].PHONE != undefined) {
+          //data.value.data[i].UID = generateUID();
+          item.addPhone(data.value.data[i]);
+        }
+        if (data.value.data[i].EMAILREM != undefined) {
+          //data.value.data[i].UID = generateUID();
+          item.addEmail(data.value.data[i]);
+        }
+      }
+
+    } else {
+      //console.log('==0===', data.value)
+      var fd = item.form21.getFormData();
+      for (var key in fd) {
+        var flabel = item.form21.getUserData(key, 'flabel');
+        for (var i = 0; i < data.value.length; i++) {
+          if (flabel == data.value[i].TITLE) {
+            item.form21.setItemValue(key, data.value[i].VAL)
+          }
+        }
+      }
+      var arP = {};
+      for (var i = 0; i < data.value.length; i++) {
+        if (data.value[i].PUID != '') {
+          if (arP[data.value[i].PUID] == undefined) {
+            arP[data.value[i].PUID] = {};
+          }
+          arP[data.value[i].PUID][data.value[i].TITLE] = data.value[i].VAL
+          arP[data.value[i].PUID]['PUID'] = data.value[i].PUID
+        }
+      }
+      for (var key in arP) {
+        //console.log('arP[key]', arP[key]);
+        if (arP[key].PHONEREM != undefined) item.addPhone(arP[key]);
+        if (arP[key].EMAILREM != undefined) item.addEmail(arP[key]);
+        if (arP[key].SITEREM != undefined) item.addSite(arP[key]);
+        if (arP[key].MESSENGERREM != undefined) item.addMessenger(arP[key]);
+      }
+
+
+
+    }
+
+    var data = item.form21.getFormData();
+    var form = item.form21;
+    for (var key in data) {
+      if (item.form21.getUserData(key, "mask") == '-') {
+        $($(item.form21._getItemByName(key)).find('input')).inputmask({
+          "mask": "(999) 999-99-99",
+          oncomplete: function(e) {
+            // проверяем или есть такой телефон
+            //console.log('complete phone kontakt', $(e.target).val())
+            form.lock();
+
+            $.post({
+              url: '/api/',
+              type: 'POST',
+              contentType: 'application/json',
+              data: JSON.stringify({
+                opp: 'getitem',
+                like: $(e.target).val()
+              }),
+              success: function(data) {
+                /*
+                                                if (data.atate != null) {
+                                                    data = data.atate;
+
+                                                    for (var i = 0; i < data.length; i++) {
+                                                        if (form.isItem(data[i].TITLE)) {
+                                                            form.setItemValue(data[i].TITLE, data[i].VAL)
+                                                        }
+                                                    }
+
+                                                    var fd = item.form21.getFormData();
+                                                    for (var key in fd) {
+                                                        var flabel = item.form21.getUserData(key, 'flabel');
+                                                        for (var i = 0; i < data.length; i++) {
+                                                            if (flabel == data[i].TITLE) {
+                                                                item.form21.setItemValue(key, data[i].VAL)
+                                                            }
+                                                        }
+                                                    }
+
+
+
+                                                }
+                */
+                form.unlock();
+
+                console.log(data, form.getFormData())
+              },
+              error: function(err) {
+                console.log('ribbon err', err);
+              }
+            });
+
+
+
+          }
+        });
+      }
+    }
+
+
+    return this;
+  },
+
+  // destructor, required (if you will use unload)
+  destruct: function(item) {
+    item.innerHTML = "";
+  },
+
+  // enable item, mandatory
+  enable: function(item) {
+    item.lastChild.style.color = "black";
+    item._enabled = true;
+  },
+  addMyItem: function(item, ob) {
+
+    if (ob == null) {
+      item.form21.removeItem('q111111');
+      return;
+    }
+    var InOb = {};
+    for (var i = 0; i < ob.length; i++) {
+      if (InOb[ob[i].UID] == undefined) {
+        InOb[ob[i].UID] = {};
+      }
+      if (ob[i].PUID != '') {
+        if (InOb[ob[i].UID][ob[i].PUID] == undefined) {
+          InOb[ob[i].UID][ob[i].PUID] = {};
+        }
+        InOb[ob[i].UID][ob[i].PUID][ob[i].TITLE] = ob[i].VAL;
+
+      } else {
+        InOb[ob[i].UID][ob[i].TITLE] = ob[i].VAL;
+      }
+    }
+    //console.log(ob, InOb, InOb.FIRSTNAME);
+    for (var key in InOb) {
+      var block = {
+        type: "block",
+        name: "bl" + key,
+        blockOffset: 0,
+        inputWidth: 500,
+        list: []
+      }
+      block.list.push({
+        type: 'hidden',
+        value: key,
+        userdata: {
+          flabel: 'UID'
+        }
+      });
+      block.list.push({
+        type: "input",
+        label: "Фамилия",
+        position: "label-left",
+        labelWidth: 70,
+        inputWidth: 250,
+        value: InOb[key].LASTNAME,
+        userdata: {
+          flabel: 'LASTNAME'
+        }
+      });
+      block.list.push({
+        type: "input",
+        label: "Имя",
+        position: "label-left",
+        labelWidth: 70,
+        inputWidth: 250,
+        value: InOb[key].FIRSTNAME,
+        userdata: {
+          flabel: 'FIRSTNAME'
+        }
+      });
+
+      // обработка подблоков телефоны, месенджеры и тд
+      var subBL = InOb[key];
+      for (var subkey in subBL) {
+        if (subBL[subkey] instanceof Object) {
+          if (subBL[subkey].PHONE != undefined) {
+            block.list.push({
+              type: "block",
+              blockOffset: 0,
+              inputWidth: 500,
+              list: [{
+                type: "input",
+                inputWidth: 110,
+                label: "Телефон",
+                value: subBL[subkey].PHONE,
+                userdata: {
+                  'mask': '-',
+                  flabel: 'PHONE',
+                  puid: subkey
+                }
+              }, {
+                type: "newcolumn"
+              }, {
+                type: "input",
+                inputWidth: 370,
+                offsetLeft: 12,
+                label: "Описание",
+                value: subBL[subkey].PHONEREM,
+                userdata: {
+                  flabel: 'PHONEREM',
+                  puid: subkey
+                }
+              }]
+            })
+          }
+        }
+      }
+
+      item.form21.addItem(null, block);
+
+
+
+
+      //console.log(block);
+    }
+    var puid = generateUID();
+
+    var block = {}
+
+    /*
+            item.form21.addItem(null, {
+                type: "block",
+                name: "q111111",
+                blockOffset: 0,
+                inputWidth: 500,
+                list: [{
+                    type: 'hidden',
+                    name: 'UID',
+                    value: item.uid,
+                    userdata: {
+                        flabel: 'UID'
+                    }
+                }, {
+                    type: "input",
+                    label: "Фамилия",
+                    name: "LASTNAME",
+                    position: "label-left",
+                    labelWidth: 70,
+                    inputWidth: 250,
+                    value: InOb.LASTNAME,
+                    userdata: {
+                        flabel: 'LASTNAME'
+                    }
+                }, {
+                    type: "input",
+                    label: "Имя",
+                    name: "FIRSTNAME",
+                    position: "label-left",
+                    labelWidth: 70,
+                    inputWidth: 250,
+                    value: InOb.FIRSTNAME,
+                    userdata: {
+                        flabel: 'FIRSTNAME'
+                    }
+                }, , {
+                    type: "block",
+                    blockOffset: 0,
+                    inputWidth: 500,
+                    list: [{
+                        type: "input",
+                        inputWidth: 110,
+                        label: "Телефон",
+                        value: '11111',
+                        userdata: {
+                            'mask': '-',
+                            flabel: 'PHONE',
+                            puid: puid
+                        }
+                    }, {
+                        type: "newcolumn"
+                    }, {
+                        type: "input",
+                        inputWidth: 370,
+                        offsetLeft: 12,
+                        label: "Описание",
+                        value: "",
+                        userdata: {
+                            flabel: 'PHONEREM',
+                            puid: puid
+                        }
+                    }]
+                }, ]
+            });
+    */
+    var data = item.form21.getFormData();
+    for (var key in data) {
+      if (item.form21.getUserData(key, "mask") == '-') {
+        $($(item.form21._getItemByName(key)).find('input')).inputmask({
+          "mask": "(999) 999-99-99",
+          oncomplete: function(e) {
+            // проверяем или есть такой телефон
+            //console.log('complete phone kontakt', $(e.target).val())
+
+            $.post({
+              url: '/api/',
+              type: 'POST',
+              contentType: 'application/json',
+              data: JSON.stringify({
+                opp: 'getitem',
+                like: $(e.target).val()
+              }),
+              success: function(data) {
+                console.log(data)
+              },
+              error: function(err) {
+                console.log('ribbon err', err);
+              }
+            });
+
+
+
+          }
+        });
+      }
+    }
+
+  },
+  disable: function(item) {
+    item.lastChild.style.color = "gray";
+    item._enabled = false;
+  },
+
+  setValue: function(item, val) {
+    console.log('setValue')
+    item._value = val;
+  },
+
+  getValue: function(item) {
+    var data = item.form21.getFormData(true);
+    for (var key in data) {
+      if (item.form21.getUserData(key, 'flabel') != "") {
+        if (item.form21.getUserData(key, 'flabel') == 'UID') {
+          var UID = item.form21.getItemValue(key);
+        }
+      }
+
+    }
+    var outOB = [];
+    for (var key in data) {
+      if (item.form21.getUserData(key, 'flabel') != "") {
+        outOB.push({
+          UID: UID,
+          TITLE: item.form21.getUserData(key, 'flabel'),
+          VAL: item.form21.getItemValue(key),
+          PUID: item.form21.getUserData(key, 'puid'),
+          TIP: 'koNt21'
+        });
+      }
+    }
+
+
+
+    return {
+      tip: 'koNt21',
+      data: outOB
+    };
+  }
+
+};
+
+dhtmlXForm.prototype.addMyItem21 = function(name, text) {
+  this.doWithItem(name, "addMyItem", text);
+};
+
+
+dhtmlXForm.prototype.setFormData_koNt21 = function(name, value) {
+  return this.doWithItem(name, "setValue", value);
+};
+
+dhtmlXForm.prototype.getFormData_koNt21 = function(name) {
+  return this.doWithItem(name, "getValue");
+};
+
+
+
+
+
+dhtmlXForm.prototype.items.koNt21SF = {
+  render: function(item, data) {
+    //console.log('koNt21SF', data.value);
+    item.newData = data.newData;
+    item.first = false;
+    if (data.first != undefined) {
+      item.first = data.first;
+    }
+
+
+    item.tipFS = data.tip;
+    item.uid = generateUID();
+    if (data.value.UID) {
+      item.uid = data.value.UID;
+    }
+    $(item).data('data', data);
+    var v = data.value;
+    item._type = "koNt21";
+    item._enabled = true;
+    $('<hr>').appendTo($(item));
+    var title = $('<div>').appendTo($(item));
+    var cont = $('<div>').appendTo($(item));
+    item.form21 = new dhtmlXForm(cont[0], [{
+      type: "settings",
+      inputWidth: 300,
+      inputHeight: 25,
+      position: "label-top"
+    }, {
+      type: 'hidden',
+      name: 'UID',
+      value: v.UID,
+      userdata: {
+        flabel: 'UID'
+      }
+    }, {
+      type: 'button',
+      name: 'delete',
+      value: '-',
+      disabled: item.first,
+      offsetLeft: 450
+    }, {
+      type: "input",
+      label: "Фамилия",
+      position: "label-left",
+      labelWidth: 70,
+      inputWidth: 250,
+      value: '',
+      userdata: {
+        flabel: 'LASTNAME'
+      }
+    }, {
+      type: "input",
+      label: "Имя",
+      position: "label-left",
+      labelWidth: 70,
+      inputWidth: 250,
+      value: v.NAME,
+      userdata: {
+        flabel: 'FIRSTNAME'
+      }
+    }, {
+      type: "block",
+      name: "blphone",
+      blockOffset: 0,
+      inputWidth: 500,
+      list: []
+    }, {
+      type: "block",
+      name: "blemail",
+      blockOffset: 0,
+      inputWidth: 500,
+      list: []
+    }, {
+      type: "block",
+      name: "blsite",
+      blockOffset: 0,
+      inputWidth: 500,
+      list: []
+    }, {
+      type: "block",
+      name: "blmessenger",
+      blockOffset: 0,
+      inputWidth: 500,
+      list: []
+    }
+
+      , {
+        type: "block",
+        name: "ButAddBl",
+        inputWidth: 500,
+        blockOffset: 0,
+        list: [{
+          type: 'label',
+          label: 'Добавить',
+          offsetTop: 12,
+          offsetLeft: 180
+        }, , {
+          type: 'newcolumn'
+        },
+
+          {
+            type: 'button',
+            name: 'addPhone',
+            value: '<i class="far fa-phone"></i>',
+            //offsetLeft: 110
+          }, {
+            type: 'newcolumn'
+          }, {
+            type: 'button',
+            name: 'addEmail',
+            value: '<i class="fal fa-envelope"></i>',
+            //offsetLeft: 410
+          }, {
+            type: 'newcolumn'
+          }, {
+            type: 'button',
+            name: 'addSite',
+            value: '<i class="fab fa-internet-explorer"></i>',
+            //offsetLeft: 410
+          }, {
+            type: 'newcolumn'
+          }, {
+            type: 'button',
+            name: 'addMessenger',
+            value: '<i class="fab fa-facebook-messenger"></i>',
+            //offsetLeft: 410
+          }
+
+
+        ]
+      },
+
+      {
+        type: "button",
+        name: 'mergeKont',
+        value: 'Обьединить контакт',
+        className: 'bright_'
+
+
+      }
+
+    ]);
+    if (item.newData == undefined) {
+      item.form21.hideItem('mergeKont');
+    }
+    item.form21.item = item;
+    item.form21.attachEvent("onButtonClick", function(name) {
+      if (this.item.newData != undefined) {
+        var data = this.item.newData.getFormData();
+        if (name == 'mergeKont') {
+          var b = {};
+          for (var key in data) {
+            if (data[key].data != undefined) {
+              for (var i = 0; i < data[key].data.length; i++) {
+                if (data[key].data[i].PUID != '') {
+                  if (b[data[key].data[i].PUID] == undefined) b[data[key].data[i].PUID] = {};
+                  b[data[key].data[i].PUID][data[key].data[i].TITLE] = data[key].data[i].VAL;
+                }
+              }
+
+            }
+          }
+          for (var key in b) {
+            if (b[key].PHONE != undefined) {
+              item.addPhone({
+                PUID: key,
+                PHONE: b[key].PHONE,
+                PHONEREM: b[key].PHONEREM,
+              })
+            }
+          }
+
+          var data = item.form21.getFormData(true);
+          for (var key in data) {
+            if (item.form21.getUserData(key, 'flabel') != "") {
+              if (item.form21.getUserData(key, 'flabel') == 'UID') {
+                var UID = item.form21.getItemValue(key);
+              }
+            }
+
+          }
+          var outOB = [];
+          for (var key in data) {
+            if (item.form21.getUserData(key, 'flabel') != "") {
+              outOB.push({
+                UID: UID,
+                TITLE: item.form21.getUserData(key, 'flabel'),
+                VAL: item.form21.getItemValue(key),
+                PUID: item.form21.getUserData(key, 'puid'),
+                TIP: 'koNt21'
+              });
+            }
+          }
+          for (var i = 0; i < outOB.length; i++) {
+            if (outOB[i].TITLE == 'PHONE' && outOB[i].VAL.indexOf('(') == -1) {
+              var phoneSQL = outOB[i].VAL;
+              phoneSQL = '(' + phoneSQL.substring(0, 3) + ') ' + phoneSQL.substring(3, 6) + '-' + phoneSQL.substring(6, 8) + '-' + phoneSQL.substring(8, 10);
+              outOB[i].VAL = phoneSQL;
+            }
+          }
+          //console.log(outOB);
+
+          $.post({
+            url: '/api/',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({
+              opp: 'saveitem',
+              data: outOB
+            }),
+            success: function(data) {
+              window.location.reload();
+            },
+            error: function(err) {
+              console.log(err);
+            }
+          });
+
+          return;
+        }
+
+      }
+      if (name.indexOf('addPhone') != -1) {
+        item.addPhone({
+          PUID: generateUID()
+        })
+        return;
+      }
+      if (name.indexOf('addEmail') != -1) {
+        item.addEmail({
+          PUID: generateUID()
+        })
+        return;
+      }
+      if (name.indexOf('addSite') != -1) {
+        item.addSite({
+          PUID: generateUID()
+        })
+        return;
+      }
+      if (name.indexOf('addMessenger') != -1) {
+        item.addMessenger({
+          PUID: generateUID()
+        })
+        return;
+      }
+
+      if (name.indexOf('delPhone') != -1) {
+        dhtmlx.confirm({
+          type: "confirm",
+          text: "Удалить телефон из контакта ?",
+          callback: function(result) {
+            if (result) {
+              var itemForm = item.form21.getUserData(name, 'puid');
+              item.form21.removeItem('userP' + itemForm);
+
+              console.log(itemForm);
+            }
+          }
+        });
+
+
+
+        //this.removeItem('userP');
+
+        return;
+      }
+      var form = $(this.fsitem).data('data');
+      dhtmlx.confirm({
+        type: "confirm",
+        text: "Отвязать контакт ?",
+        callback: function(result) {
+          if (result) {
+            // отправляем запрос на удаление линка
+            if (form.fsform != undefined) {
+              console.log(form.fsform.getFormData().UID, item.form21.getFormData().UID)
+
+              $.post({
+                url: '/api/',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                  opp: 'deletelinc',
+                  item: 'linc21',
+                  BUILD: form.fsform.getFormData().UID,
+                  ADRES: item.form21.getFormData().UID
+                }),
+                success: function(data) {
+                  form.fsform.removeItem(form.name);
+
+                },
+                error: function(err) {
+                  console.log('ribbon err', err);
+                }
+              });
+
+            } else {
+              console.log(form);
+              form.parentform.delAR.push(form.name);
+              form.parentform.removeItem(form.name);
+
+            }
+
+          }
+        }
+      });
+
+
+      //console.log(form)
+    });
+
+    item.form21.fsitem = item;
+    item.form21.attachEvent("onChange", function(name, value, state) {
+      item.form21.fsitem.callEvent("onChange", [item._idd, '']);
+
+    });
+
+
+
+    title.html(data.label);
+    item.AddItem = function() {
+
+    }
+    item.addMessenger = function(ob) {
+      item.form21.addItem('blmessenger', {
+        type: "block",
+        blockOffset: 0,
+        inputWidth: 500,
+        name: 'userP' + ob.PUID,
+        list: [{
+          type: "input",
+          inputWidth: 160,
+          label: "Месенжер",
+          value: ob.MESSENGER,
+          userdata: {
+            flabel: 'MESSENGER',
+            puid: ob.PUID
+          }
+        }, {
+          type: "newcolumn"
+        }, {
+          type: "input",
+          inputWidth: 220,
+          offsetLeft: 12,
+          label: "Описание",
+          value: ob.MESSENGERREM,
+          userdata: {
+            flabel: 'MESSENGERREM',
+            puid: ob.PUID
+          }
+        }, , {
+          type: "newcolumn"
+        }, {
+          type: 'button',
+          offsetLeft: 12,
+          offsetTop: 28,
+          name: 'delPhone' + ob.PUID,
+          value: '-<i class="fab fa-facebook-messenger"></i>',
+          userdata: {
+            puid: ob.PUID
+          }
+        }
+
+        ]
+      })
+    }
+
+    item.addSite = function(ob) {
+      item.form21.addItem('blsite', {
+        type: "block",
+        blockOffset: 0,
+        inputWidth: 500,
+        name: 'userP' + ob.PUID,
+        list: [{
+          type: "input",
+          inputWidth: 160,
+          label: "Сайт",
+          value: ob.SITE,
+          userdata: {
+            flabel: 'SITE',
+            puid: ob.PUID
+          }
+        }, {
+          type: "newcolumn"
+        }, {
+          type: "input",
+          inputWidth: 220,
+          offsetLeft: 12,
+          label: "Описание",
+          value: ob.SITEREM,
+          userdata: {
+            flabel: 'SITEREM',
+            puid: ob.PUID
+          }
+        }, , {
+          type: "newcolumn"
+        }, {
+          type: 'button',
+          offsetLeft: 12,
+          offsetTop: 28,
+          name: 'delPhone' + ob.PUID,
+          value: '-<i class="fab fa-internet-explorer"></i>',
+          userdata: {
+            puid: ob.PUID
+          }
+        }
+
+        ]
+      })
+    }
+    item.addEmail = function(ob) {
+      item.form21.addItem('blemail', {
+        type: "block",
+        blockOffset: 0,
+        inputWidth: 500,
+        name: 'userP' + ob.PUID,
+        list: [{
+          type: "input",
+          inputWidth: 160,
+          label: "Емаил",
+          value: ob.EMAIL,
+          userdata: {
+            flabel: 'EMAIL',
+            puid: ob.PUID
+          }
+        }, {
+          type: "newcolumn"
+        }, {
+          type: "input",
+          inputWidth: 220,
+          offsetLeft: 12,
+          label: "Описание",
+          value: ob.EMAILREM,
+          userdata: {
+            flabel: 'EMAILREM',
+            puid: ob.PUID
+          }
+        }, , {
+          type: "newcolumn"
+        }, {
+          type: 'button',
+          offsetLeft: 12,
+          offsetTop: 28,
+          name: 'delPhone' + ob.PUID,
+          value: '-<i class="fal fa-envelope"></i>',
+          userdata: {
+            puid: ob.PUID
+          }
+        }
+
+        ]
+      })
+    }
+    item.addPhone = function(ob) {
+      if (ob.first == undefined) {
+        ob.first = false;
+      }
+      item.form21.addItem('blphone', {
+        type: "block",
+        blockOffset: 0,
+        inputWidth: 500,
+        name: 'userP' + ob.PUID,
+        list: [{
+          type: "input",
+          inputWidth: 110,
+          label: "Телефон",
+          value: ob.PHONE,
+          readonly: ob.first,
+          userdata: {
+            'mask': '-',
+            flabel: 'PHONE',
+            puid: ob.PUID
+          }
+        }, {
+          type: "newcolumn"
+        }, {
+          type: "input",
+          inputWidth: 270,
+          offsetLeft: 12,
+          label: "Описание",
+          value: ob.PHONEREM,
+          userdata: {
+            flabel: 'PHONEREM',
+            puid: ob.PUID
+          }
+        }, , {
+          type: "newcolumn"
+        }, {
+          type: 'button',
+          offsetLeft: 12,
+          offsetTop: 28,
+          disabled: ob.first,
+          name: 'delPhone' + ob.PUID,
+          value: '-<i class="far fa-phone"></i>',
+          userdata: {
+            puid: ob.PUID
+          }
+        }
+
+        ]
+      })
+      var data = item.form21.getFormData();
+      var form = item.form21;
+      for (var key in data) {
+        if (item.form21.getUserData(key, "mask") == '-') {
+          $($(item.form21._getItemByName(key)).find('input')).inputmask({
+            "mask": "(999) 999-99-99",
+            oncomplete: function(e) {
+              // проверяем или есть такой телефон
+              //console.log('complete phone kontakt', $(e.target).val())
+              form.lock();
+
+              $.post({
+                url: '/api/',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                  opp: 'getitem',
+                  like: $(e.target).val()
+                }),
+                success: function(data) {
+                  /*
+                                                      if (data.atate != null) {
+                                                          data = data.atate;
+
+                                                          for (var i = 0; i < data.length; i++) {
+                                                              if (form.isItem(data[i].TITLE)) {
+                                                                  form.setItemValue(data[i].TITLE, data[i].VAL)
+                                                              }
+                                                          }
+
+                                                          var fd = item.form21.getFormData();
+                                                          for (var key in fd) {
+                                                              var flabel = item.form21.getUserData(key, 'flabel');
+                                                              for (var i = 0; i < data.length; i++) {
+                                                                  if (flabel == data[i].TITLE) {
+                                                                      item.form21.setItemValue(key, data[i].VAL)
+                                                                  }
+                                                              }
+                                                          }
+                                                      }
+                  */
+                  form.unlock();
+
+                  console.log(data, form.getFormData())
+                },
+                error: function(err) {
+                  console.log('ribbon err', err);
+                }
+              });
+            }
+          });
+        }
+      }
+
+
+
+    }
+
+    if (data.value.data != undefined) {
+      console.log('data.value.data', data.value.data)
+      for (var i = 0; i < data.value.data.length; i++) {
+        if (data.value.data[i].PHONE != undefined) {
+          //data.value.data[i].UID = generateUID();
+          item.addPhone(data.value.data[i]);
+        }
+        if (data.value.data[i].EMAILREM != undefined) {
+          //data.value.data[i].UID = generateUID();
+          item.addEmail(data.value.data[i]);
+        }
+      }
+
+    } else {
+      //console.log('==0===', data.value)
+      var fd = item.form21.getFormData();
+      for (var key in fd) {
+        var flabel = item.form21.getUserData(key, 'flabel');
+        for (var i = 0; i < data.value.length; i++) {
+          if (flabel == data.value[i].TITLE) {
+            item.form21.setItemValue(key, data.value[i].VAL)
+          }
+        }
+      }
+      var arP = {};
+      for (var i = 0; i < data.value.length; i++) {
+        if (data.value[i].PUID != '') {
+          if (arP[data.value[i].PUID] == undefined) {
+            arP[data.value[i].PUID] = {};
+          }
+          arP[data.value[i].PUID][data.value[i].TITLE] = data.value[i].VAL
+          arP[data.value[i].PUID]['PUID'] = data.value[i].PUID
+        }
+      }
+      for (var key in arP) {
+        //console.log('arP[key]', arP[key]);
+        arP[key].first = item.first;
+        if (arP[key].PHONEREM != undefined) item.addPhone(arP[key]);
+        if (arP[key].EMAILREM != undefined) item.addEmail(arP[key]);
+        if (arP[key].SITEREM != undefined) item.addSite(arP[key]);
+        if (arP[key].MESSENGERREM != undefined) item.addMessenger(arP[key]);
+      }
+
+
+
+    }
+
+    var data = item.form21.getFormData();
+    var form = item.form21;
+    for (var key in data) {
+      if (item.form21.getUserData(key, "mask") == '-') {
+        $($(item.form21._getItemByName(key)).find('input')).inputmask({
+          "mask": "(999) 999-99-99",
+          oncomplete: function(e) {
+            // проверяем или есть такой телефон
+            //console.log('complete phone kontakt', $(e.target).val())
+            form.lock();
+
+            $.post({
+              url: '/api/',
+              type: 'POST',
+              contentType: 'application/json',
+              data: JSON.stringify({
+                opp: 'getitem',
+                like: $(e.target).val()
+              }),
+              success: function(data) {
+                /*
+                                                if (data.atate != null) {
+                                                    data = data.atate;
+
+                                                    for (var i = 0; i < data.length; i++) {
+                                                        if (form.isItem(data[i].TITLE)) {
+                                                            form.setItemValue(data[i].TITLE, data[i].VAL)
+                                                        }
+                                                    }
+
+                                                    var fd = item.form21.getFormData();
+                                                    for (var key in fd) {
+                                                        var flabel = item.form21.getUserData(key, 'flabel');
+                                                        for (var i = 0; i < data.length; i++) {
+                                                            if (flabel == data[i].TITLE) {
+                                                                item.form21.setItemValue(key, data[i].VAL)
+                                                            }
+                                                        }
+                                                    }
+
+
+
+                                                }
+                */
+                form.unlock();
+
+                console.log(data, form.getFormData())
+              },
+              error: function(err) {
+                console.log('ribbon err', err);
+              }
+            });
+
+
+
+          }
+        });
+      }
+    }
+    //console.log('koNt21SF', v);
+    var data = v;
+    var b = {};
+    for (var key in data) {
+      if (data[key].data != undefined) {
+        for (var i = 0; i < data[key].data.length; i++) {
+          if (data[key].data[i].PUID != '') {
+            if (b[data[key].data[i].PUID] == undefined) b[data[key].data[i].PUID] = {};
+            b[data[key].data[i].PUID][data[key].data[i].TITLE] = data[key].data[i].VAL;
+          }
+        }
+
+      }
+    }
+    for (var key in b) {
+      console.log(key)
+      if (b[key].PHONE != undefined) {
+        item.addPhone({
+          first: item.first,
+          PUID: key,
+          PHONE: b[key].PHONE,
+          PHONEREM: b[key].PHONEREM,
+        })
+      }
+    }
+
+
+
+
+    return this;
+  },
+
+  // destructor, required (if you will use unload)
+  destruct: function(item) {
+    item.innerHTML = "";
+  },
+
+  // enable item, mandatory
+  enable: function(item) {
+    item.lastChild.style.color = "black";
+    item._enabled = true;
+  },
+  addMyItem: function(item, ob) {
+
+    if (ob == null) {
+      item.form21.removeItem('q111111');
+      return;
+    }
+    var InOb = {};
+    for (var i = 0; i < ob.length; i++) {
+      if (InOb[ob[i].UID] == undefined) {
+        InOb[ob[i].UID] = {};
+      }
+      if (ob[i].PUID != '') {
+        if (InOb[ob[i].UID][ob[i].PUID] == undefined) {
+          InOb[ob[i].UID][ob[i].PUID] = {};
+        }
+        InOb[ob[i].UID][ob[i].PUID][ob[i].TITLE] = ob[i].VAL;
+
+      } else {
+        InOb[ob[i].UID][ob[i].TITLE] = ob[i].VAL;
+      }
+    }
+    //console.log(ob, InOb, InOb.FIRSTNAME);
+    for (var key in InOb) {
+      var block = {
+        type: "block",
+        name: "bl" + key,
+        blockOffset: 0,
+        inputWidth: 500,
+        list: []
+      }
+      block.list.push({
+        type: 'hidden',
+        value: key,
+        userdata: {
+          flabel: 'UID'
+        }
+      });
+      block.list.push({
+        type: "input",
+        label: "Фамилия",
+        position: "label-left",
+        labelWidth: 70,
+        inputWidth: 250,
+        value: InOb[key].LASTNAME,
+        userdata: {
+          flabel: 'LASTNAME'
+        }
+      });
+      block.list.push({
+        type: "input",
+        label: "Имя",
+        position: "label-left",
+        labelWidth: 70,
+        inputWidth: 250,
+        value: InOb[key].FIRSTNAME,
+        userdata: {
+          flabel: 'FIRSTNAME'
+        }
+      });
+
+      // обработка подблоков телефоны, месенджеры и тд
+      var subBL = InOb[key];
+      for (var subkey in subBL) {
+        if (subBL[subkey] instanceof Object) {
+          if (subBL[subkey].PHONE != undefined) {
+            block.list.push({
+              type: "block",
+              blockOffset: 0,
+              inputWidth: 500,
+              list: [{
+                type: "input",
+                inputWidth: 110,
+                label: "Телефон",
+                value: subBL[subkey].PHONE,
+                userdata: {
+                  'mask': '-',
+                  flabel: 'PHONE',
+                  puid: subkey
+                }
+              }, {
+                type: "newcolumn"
+              }, {
+                type: "input",
+                inputWidth: 370,
+                offsetLeft: 12,
+                label: "Описание",
+                value: subBL[subkey].PHONEREM,
+                userdata: {
+                  flabel: 'PHONEREM',
+                  puid: subkey
+                }
+              }]
+            })
+          }
+        }
+      }
+
+      item.form21.addItem(null, block);
+
+
+
+
+      //console.log(block);
+    }
+    var puid = generateUID();
+
+    var block = {}
+
+    /*
+            item.form21.addItem(null, {
+                type: "block",
+                name: "q111111",
+                blockOffset: 0,
+                inputWidth: 500,
+                list: [{
+                    type: 'hidden',
+                    name: 'UID',
+                    value: item.uid,
+                    userdata: {
+                        flabel: 'UID'
+                    }
+                }, {
+                    type: "input",
+                    label: "Фамилия",
+                    name: "LASTNAME",
+                    position: "label-left",
+                    labelWidth: 70,
+                    inputWidth: 250,
+                    value: InOb.LASTNAME,
+                    userdata: {
+                        flabel: 'LASTNAME'
+                    }
+                }, {
+                    type: "input",
+                    label: "Имя",
+                    name: "FIRSTNAME",
+                    position: "label-left",
+                    labelWidth: 70,
+                    inputWidth: 250,
+                    value: InOb.FIRSTNAME,
+                    userdata: {
+                        flabel: 'FIRSTNAME'
+                    }
+                }, , {
+                    type: "block",
+                    blockOffset: 0,
+                    inputWidth: 500,
+                    list: [{
+                        type: "input",
+                        inputWidth: 110,
+                        label: "Телефон",
+                        value: '11111',
+                        userdata: {
+                            'mask': '-',
+                            flabel: 'PHONE',
+                            puid: puid
+                        }
+                    }, {
+                        type: "newcolumn"
+                    }, {
+                        type: "input",
+                        inputWidth: 370,
+                        offsetLeft: 12,
+                        label: "Описание",
+                        value: "",
+                        userdata: {
+                            flabel: 'PHONEREM',
+                            puid: puid
+                        }
+                    }]
+                }, ]
+            });
+    */
+    var data = item.form21.getFormData();
+    for (var key in data) {
+      if (item.form21.getUserData(key, "mask") == '-') {
+        $($(item.form21._getItemByName(key)).find('input')).inputmask({
+          "mask": "(999) 999-99-99",
+          oncomplete: function(e) {
+            // проверяем или есть такой телефон
+            //console.log('complete phone kontakt', $(e.target).val())
+
+            $.post({
+              url: '/api/',
+              type: 'POST',
+              contentType: 'application/json',
+              data: JSON.stringify({
+                opp: 'getitem',
+                like: $(e.target).val()
+              }),
+              success: function(data) {
+                console.log(data)
+              },
+              error: function(err) {
+                console.log('ribbon err', err);
+              }
+            });
+
+
+
+          }
+        });
+      }
+    }
+
+  },
+  disable: function(item) {
+    item.lastChild.style.color = "gray";
+    item._enabled = false;
+  },
+
+  setValue: function(item, val) {
+    console.log('setValue')
+    item._value = val;
+  },
+
+  getValue: function(item) {
+    var data = item.form21.getFormData(true);
+    for (var key in data) {
+      if (item.form21.getUserData(key, 'flabel') != "") {
+        if (item.form21.getUserData(key, 'flabel') == 'UID') {
+          var UID = item.form21.getItemValue(key);
+        }
+      }
+
+    }
+    var outOB = [];
+    for (var key in data) {
+      if (item.form21.getUserData(key, 'flabel') != "") {
+        outOB.push({
+          UID: UID,
+          TITLE: item.form21.getUserData(key, 'flabel'),
+          VAL: item.form21.getItemValue(key),
+          PUID: item.form21.getUserData(key, 'puid'),
+          TIP: 'koNt21'
+        });
+      }
+    }
+
+
+
+    return {
+      tip: 'koNt21',
+      data: outOB
+    };
+  }
+
+};
+
+dhtmlXForm.prototype.addMyItem21SF = function(name, text) {
+  this.doWithItem(name, "addMyItem", text);
+};
+
+
+dhtmlXForm.prototype.setFormData_koNt21SF = function(name, value) {
+  return this.doWithItem(name, "setValue", value);
+};
+
+dhtmlXForm.prototype.getFormData_koNt21SF = function(name) {
+  return this.doWithItem(name, "getValue");
+};
+dhtmlXForm.prototype.items.myKontact = {
+  render: function(item, data) {
+    item._type = "myKontact";
+    item._enabled = true;
+    $(item).css('width', data.inputWidth + 'px')
+    $('<hr>').appendTo($(item));
+    $(item).addClass('mySobst')
+
+    var title = $('<div style="display:flex">').appendTo($(item));
+    $('<span>' + data.my_text + '</span>').appendTo(title);
+
+    var a = $('<a href="#" style="margin-left:8px">Создать</a>').appendTo(title);
+    a.data('item', item);
+    /*
+            if (data.addFunction) {
+                a.click(data.addFunction);
+            } else
+    */
+
+    {
+      a.click(function() {
+        var item = $(this).data('item');
+        FormsEdit.show('formKontact', null, null, function(el, data) {
+          console.log(item)
+          createDivKont(item, data);
+          $(el).find('.bclose').click();
+        });
+        return false;
+      })
+    }
+    return this;
+  },
+  destruct: function(item) {
+    item.innerHTML = "";
+  },
+  // this methos will public
+  setText: function(item, text) {
+    // it already exists in form
+    item.lastChild.innerHTML = text;
+
+    // demo of triggering events
+    // this will call user handler and pass item name and new text
+    item.callEvent("onTextChanged", [item._idd, text]);
+  },
+
+  // this methos will also public
+  setBoldText: function(item, text) {
+    // but it not exists in form, so link to it needed, see below
+    item.lastChild.innerHTML = "<b>" + text + "</b>";
+
+    // demo of triggering events
+    // this will call user handler and pass item name and new text and true as bolded flag
+    item.callEvent("onTextChanged", [item._idd, text, true]);
+  },
+  enable: function(item) {
+    item.style.color = "black";
+    item._enabled = true;
+  },
+  disable: function(item) {
+    item.style.color = "gray";
+    item._enabled = false;
+  },
+  setValue: function(item, val) {
+    item._value = val;
+    if (val == '') {
+      $(item).find('.kontDivItem').remove();
+    }
+    for (var i = 0; i < val.length; i++) {
+      $.post({
+        url: '/',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({
+          opp: 'getitem',
+          item: 'kont',
+          uid: val[i]
+        }),
+        success: function(data) {
+          createDivKont(item, data);
+          //console.log(data)
+        },
+        error: function(err) {
+          console.log('ribbon err', err);
+          if (err.status === 401) {
+
+          }
+        }
+      });
+
+
+    }
+  },
+  getValue: function(item) {
+    var divK = $(item).find('.kontDivItem');
+    var a = [];
+    for (var i = 0; i < divK.length; i++) {
+      a.push({
+        tip: 'kont',
+        value: $(divK[i]).data('uid')
+      })
+    }
+
+    return a;
+  }
+}
+dhtmlXForm.prototype.setFormData_myKontact = function(name, value) {
+  return this.doWithItem(name, "setValue", value);
+};
+
+dhtmlXForm.prototype.getFormData_myKontact = function(name) {
+  return this.doWithItem(name, "getValue");
+};
+
+dhtmlXForm.prototype.items.myItem = {
+  render: function(item, data) {
+    item.tipFS = data.tip;
+    $(item).data('data', data);
+    $(item).data('comboList', []);
+    if (data.tip == 'phone') {
+      $(item).data('comboList', [{
+        value: "Рабочий",
+        text: "Рабочий"
+      }, {
+        value: "Мобильный",
+        text: "Мобильный"
+      }, {
+        value: "Факс",
+        text: "Факс"
+      }, {
+        value: "Домашний",
+        text: "Домашний"
+      }, {
+        value: "Пейджер",
+        text: "Пейджер"
+      }, {
+        value: "Другой",
+        text: "Другой"
+      }]);
+    }
+    if (data.tip == 'email') {
+      $(item).data('comboList', [{
+        value: "Рабочий",
+        text: "Рабочий"
+      }, {
+        value: "Частный",
+        text: "Частный"
+      }, {
+        value: "Другой",
+        text: "Другой"
+      }])
+    }
+    if (data.tip == 'site') {
+      $(item).data('comboList', [{
+        value: "Корпоротивный",
+        text: "Корпоротивный"
+      }, {
+        value: "Личный",
+        text: "Личный"
+      }, {
+        value: "Facebook",
+        text: "Facebook"
+      }, {
+        value: "Вконтакте",
+        text: "Вконтакте"
+      }, {
+        value: "LiveJournal",
+        text: "LiveJournal"
+      }, {
+        value: "Twiter",
+        text: "Twiter"
+      }, {
+        value: "Другой",
+        text: "Другой"
+      }])
+    }
+    if (data.tip == 'messenger') {
+      $(item).data('comboList', [{
+        value: "Facebook",
+        text: "Facebook"
+      }, {
+        value: "Telegram",
+        text: "Telegram"
+      }, {
+        value: "Вконтакте",
+        text: "Вконтакте"
+      }, {
+        value: "Skype",
+        text: "Skype"
+      }, {
+        value: "Viber",
+        text: "Viber"
+      }, {
+        value: "Instagram",
+        text: "Instagram"
+      }, {
+        value: "Битрикс24",
+        text: "Битрикс24"
+      }, {
+        value: "Онлайн-чат",
+        text: "Онлайн-чат"
+      }, {
+        value: "Открытая линия",
+        text: "Открытая линия"
+      }, {
+        value: "ICQ",
+        text: "ICQ"
+      }, {
+        value: "MSN/Live",
+        text: "MSN/Live"
+      }, {
+        value: "Jabber",
+        text: "Jabber"
+      }, {
+        value: "Другой",
+        text: "Другой"
+      }])
+    }
+    item._type = "myItem";
+    item._enabled = true;
+    $('<hr>').appendTo($(item));
+    var title = $('<div>').appendTo($(item));
+    $(item).data('cont', $('<div>').appendTo($(item)));
+    var cont = $('<div style="display:flex" class="divPhone">').appendTo($(item).data('cont'));
+    var inp1 = $('<input class="dhxform_textarea phoneInput" style="height:' + data.inputHeight + 'px" >').appendTo(cont);
+    var combo_ = $('<div class="tipPhone">').appendTo(cont);
+    var but = $('<button class="delBut dhxform_btn_filler"> - </button>').appendTo(cont);
+    but.click(function() {
+      var bb = this;
+      dhtmlx.message({
+        ob: this,
+        type: "confirm",
+        text: "Удалить пункт?",
+        callback: function(el) {
+          if (el) {
+            $(bb).parent().remove();
+
+          }
+        }
+      });
+    })
+
+    if (data.tip == 'phone') {
+      $(inp1).inputmask({
+        "mask": "(999) 999-99-99",
+        "oncomplete": function() {
+          alert('inputmask complete');
+        }
+      });
+      inp1[0].onkeyup = function(e) {
+        e = e || event;
+        item.callEvent("onKeyUp", [this, e, 'phone', inp1.val()]);
+      };
+      inp1[0].onkeydown = function(e) {
+        e = e || event;
+        item.callEvent("onKeyDown", [this, e, 'phone', inp1.val()]);
+      };
+
+
+    }
+    cont.data('combo', new dhtmlXCombo({
+        parent: combo_[0],
+        items: $(item).data('comboList')
+      }
+
+    ))
+    var adddiv = $('<div>').appendTo($(item));
+    var a = $('<a href="#" style="color: gray;">Добавить</a>').appendTo(adddiv);
+    a.data('item', item);
+    a.data('tip', data.tip);
+    a.click(function() {
+      var cont = $('<div style="display:flex" class="divPhone">').appendTo($($(this).data('item')).data('cont'));
+      var inp1 = $('<input class="dhxform_textarea phoneInput" style="height:' + data.inputHeight + 'px" >').appendTo(cont);
+      var combo_ = $('<div class="tipPhone">').appendTo(cont);
+      var but = $('<button class="delBut dhxform_btn_filler"> - </button>').appendTo(cont);
+      but.click(function() {
+        var bb = this;
+        dhtmlx.message({
+          ob: this,
+          type: "confirm",
+          text: "Удалить пункт?",
+          callback: function(el) {
+            if (el) {
+              $(bb).parent().remove();
+
+            }
+          }
+        });
+      })
+
+      if ($(this).data('tip') == 'phone') {
+        $(inp1).inputmask({
+          "mask": "(999) 999-99-99"
+        });
+      }
+      inp1[0].onkeyup = function(e) {
+        e = e || event;
+        item.callEvent("onKeyUp", [this, e, 'phone', inp1.val()]);
+      };
+      inp1[0].onkeydown = function(e) {
+        e = e || event;
+        item.callEvent("onKeyDown", [this, e, 'phone', inp1.val()]);
+      };
+
+      cont.data('combo', new dhtmlXCombo({
+          parent: combo_[0],
+          items: $($(this).data('item')).data('comboList')
+        }
+
+      ))
+      return false;
+    })
+    title.html(data.my_text)
+    this._custom_inner_func(item);
+    return this;
+  },
+
+  // destructor, required (if you will use unload)
+  destruct: function(item) {
+    var div = $(item).find('.divPhone');
+    for (var i = 0; i < div.length; i++) {
+      $(div[i]).data('combo').unload();
+    }
+    item.innerHTML = "";
+  },
+
+  // enable item, mandatory
+  enable: function(item) {
+    item.lastChild.style.color = "black";
+    item._enabled = true;
+  },
+
+  // disable item, mandatory
+  disable: function(item) {
+    item.lastChild.style.color = "gray";
+    item._enabled = false;
+  },
+
+  // your custom functionality
+  _custom_inner_func: function(item) {
+    item.lastChild.onclick = function() {
+      if (this.parentNode._is_enabled) alert("Hello!")
+    }
+  },
+
+  _custom_inner_func2: function(item) {
+    item.lastChild.onclick = null;
+  },
+
+  // this methos will public
+  setText: function(item, text) {
+    // it already exists in form
+    item.lastChild.innerHTML = text;
+
+    // demo of triggering events
+    // this will call user handler and pass item name and new text
+    item.callEvent("onTextChanged", [item._idd, text]);
+  },
+
+  // this methos will also public
+  setBoldText: function(item, text) {
+    // but it not exists in form, so link to it needed, see below
+    item.lastChild.innerHTML = "<b>" + text + "</b>";
+
+    // demo of triggering events
+    // this will call user handler and pass item name and new text and true as bolded flag
+    item.callEvent("onTextChanged", [item._idd, text, true]);
+  },
+
+  // you you need validation and you need set/get value for you form, you need:
+  // setValue and getValue, below basic code, you can add yout custom code also
+  setValue: function(item, val) {
+    var div = $(item).find('.divPhone');
+    for (var i = 0; i < div.length; i++) {
+      $(div[i]).data('combo').unload();
+    }
+    div.remove();
+    for (var i = 0; i < val.length; i++) {
+      var cont = $('<div style="display:flex" class="divPhone">').appendTo($(item).data('cont'));
+      var inp1 = $('<input class="dhxform_textarea phoneInput" style="height:' + $(item).data('data').inputHeight + 'px" >').appendTo(cont);
+      inp1.val(val[i].VAL);
+      if (item.tipFS == 'phone') {
+        $(inp1).inputmask({
+          "mask": "(999) 999-99-99"
+        });
+      }
+      inp1[0].onkeyup = function(e) {
+        e = e || event;
+        item.callEvent("onKeyUp", [this, e, 'phone', inp1.val()]);
+      };
+      inp1[0].onkeydown = function(e) {
+        e = e || event;
+        item.callEvent("onKeyDown", [this, e, 'phone', inp1.val()]);
+      };
+
+
+      var combo_ = $('<div class="tipPhone">').appendTo(cont);
+      cont.data('combo', new dhtmlXCombo({
+          parent: combo_[0],
+          items: $(item).data('comboList')
+        }
+
+      ))
+      cont.data('combo').setComboValue(val[i].TIP);
+      var but = $('<button class="delBut dhxform_btn_filler"> - </button>').appendTo(cont);
+      but.click(function() {
+        var bb = this;
+        dhtmlx.message({
+          ob: this,
+          type: "confirm",
+          text: "Удалить пункт?",
+          callback: function(el) {
+            if (el) {
+              $(bb).parent().remove();
+
+            }
+          }
+        });
+      })
+
+    }
+
+
+
+    item._value = val;
+  },
+
+  getValue: function(item) {
+    var div = $(item).find('.divPhone');
+    var p = [];
+    for (var i = 0; i < div.length; i++) {
+      p.push({
+        val: $(div[i]).find('.phoneInput').val(),
+        tip: $(div[i]).data('combo').getSelectedValue()
+      })
+    }
+    return p;
+  }
+
+};
+dhtmlXForm.prototype.setFormData_myItem = function(name, value) {
+  return this.doWithItem(name, "setValue", value);
+};
+
+dhtmlXForm.prototype.getFormData_myItem = function(name) {
+  return this.doWithItem(name, "getValue");
+};
+
 
 dhtmlXForm.prototype.items.MultyCian = {
     render: function(item, data) {

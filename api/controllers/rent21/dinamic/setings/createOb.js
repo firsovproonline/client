@@ -1,11 +1,13 @@
 const mysql = require('mysql')
 const Sequelize = require("sequelize")
+const {Base64} = require('js-base64');
 const dbOwners = {}
 const dbBuildings = {}
 const dbContacts = {}
 const dbAddress = {}
 const dbOb = {}
 const dbLinks = {}
+const dbExport = {}
 const cianItems = {
   rent: {
     flatRent: {
@@ -2505,123 +2507,146 @@ db.rent21ob.sync({ force: true }).then(item =>{
                       })
                     }
                   }
-                  sql = `SELECT * FROM fields WHERE TIP = 'ob21' `
-                  connection.query(sql, [], (err, result) => {
-                    result.forEach(item=>{
-                      if (!dbOb[item.UID]) dbOb[item.UID] = {}
-                      item.TITLE = item.TITLE.trim();
-                      if (item.TITLE === 'MPL' && item.VAL != '') {
-                        try {
-                          dbOb[item.UID][item.TITLE] = JSON.parse(item.VAL)
-                        }catch{
-                          dbOb[item.UID][item.TITLE] = item.VAL;
-                        }
-                      }
-                      else {
-                        dbOb[item.UID][item.TITLE] = item.VAL;
+                  sql = `SELECT * FROM export`
+                  connection.query(sql, [], function(err, result) {
+                    //console.log(result)
+                    result.forEach(item => {
+                      if (!dbExport[item.UID]) dbExport[item.UID] = {}
+                      if (!dbExport[item.UID][item.TIP]) dbExport[item.UID][item.TIP] = {}
+                      switch (item.TITLE) {
+                        case "PHOTO":
+                          if (!dbExport[item.UID][item.TIP].PHOTO) dbExport[item.UID][item.TIP].PHOTO = [];
+                          dbExport[item.UID][item.TIP].PHOTO.push({
+                            uid: item.PUID,
+                            title: Base64.encode(item.VAL)
+                          })
+                          break;
+                        default:
+                          dbExport[item.UID][item.TIP][item.TITLE] = item.VAL;
                       }
                     })
-
-                    for(let uid in dbBuildings){
-                      if(dbLinks[uid]){
-                        dbLinks[uid].forEach(childrenUID=>{
-                          if(dbOb[childrenUID]){
-                            let category = ''
-                            if (dbOb[childrenUID].OPP === '') {
-                              dbOb[childrenUID].OPP = 'Аренда'
-                            }
-                            let cian = {}
-                            if (dbOb[childrenUID].OPP === 'Аренда') {
-                              if (dbOb[childrenUID].TIP === 'Офис') {
-                                category = 'officeRent'
-                              }
-                              if (dbOb[childrenUID].TIP === 'Помещение свободного назначения') {
-                                category = 'freeAppointmentObjectRent'
-                              }
-                              if (dbOb[childrenUID].TIP === 'Здание') {
-                                category = 'buildingRent'
-                              }
-                              if (dbOb[childrenUID].TIP === 'Квартира') {
-                                category = 'flatRent'
-                              }
-                              if (dbOb[childrenUID].TIP === 'Торговая площадь') {
-                                category = 'shoppingAreaRent'
-                              }
-                              if (dbOb[childrenUID].TIP === 'Склад') {
-                                category = 'warehouseRent'
-                              }
-                              if (dbOb[childrenUID].TIP === 'Производство') {
-                                category = 'industryRent'
-                              }
-                              if (dbOb[childrenUID].TIP === 'Гараж') {
-                                category = 'garageRent'
-                              }
-                              if (dbOb[childrenUID].TIP === 'Дом/дача') {
-                                category = 'houseRent'
-                              }
-                              cian = cianItems.rent[category]
-                            }
-                            if (dbOb[childrenUID].OPP === 'Продажа') {
-                              if (dbOb[childrenUID].TIP === 'Офис') {
-                                category = 'officeSale'
-                              }
-                              if (dbOb[childrenUID].TIP === 'Помещение свободного назначения') {
-                                category = 'freeAppointmentObjectSale'
-                              }
-                              if (dbOb[childrenUID].TIP === 'Здание') {
-                                category = 'buildingSale'
-                              }
-                              if (dbOb[childrenUID].TIP === 'Квартира') {
-                                category = 'flatSale'
-                              }
-                              if (dbOb[childrenUID].TIP === 'Торговая площадь') {
-                                category = 'shoppingAreaSale'
-                              }
-                              if (dbOb[childrenUID].TIP === 'Склад') {
-                                category = 'warehouseSale'
-                              }
-                              if (dbOb[childrenUID].TIP === 'Квартира новостройка') {
-                                category = 'newBuildingFlatSale'
-                              }
-                              if (dbOb[childrenUID].TIP === 'Готовый бизнес') {
-                                category = 'businessSale'
-                              }
-                              if (dbOb[childrenUID].TIP === 'Производство') {
-                                category = 'industrySale'
-                              }
-                              if (dbOb[childrenUID].TIP === 'Гараж') {
-                                category = 'garageSale'
-                              }
-                              if (dbOb[childrenUID].TIP === 'Дом/дача') {
-                                category = 'houseSale'
-                              }
-                            }
-                            if (dbOb[childrenUID].Category && dbOb[childrenUID].Category !== '') {
-                              category = dbOb[childrenUID].Category
-                            }
-
-                            db.rent21ob.create({
-                              uid: childrenUID,
-                              build: uid,
-                              fields: dbOb[childrenUID],
-                              owner: dbOb[childrenUID].SOBST,
-                              category: category,
-                              cian: cian,
-                              //exports:[1]
-                            })
-
-
+                    sql = `SELECT * FROM fields WHERE TIP = 'ob21' `
+                    connection.query(sql, [], (err, result) => {
+                      result.forEach(item=>{
+                        if (!dbOb[item.UID]) dbOb[item.UID] = {}
+                        item.TITLE = item.TITLE.trim();
+                        if (item.TITLE === 'MPL' && item.VAL != '') {
+                          try {
+                            dbOb[item.UID][item.TITLE] = JSON.parse(item.VAL)
+                          }catch{
+                            dbOb[item.UID][item.TITLE] = item.VAL;
                           }
+                        }
+                        else {
+                          dbOb[item.UID][item.TITLE] = item.VAL;
+                        }
+                      })
+
+                      for(let uid in dbBuildings){
+                        if(dbLinks[uid]){
+                          dbLinks[uid].forEach(childrenUID=>{
+                            if(dbOb[childrenUID]){
+                              let category = ''
+                              if (dbOb[childrenUID].OPP === '') {
+                                dbOb[childrenUID].OPP = 'Аренда'
+                              }
+                              let cian = {}
+                              if (dbOb[childrenUID].OPP === 'Аренда') {
+                                if (dbOb[childrenUID].TIP === 'Офис') {
+                                  category = 'officeRent'
+                                }
+                                if (dbOb[childrenUID].TIP === 'Помещение свободного назначения') {
+                                  category = 'freeAppointmentObjectRent'
+                                }
+                                if (dbOb[childrenUID].TIP === 'Здание') {
+                                  category = 'buildingRent'
+                                }
+                                if (dbOb[childrenUID].TIP === 'Квартира') {
+                                  category = 'flatRent'
+                                }
+                                if (dbOb[childrenUID].TIP === 'Торговая площадь') {
+                                  category = 'shoppingAreaRent'
+                                }
+                                if (dbOb[childrenUID].TIP === 'Склад') {
+                                  category = 'warehouseRent'
+                                }
+                                if (dbOb[childrenUID].TIP === 'Производство') {
+                                  category = 'industryRent'
+                                }
+                                if (dbOb[childrenUID].TIP === 'Гараж') {
+                                  category = 'garageRent'
+                                }
+                                if (dbOb[childrenUID].TIP === 'Дом/дача') {
+                                  category = 'houseRent'
+                                }
+                                cian = cianItems.rent[category]
+                              }
+                              if (dbOb[childrenUID].OPP === 'Продажа') {
+                                if (dbOb[childrenUID].TIP === 'Офис') {
+                                  category = 'officeSale'
+                                }
+                                if (dbOb[childrenUID].TIP === 'Помещение свободного назначения') {
+                                  category = 'freeAppointmentObjectSale'
+                                }
+                                if (dbOb[childrenUID].TIP === 'Здание') {
+                                  category = 'buildingSale'
+                                }
+                                if (dbOb[childrenUID].TIP === 'Квартира') {
+                                  category = 'flatSale'
+                                }
+                                if (dbOb[childrenUID].TIP === 'Торговая площадь') {
+                                  category = 'shoppingAreaSale'
+                                }
+                                if (dbOb[childrenUID].TIP === 'Склад') {
+                                  category = 'warehouseSale'
+                                }
+                                if (dbOb[childrenUID].TIP === 'Квартира новостройка') {
+                                  category = 'newBuildingFlatSale'
+                                }
+                                if (dbOb[childrenUID].TIP === 'Готовый бизнес') {
+                                  category = 'businessSale'
+                                }
+                                if (dbOb[childrenUID].TIP === 'Производство') {
+                                  category = 'industrySale'
+                                }
+                                if (dbOb[childrenUID].TIP === 'Гараж') {
+                                  category = 'garageSale'
+                                }
+                                if (dbOb[childrenUID].TIP === 'Дом/дача') {
+                                  category = 'houseSale'
+                                }
+                              }
+                              if (dbOb[childrenUID].Category && dbOb[childrenUID].Category !== '') {
+                                category = dbOb[childrenUID].Category
+                              }
+
+                              db.rent21ob.create({
+                                uid: childrenUID,
+                                build: uid,
+                                fields: dbOb[childrenUID],
+                                owner: dbOb[childrenUID].SOBST,
+                                category: category,
+                                cian: cian,
+                                exports:dbExport[childrenUID]
+                              })
+
+
+                            }
 
 
 
-                        })
+                          })
+                        }
                       }
-                    }
 
 
-                    res.json(db.progress)
+                      res.json(db.progress)
+                    })
+
+
+
                   })
+
                 })
               })
             })

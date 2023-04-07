@@ -14,7 +14,7 @@ const YandexStrategy = require('passport-yandex').Strategy;
 const methodOverride = require('method-override');
 const bodyParser = require('body-parser');
 const request = require('request');
-
+const {Base64} = require('js-base64');
 const db = require("./models");
 const config = require("./config/db.config.js");
 const ejs = require('ejs');

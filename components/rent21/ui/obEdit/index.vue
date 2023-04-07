@@ -109,7 +109,7 @@
         <div style="border-right: 1px solid;width: 350px">
           <div v-if="edit=='ob21' || edit=='address' || edit=='build'" class="modalDivLocal" style="width: 350px"></div>
           <div style="display: flex;padding: 5px;height: 38px">Собственики</div>
-          <OwnerList :items="owners" style="background-color: #ffffff" />
+          <OwnerList :items="owners" style="background-color: #ffffff;height:-webkit-fill-available" />
         </div>
         <div style="border-right: 1px solid;width: 350px">
           <div v-if="edit=='ob21' || edit=='address' || edit=='build'" class="modalDivLocal" style="width: 350px"></div>
