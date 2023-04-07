@@ -1,6 +1,7 @@
 const mysql = require('mysql')
 const Sequelize = require("sequelize")
 const {Base64} = require('js-base64');
+const md5 = require('md5');
 const dbOwners = {}
 const dbBuildings = {}
 const dbContacts = {}
@@ -2518,7 +2519,7 @@ db.rent21ob.sync({ force: true }).then(item =>{
                           if (!dbExport[item.UID][item.TIP].PHOTO) dbExport[item.UID][item.TIP].PHOTO = [];
                           dbExport[item.UID][item.TIP].PHOTO.push({
                             uid: item.PUID,
-                            title: Base64.encode(item.VAL)
+                            title: item.VAL
                           })
                           break;
                         default:
