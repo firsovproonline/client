@@ -3,7 +3,7 @@
     <modal
       v-show="flagModal"
       :show="flagModal"
-      :scrollable="false"
+      :scrollable="true"
       body-id="modalBody" header-id="modalHeader"
       @close="showBig"
 
@@ -12,7 +12,7 @@
         {{titleModal}}
       </template>
       <template #body>
-        <div ref="editDiv" class="modalDiv" ></div>
+          <ownerEdit :item="item" />
       </template>
     </modal>
 
@@ -57,7 +57,7 @@
         <div>
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="12 16 16 12 12 8"></polyline><line x1="8" y1="12" x2="16" y2="12"></line></svg>
         </div>
-        <div @click="showBig" style="cursor: pointer">
+        <div @click="showBig(key)" style="cursor: pointer">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit"><path d="M20 14.66V20a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h5.34"></path><polygon points="18 2 22 6 12 16 8 16 8 12 18 2"></polygon></svg>
         </div>
       </div>
@@ -67,15 +67,18 @@
 </template>
 
 <script>
+import OwnerEdit from '@/components/rent21/ui/owner/edit'
 export default {
   name: 'ownerList',
+  components: { OwnerEdit },
   props:{
     items: []
   },
   data: () => ({
     flagModal: false,
     titleModal: 'Собственик',
-    form: null
+    form: null,
+    item: {}
   }),
   watch:{
     items(val){
@@ -83,7 +86,7 @@ export default {
     }
   },
   mounted () {
-    console.log(this.$refs.editDiv)
+    /*
     this.form = new dhtmlXForm(this.$refs.editDiv,[{
       type: "settings",
       inputHeight: 25,
@@ -103,16 +106,16 @@ export default {
         type: "input",
         name: "NAME",
         label: "Наименование",
-        inputWidth: 420,
+        inputWidth: 440,
         userdata: {
           flabel: 'NAME'
         }
       }, {
         type: "input",
-        labelWidth: 80,
+        labelWidth: 92,
         name: "SITE",
         label: "Сайт",
-        inputWidth: 420,
+        inputWidth: 440,
         userdata: {
           flabel: 'SITE'
         }
@@ -120,8 +123,8 @@ export default {
         type: "input",
         name: "EMAIL",
         label: "Email",
-        labelWidth: 80,
-        inputWidth: 420,
+        labelWidth: 92,
+        inputWidth: 440,
         userdata: {
           flabel: 'EMAIL'
         }
@@ -131,8 +134,8 @@ export default {
         list: [{
           type: "input",
           name: "KOMIS",
-          label: "Комиссия аренды *",
-          labelWidth: 80,
+          label: "Ком. аренды *",
+          labelWidth: 92,
           inputWidth: 30,
           userdata: {
             flabel: 'KOMIS'
@@ -143,7 +146,7 @@ export default {
           type: "input",
           name: "KOMISREM",
           label: "% комментарий",
-          labelWidth: 80,
+          labelWidth: 110,
           inputWidth: 298,
           offsetLeft: 8,
           userdata: {
@@ -158,8 +161,8 @@ export default {
         list: [{
           type: "input",
           name: "KOMISSALE",
-          label: "Комиссия продажи *",
-          labelWidth: 80,
+          label: "Ком. продажи *",
+          labelWidth: 92,
           inputWidth: 30,
           userdata: {
             flabel: 'KOMISSALE'
@@ -170,7 +173,7 @@ export default {
           type: "input",
           name: "KOMISREMSALE",
           label: "% комментарий",
-          labelWidth: 80,
+          labelWidth: 110,
           inputWidth: 298,
           offsetLeft: 8,
           userdata: {
@@ -244,29 +247,49 @@ export default {
       }
     });
 
+     */
+
   },
   methods:{
-    showBig(){
+    showBig(id){
       this.flagModal = !this.flagModal
       if(this.flagModal){
+        this.item = this.items[id]
       }
+/*
+      if(this.flagModal){
+        console.log(this.items[id])
+        for(let field in this.items[id]){
+          if (this.form.isItem(field)) {
+            this.form.setItemValue(field, this.items[id][field])
+          }
+          if(field === 'contacts'){
+            this.items[id][field].forEach(kont =>{
+              this.form.addItem('insertKont', {
+                type: "koNt21",
+                label: "Контакт",
+                inputWidth: 450,
+                userdata: {
+                  flabel: 'koNt21'
+                },
+                value: kont,
+                fsform: this.form
+              });
+
+            })
+          }
+        }
+        // this.form.set
+      }
+
+ */
     },
   }
 }
 </script>
 
 <style lang="scss" >
-.ownerList .simple-modal-content{
-  max-width: 600px;
-  max-height: -webkit-fill-available;
-  overflow: auto;
-}
-.ownerList .simple-modal-body .dhxform_obj_dhx_skyblue div.dhxform_item_label_left {
-  flex-wrap: nowrap;
-  font-size: 12px;
-  justify-content: flex-start;
-  align-items: flex-start;
-}
+
   .main{
     display: flex;
     padding: 8px;

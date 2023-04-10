@@ -121,7 +121,7 @@ export default {
     flex-direction: column;
     justify-content: space-between;
     width: 100%;
-    max-width: 500px;
+    max-width: fit-content;
     margin: 1.75rem auto;
     padding: 20px 30px;
     border-radius: 5px;

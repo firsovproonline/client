@@ -652,9 +652,8 @@ dhtmlXForm.prototype.items.koNt21 = {
 
 
     }
-
-    if (data.value.data != undefined) {
-      console.log('data.value.data', data.value.data)
+console.log('=======',data.value)
+    if (data.value != undefined) {
       for (var i = 0; i < data.value.data.length; i++) {
         if (data.value.data[i].PHONE != undefined) {
           //data.value.data[i].UID = generateUID();
@@ -719,30 +718,6 @@ dhtmlXForm.prototype.items.koNt21 = {
                 like: $(e.target).val()
               }),
               success: function(data) {
-                /*
-                                                if (data.atate != null) {
-                                                    data = data.atate;
-
-                                                    for (var i = 0; i < data.length; i++) {
-                                                        if (form.isItem(data[i].TITLE)) {
-                                                            form.setItemValue(data[i].TITLE, data[i].VAL)
-                                                        }
-                                                    }
-
-                                                    var fd = item.form21.getFormData();
-                                                    for (var key in fd) {
-                                                        var flabel = item.form21.getUserData(key, 'flabel');
-                                                        for (var i = 0; i < data.length; i++) {
-                                                            if (flabel == data[i].TITLE) {
-                                                                item.form21.setItemValue(key, data[i].VAL)
-                                                            }
-                                                        }
-                                                    }
-
-
-
-                                                }
-                */
                 form.unlock();
 
                 console.log(data, form.getFormData())
