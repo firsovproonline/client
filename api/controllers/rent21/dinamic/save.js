@@ -106,7 +106,7 @@ if(req.user && (req.user.isAdmin || req.user.isRieltor) && req.user.DOSTUP.index
               reject({ 'error': 405 })
             } else {
               const out = []
-              if(1 == 1){
+              if(1 === 2){
                 for (const [title, value] of Object.entries(ob21)) {
                   out.push([
                     null,

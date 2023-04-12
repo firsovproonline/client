@@ -200,6 +200,17 @@ export default {
     this.resize();
     window.addEventListener('resize', this.resize);
     this.$axios.get('https://rent21.ru:4439/apiv2/user/listname').then((item) => {
+      window.listUser = []
+      window.listUser.push({
+        text: '',
+        value: ''
+      })
+      item.data.forEach(user=>{
+        window.listUser.push({
+          text: user.email,
+          value: user.email
+        })
+      })
       this.$store.commit('main/setusers', item.data);
     });
     this.$axios.get('/api/test').then((item) => {

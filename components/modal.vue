@@ -31,12 +31,7 @@
             </section>
             <footer :class="`${modalClass}-footer`">
               <slot name="footer" />
-              <button
-                type="button"
-                @click="closeModal"
-              >
-                Close
-              </button>
+
             </footer>
           </div>
         </div>
@@ -91,6 +86,38 @@ export default {
 </script>
 <style lang="scss">
 .simple-modal {
+  footer{
+    box-shadow: none;
+  }
+  .buttonDiv{
+    font-family: Tahoma,Helvetica;
+    padding: 6px;
+    font-size: inherit;
+    color: black;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+    border: 1px solid #a4bed4;
+    background-color: #e2efff;
+    background: linear-gradient(#e2efff,#d3e7ff);
+    background: -webkit-linear-gradient(#e2efff,#d3e7ff);
+    filter: progid:DXImageTransform.Microsoft.Gradient(gradientType=0,startColorStr=#e2efff,endColorStr=#d3e7ff) progid:DXImageTransform.Microsoft.Alpha(opacity=100);
+    margin: 5px 2px;
+    border-radius: 2px;
+    float: left;
+    cursor: default;
+    clear: both;
+    position: relative;
+    overflow: hidden;
+    -webkit-tap-highlight-color: rgba(0,0,0,0);
+    cursor: pointer;
+  }
+
+
+
   &-backdrop {
     position: fixed;
     top: 0;

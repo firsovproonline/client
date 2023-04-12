@@ -67,11 +67,11 @@
           <div v-if="edit=='address' || edit=='build' || edit=='Noob21'" class="modalDivLocal" style="width: 400px"></div>
           <div style="display: flex;padding: 5px">
             <div :class="activeOb21 == 'main' ? 'tabBt active':'tabBt'" @click="activeOb21 = 'main'">Основные поля</div>
-            <div :class="activeOb21 == 'photo' ? 'tabBt active':'tabBt'" @click="activeOb21 = 'photo'" >Фото</div>
-            <div :class="activeOb21 == 'showcase' ? 'tabBt active':'tabBt'" @click="activeOb21 = 'showcase'" >Витрина</div>
-            <div :class="activeOb21 == 'export' ? 'tabBt active':'tabBt'" @click="showExport" style="margin-left: 8px;display: flex">
+            <div v-if="this.edit===''" :class="activeOb21 == 'photo' ? 'tabBt active':'tabBt'" @click="activeOb21 = 'photo'" >Фото</div>
+            <div v-if="this.edit===''" :class="activeOb21 == 'showcase' ? 'tabBt active':'tabBt'" @click="activeOb21 = 'showcase'" >Витрина</div>
+            <div v-if="this.edit===''" :class="activeOb21 == 'export' ? 'tabBt active':'tabBt'" @click="showExport" style="margin-left: 8px;display: flex">
               <div>Экспорт</div>
-              <indicator style="margin-top: -3px" :uid="uidOb" :item="activeExport" />
+              <indicator style="margin-top: -11px" :uid="uidOb" :item="activeExport" />
             </div>
           </div>
           <div ref="mainob21" class="scroll21" style="padding-right: 6px; overflow: auto;width: 400px;overflow-x: hidden;background-color: white">
@@ -139,11 +139,11 @@
           <div v-if="edit=='address' || edit=='build' || edit=='Noob21'" class="modalDivLocal" style="width: 400px"></div>
           <div style="display: flex;padding: 5px">
             <div :class="activeOb21 == 'main' ? 'tabBt active':'tabBt'" @click="activeOb21 = 'main'">Основные поля</div>
-            <div :class="activeOb21 == 'photo' ? 'tabBt active':'tabBt'" @click="activeOb21 = 'photo'" >Фото</div>
-            <div :class="activeOb21 == 'showcase' ? 'tabBt active':'tabBt'" @click="activeOb21 = 'showcase'" >Витрина</div>
-            <div :class="activeOb21 == 'export' ? 'tabBt active':'tabBt'" @click="showExport" style="margin-left: 8px;display: flex">
+            <div v-if="this.edit===''" :class="activeOb21 == 'photo' ? 'tabBt active':'tabBt'" @click="activeOb21 = 'photo'" >Фото</div>
+            <div v-if="this.edit===''" :class="activeOb21 == 'showcase' ? 'tabBt active':'tabBt'" @click="activeOb21 = 'showcase'" >Витрина</div>
+            <div v-if="this.edit===''" :class="activeOb21 == 'export' ? 'tabBt active':'tabBt'" @click="showExport" style="margin-left: 8px;display: flex">
               <div>Экспорт</div>
-              <indicator style="margin-top: -3px" :uid="uidOb" :item="activeExport" />
+              <indicator style="margin-top: -11px" :uid="uidOb" :item="activeExport" />
             </div>
           </div>
           <div ref="mainob21" class="scroll21" style="padding-right: 6px; overflow: auto;width: 400px;overflow-x: hidden;background-color: white">
@@ -257,22 +257,561 @@ export default {
     },
     globalMessage(val){
       if(val){
-        if(val === 'save'){
-          const ob = {}
-          if(this.edit === 'ob21'){
-            ob.ob21 = this.item.ob21[this.item.ob21.findIndex(el => el.UID === this.uidOb)]
-          }else{
-            ob.address = this.item.address
-            ob.building = this.item.building
-          }
-          this.$axios.put('/api/rent21/ob',ob).then(item=>{
-            this.$store.dispatch('main/globalMessage',null)
-            disableForms(this.disableItems, false)
-            this.$store.dispatch('main/save_component', null)
+        switch (val) {
+          case 'addOb21':
+            console.log('Добавление помещения')
+            this.edit = 'ob21'
+            let ob21 = {
+              ARHIV: '0',
+              ETAG: 1,
+              OPP: 'Аренда',
+              TIP: 'Офис',
+              exports: {}
+            }
+            this.ob21Form.setItemValue('obfields',{pchange:this.onChange,data:ob21});
+
+            break
+          case 'save':
+            const ob = {}
+            if(this.edit === 'ob21'){
+              ob.ob21 = this.item.ob21[this.item.ob21.findIndex(el => el.UID === this.uidOb)]
+            }else{
+              ob.address = this.item.address
+              ob.building = this.item.building
+            }
+            this.$axios.put('/api/rent21/ob',ob).then(item=>{
+              this.$store.dispatch('main/globalMessage',null)
+              disableForms(this.disableItems, false)
+              this.$store.dispatch('main/save_component', null)
+              if(this.edit === 'ob21'){
+                this.$axios.get('/api/rent21/ob/'+this.uidOb).then(item=>{
+                  this.ob21Form.setItemValue('obfields',{pchange:this.onChange,data:item.data.row[0].fields});
+                  this.edit =  ''
+                })
+              }else{
+                this.$axios.get('/api/rent21/building/'+this.item.building.UID).then(item=>{
+                  if(this.addressForm){
+                    this.addressForm.unload()
+                  }
+                  this.addressForm = new dhtmlXForm(this.$refs.address,[
+                    {
+                      type: "settings",
+                      position: "label-left",
+                    }, {
+                      type: "block",
+                      name: "blGL",
+                      //inputWidth: 120,
+                      offsetLeft: 10,
+                      list: [{
+                        type: "settings",
+                        position: "label-left",
+                        //inputWidth: 120,
+                        labelWidth: 80,
+                      }, {
+                        type: 'hidden',
+                        name: 'field_UID'
+                      }, {
+                        type: 'input',
+                        position: "label-left",
+                        label: "Наименование",
+                        value: "",
+                        inputWidth: 380,
+                        name: "field_NAME",
+                        required: true,
+
+                      }, {
+                        type: "MultyRem",
+                        name: "MultyRem",
+                        label: "Комментарий",
+                        inputWidth: 340,
+                        className: "BuildMultyRem"
+                      }, {
+                        type: "block",
+                        //name: 'firstBl',
+                        blockOffset: 0,
+                        inputWidth: 450,
+                        list: [{
+                          type: "block",
+                          inputWidth: 240,
+                          blockOffset: 0,
+                          list: [{
+                            type: 'combo',
+                            position: "label-left",
+                            label: "Проверен",
+                            value: 0,
+                            inputWidth: 140,
+                            labelWidth: 80,
+                            hidden: true,
+                            name: "field_STATUS",
+                            options: [{
+                              text: "Проверен",
+                              value: "Проверен"
+                            }, {
+                              text: "Непроверен",
+                              value: "Непроверен",
+                              selected: true
+                            }, ]
+                          }, {
+                            type: 'input',
+                            position: "label-left",
+                            label: "Этажность",
+                            required: true,
+                            value: "",
+                            inputWidth: 20,
+                            labelWidth: 80,
+                            name: "field_ETAGALL",
+                          }, {
+                            type: 'input',
+                            position: "label-left",
+                            label: "Урл",
+                            value: "",
+                            hidden: true,
+                            inputWidth: 160,
+                            labelWidth: 80,
+                            name: "field_URL",
+                          }]
+                        }, {
+                          type: 'newcolumn',
+                          offset: 10
+                        }, {
+                          type: "container",
+                          name: "firstphoto",
+                          label: "",
+                          inputWidth: 180,
+                          inputHeight: 120
+                        }
+                        ]
+
+                      }, {
+                        type: 'MultyCian',
+                        position: "label-left",
+                        label: "Тип здания",
+                        value: 0,
+                        labelWidth: 90,
+                        // inputWidth: 440,
+                        multi: false,
+                        required: true,
+
+                        name: "field_TIPZD",
+                        options: arType["Офис"]
+                      }, {
+                        type: 'MultyCian',
+                        position: "label-left",
+                        label: "Класс здания",
+                        // inputWidth: 440,
+                        labelWidth: 80,
+                        multi: false,
+                        name: "field_KLASS",
+                        required: true,
+                        options: [{
+                          text: "A",
+                          value: "a"
+                        }, {
+                          text: "A+",
+                          value: "aPlus"
+                        }, {
+                          text: "B",
+                          value: "b"
+                        }, {
+                          text: "B-",
+                          value: "bMinus"
+                        }, {
+                          text: "B+",
+                          value: "bPlus"
+                        }, {
+                          text: "C",
+                          value: "c"
+                        }, {
+                          text: "Нет",
+                          value: null,
+                          selected: true
+                        }]
+                      }, {
+                        type: "checkbox",
+                        label: "Комм. фонд",
+                        position: "label-left",
+                        name: "field_FONDKOM",
+                        checked: false
+                      }, {
+                        type: "checkbox",
+                        label: "жилой. фонд",
+                        position: "label-left",
+                        name: "field_FONDH",
+                        checked: false
+                      }, {
+                        type: "checkbox",
+                        label: "частный фонд",
+                        position: "label-left",
+                        name: "field_FONDZ",
+                        checked: false
+                      }, {
+                        type: "block",
+                        name: 'firstBl',
+                      }, {
+                        type: "adRes21",
+                        label: "Адрес здания",
+                        offsetLeft: 0,
+                        offset: 0,
+                        inputLeft: 0,
+                        pform: this.onChange,
+                        name: 'adres'
+                      }, {
+                        type: 'input',
+                        position: "label-left",
+                        label: "Год постройки",
+                        value: "",
+                        numberFormat: "0000",
+                        labelWidth: 140,
+                        inputWidth: 35,
+                        name: "field_GODP",
+
+                      }, {
+                        type: 'input',
+                        position: "label-left",
+                        label: "Год реконструкции",
+                        value: "",
+                        numberFormat: "0000",
+                        labelWidth: 140,
+                        inputWidth: 35,
+                        name: "field_GODR",
+                      }, {
+                        type: 'input',
+                        position: "label-left",
+                        label: "Площадь здания",
+                        value: "",
+                        labelWidth: 140,
+                        inputWidth: 60,
+                        name: "field_PLALL",
+
+                      }, {
+                        type: 'input',
+                        position: "label-left",
+                        label: "Площадь участка",
+                        value: "",
+                        labelWidth: 140,
+                        inputWidth: 60,
+                        name: "field_PLALLZ",
+
+                      }, {
+                        type: 'calendar',
+                        position: "label-left",
+                        label: "Год договора<br>аренды участка",
+                        value: "",
+                        labelWidth: 140,
+                        inputWidth: 120,
+                        name: "field_GODAR",
+                      }, {
+                        type: 'MultyCian',
+                        position: "label-left",
+                        label: "Парковочный<br>коэффициент",
+                        // inputWidth: 440,
+                        labelWidth: 140,
+                        multi: false,
+                        //offsetLeft: 24,
+                        name: "field_PARKKOEF",
+                        options: [{
+                          text: "Не ограничено",
+                          value: "Не ограничено"
+                        }, {
+                          text: "Неизвестно",
+                          value: "Неизвестно",
+                          selected: true
+
+                        }, {
+                          text: "1:50",
+                          value: "1:50"
+                        }, {
+                          text: "1:100",
+                          value: "1:100"
+                        }, {
+                          text: "1:150",
+                          value: "1:150"
+                        }, {
+                          text: "1:200",
+                          value: "1:200"
+                        }]
+                      },
+
+                        {
+                          type: "MultyCian",
+                          name: "field_VentilationType",
+                          label: 'Вентиляция:',
+                          // inputWidth: 440,
+                          labelWidth: 90,
+                          multi: false,
+                          options: [{
+                            text: "Приточная",
+                            value: "forced"
+                          }, {
+                            text: "Естественная",
+                            value: "natural"
+                          }, {
+                            text: "Нет",
+                            value: "no"
+                          }]
+                        }, {
+                          type: "MultyCian",
+                          name: "field_ConditioningType",
+                          label: 'Кондиционирование:',
+                          // inputWidth: 440,
+                          labelWidth: 90,
+                          multi: false,
+                          options: [{
+                            text: "Центральное",
+                            value: "central"
+                          }, {
+                            text: "Местное",
+                            value: "local"
+                          }, {
+                            text: "Нет",
+                            value: "no"
+                          }]
+                        }, {
+                          type: "MultyCian",
+                          name: "field_ExtinguishingSystemType",
+                          label: 'Система<br>пожаротушения:',
+                          // inputWidth: 440,
+                          labelWidth: 90,
+                          multi: false,
+                          options: [{
+                            text: "Сигнализация",
+                            value: "alarm"
+                          }, {
+                            text: "Газовая",
+                            value: "gas"
+                          }, {
+                            text: "Гидрантная",
+                            value: "hydrant"
+                          }, {
+                            text: "Нет",
+                            value: "no"
+                          }, {
+                            text: "П��рошковая",
+                            value: "powder"
+                          }, {
+                            text: "Спринклерная",
+                            value: "sprinkler"
+                          }]
+                        }, {
+                          type: "MultyCian",
+                          name: "field_StatusType",
+                          label: 'Категория:',
+                          // inputWidth: 440,
+                          labelWidth: 90,
+                          multi: false,
+                          options: [{
+                            text: "Действующее",
+                            value: "operational"
+                          }, {
+                            text: "Проект",
+                            value: "project"
+                          }, {
+                            text: "Строящееся",
+                            value: "underConstruction"
+                          }]
+                        }, {
+                          type: "MultyCian",
+                          name: "field_AccessType",
+                          label: 'Вход:',
+                          // inputWidth: 440,
+                          labelWidth: 90,
+                          multi: false,
+                          options: [{
+                            text: "Свободный",
+                            value: "free"
+                          }, {
+                            text: "Пропускная система",
+                            value: "passSystem"
+                          }]
+                        }, {
+                          type: "MultyCian",
+                          name: "field_Infrastructure",
+                          label: 'Инфраструктура:',
+                          // inputWidth: 440,
+                          inputHeight: 12,
+                          labelWidth: 90,
+                          options: [{
+                            text: "Автомойка",
+                            value: "HasCarWash"
+                          }, {
+                            text: "Буфет",
+                            value: "HasBuffet"
+                          }, {
+                            text: "Автосервис",
+                            value: "HasCarService"
+                          }, {
+                            text: "Столовая",
+                            value: "HasCanteen"
+                          }, {
+                            text: "Центральная рецепция",
+                            value: "HasCentralReception"
+                          }, {
+                            text: "Гостиница",
+                            value: "HasHotel"
+                          }, {
+                            text: "Банкомат",
+                            value: "HasAtm"
+                          }, {
+                            text: "Выставочно-складской комплекс",
+                            value: "HasExhibitionAndWarehouseComplex"
+                          }, {
+                            text: "Аптека",
+                            value: "HasPharmacy"
+                          }, {
+                            text: "Отделение банка",
+                            value: "HasBankDepartment"
+                          }, {
+                            text: "Кинотеатр",
+                            value: "HasCinema"
+                          }, {
+                            text: "Кафе",
+                            value: "HasCafe"
+                          }, {
+                            text: "Медицинский центр",
+                            value: "HasMedicalCenter"
+                          }, {
+                            text: "Салон красоты",
+                            value: "HasBeautyShop"
+                          }, {
+                            text: "Фотосалон",
+                            value: "HasStudio"
+                          }, {
+                            text: "Нотариальная контора",
+                            value: "HasNotaryOffice"
+                          }, {
+                            text: "Бассейн",
+                            value: "HasPool"
+                          }, {
+                            text: "Ателье одежды",
+                            value: "HasClothesStudio"
+                          }, {
+                            text: "Складские помещения",
+                            value: "HasWarehouse"
+                          }, {
+                            text: "Парк",
+                            value: "HasPark"
+                          }, {
+                            text: "Ресторан",
+                            value: "HasRestaurant"
+                          }, {
+                            text: "Фитнес-центр",
+                            value: "HasFitnessCentre"
+                          }, {
+                            text: "Супермаркет",
+                            value: "HasSupermarket"
+                          }, {
+                            text: "Минимаркет",
+                            value: "HasMinimarket"
+                          }, {
+                            text: "Торговая зона",
+                            value: "HasShoppingArea"
+                          }, {
+                            text: "Конференц-зал",
+                            value: "HasConferenceRoom"
+                          }]
+                        }
+
+                        , {
+                          type: "block",
+                          className: 'flex',
+                          list: [{
+                            type: "combo",
+                            position: "label-left",
+                            label: "Паркинг наземный",
+                            name: "field_PARKNAZ",
+                            inputWidth: 120,
+                            labelWidth: 140,
+                            options: [{
+                              text: "Стихийный",
+                              value: "Стихийный"
+                            }, {
+                              text: "Нет",
+                              value: "Нет",
+                              selected: true
+
+                            }, {
+                              text: "Охраняемый",
+                              value: "Охраняемый"
+                            }]
+                          }, {
+                            type: "newcolumn"
+                          }, {
+                            type: 'input',
+                            position: "label-left",
+                            label: "Цена",
+                            value: "",
+                            labelWidth: 50,
+                            inputWidth: 40,
+                            name: "field_PARKNAZCENA",
+
+                          }
+
+                          ]
+                        }, {
+                          type: "block",
+                          className: 'flex',
+                          list: [{
+                            type: "combo",
+                            position: "label-left",
+                            label: "Паркинг крытый",
+                            name: "field_PARKKR",
+                            inputWidth: 120,
+                            labelWidth: 140,
+                            options: [{
+                              text: "Нет",
+                              value: "Нет",
+                              selected: true
+
+                            }, {
+                              text: "Подземный",
+                              value: "Подземный"
+                            }, {
+                              text: "Наземный",
+                              value: "Наземный"
+                            }, {
+                              text: "Наземный многоярусный",
+                              value: "Наземный многоярусный"
+                            }, {
+                              text: "Типа бокс",
+                              value: "Типа бокс"
+                            }]
+                          }, {
+                            type: "newcolumn"
+                          }, {
+                            type: 'input',
+                            position: "label-left",
+                            label: "Цена",
+                            value: "",
+                            labelWidth: 50,
+                            inputWidth: 40,
+                            name: "field_PARKKRCENA",
+                          }]
+                        }
+
+
+                      ]
+                    }, {
+                      type: "container",
+                      inputHeight: 52
+                    }
+                  ])
+                  this.addressForm.attachEvent("onChange", this.onChange);
+                  this.addressForm.setItemValue('adres', item.data.row.address)
+                  for (let key in item.data.row.building) {
+                    if (this.addressForm.isItem('field_' + key)) {
+                      this.addressForm.setItemValue('field_' + key, item.data.row.building[key]);
+                    }
+                  }
+                  this.edit =  ''
+                })
+              }
+            })
+            break;
+          default:
+            console.log('cancel', this.edit)
             if(this.edit === 'ob21'){
               this.$axios.get('/api/rent21/ob/'+this.uidOb).then(item=>{
                 this.ob21Form.setItemValue('obfields',{pchange:this.onChange,data:item.data.row[0].fields});
-                this.edit =  ''
               })
             }else{
               this.$axios.get('/api/rent21/building/'+this.item.building.UID).then(item=>{
@@ -790,539 +1329,15 @@ export default {
                 }
                 this.edit =  ''
               })
+
             }
-          })
-        }else{
-          console.log('cancel', this.edit)
-          if(this.edit === 'ob21'){
-            this.$axios.get('/api/rent21/ob/'+this.uidOb).then(item=>{
-              this.ob21Form.setItemValue('obfields',{pchange:this.onChange,data:item.data.row[0].fields});
-            })
-          }else{
-            this.$axios.get('/api/rent21/building/'+this.item.building.UID).then(item=>{
-              if(this.addressForm){
-                this.addressForm.unload()
-              }
-              this.addressForm = new dhtmlXForm(this.$refs.address,[
-                {
-                  type: "settings",
-                  position: "label-left",
-                }, {
-                  type: "block",
-                  name: "blGL",
-                  //inputWidth: 120,
-                  offsetLeft: 10,
-                  list: [{
-                    type: "settings",
-                    position: "label-left",
-                    //inputWidth: 120,
-                    labelWidth: 80,
-                  }, {
-                    type: 'hidden',
-                    name: 'field_UID'
-                  }, {
-                    type: 'input',
-                    position: "label-left",
-                    label: "Наименование",
-                    value: "",
-                    inputWidth: 380,
-                    name: "field_NAME",
-                    required: true,
+            this.edit =  ''
+            this.$store.dispatch('main/globalMessage',null)
+            disableForms(this.disableItems, false)
+            this.$store.dispatch('main/save_component', null)
 
-                  }, {
-                    type: "MultyRem",
-                    name: "MultyRem",
-                    label: "Комментарий",
-                    inputWidth: 340,
-                    className: "BuildMultyRem"
-                  }, {
-                    type: "block",
-                    //name: 'firstBl',
-                    blockOffset: 0,
-                    inputWidth: 450,
-                    list: [{
-                      type: "block",
-                      inputWidth: 240,
-                      blockOffset: 0,
-                      list: [{
-                        type: 'combo',
-                        position: "label-left",
-                        label: "Проверен",
-                        value: 0,
-                        inputWidth: 140,
-                        labelWidth: 80,
-                        hidden: true,
-                        name: "field_STATUS",
-                        options: [{
-                          text: "Проверен",
-                          value: "Проверен"
-                        }, {
-                          text: "Непроверен",
-                          value: "Непроверен",
-                          selected: true
-                        }, ]
-                      }, {
-                        type: 'input',
-                        position: "label-left",
-                        label: "Этажность",
-                        required: true,
-                        value: "",
-                        inputWidth: 20,
-                        labelWidth: 80,
-                        name: "field_ETAGALL",
-                      }, {
-                        type: 'input',
-                        position: "label-left",
-                        label: "Урл",
-                        value: "",
-                        hidden: true,
-                        inputWidth: 160,
-                        labelWidth: 80,
-                        name: "field_URL",
-                      }]
-                    }, {
-                      type: 'newcolumn',
-                      offset: 10
-                    }, {
-                      type: "container",
-                      name: "firstphoto",
-                      label: "",
-                      inputWidth: 180,
-                      inputHeight: 120
-                    }
-                    ]
-
-                  }, {
-                    type: 'MultyCian',
-                    position: "label-left",
-                    label: "Тип здания",
-                    value: 0,
-                    labelWidth: 90,
-                    // inputWidth: 440,
-                    multi: false,
-                    required: true,
-
-                    name: "field_TIPZD",
-                    options: arType["Офис"]
-                  }, {
-                    type: 'MultyCian',
-                    position: "label-left",
-                    label: "Класс здания",
-                    // inputWidth: 440,
-                    labelWidth: 80,
-                    multi: false,
-                    name: "field_KLASS",
-                    required: true,
-                    options: [{
-                      text: "A",
-                      value: "a"
-                    }, {
-                      text: "A+",
-                      value: "aPlus"
-                    }, {
-                      text: "B",
-                      value: "b"
-                    }, {
-                      text: "B-",
-                      value: "bMinus"
-                    }, {
-                      text: "B+",
-                      value: "bPlus"
-                    }, {
-                      text: "C",
-                      value: "c"
-                    }, {
-                      text: "Нет",
-                      value: null,
-                      selected: true
-                    }]
-                  }, {
-                    type: "checkbox",
-                    label: "Комм. фонд",
-                    position: "label-left",
-                    name: "field_FONDKOM",
-                    checked: false
-                  }, {
-                    type: "checkbox",
-                    label: "жилой. фонд",
-                    position: "label-left",
-                    name: "field_FONDH",
-                    checked: false
-                  }, {
-                    type: "checkbox",
-                    label: "частный фонд",
-                    position: "label-left",
-                    name: "field_FONDZ",
-                    checked: false
-                  }, {
-                    type: "block",
-                    name: 'firstBl',
-                  }, {
-                    type: "adRes21",
-                    label: "Адрес здания",
-                    offsetLeft: 0,
-                    offset: 0,
-                    inputLeft: 0,
-                    pform: this.onChange,
-                    name: 'adres'
-                  }, {
-                    type: 'input',
-                    position: "label-left",
-                    label: "Год постройки",
-                    value: "",
-                    numberFormat: "0000",
-                    labelWidth: 140,
-                    inputWidth: 35,
-                    name: "field_GODP",
-
-                  }, {
-                    type: 'input',
-                    position: "label-left",
-                    label: "Год реконструкции",
-                    value: "",
-                    numberFormat: "0000",
-                    labelWidth: 140,
-                    inputWidth: 35,
-                    name: "field_GODR",
-                  }, {
-                    type: 'input',
-                    position: "label-left",
-                    label: "Площадь здания",
-                    value: "",
-                    labelWidth: 140,
-                    inputWidth: 60,
-                    name: "field_PLALL",
-
-                  }, {
-                    type: 'input',
-                    position: "label-left",
-                    label: "Площадь участка",
-                    value: "",
-                    labelWidth: 140,
-                    inputWidth: 60,
-                    name: "field_PLALLZ",
-
-                  }, {
-                    type: 'calendar',
-                    position: "label-left",
-                    label: "Год договора<br>аренды участка",
-                    value: "",
-                    labelWidth: 140,
-                    inputWidth: 120,
-                    name: "field_GODAR",
-                  }, {
-                    type: 'MultyCian',
-                    position: "label-left",
-                    label: "Парковочный<br>коэффициент",
-                    // inputWidth: 440,
-                    labelWidth: 140,
-                    multi: false,
-                    //offsetLeft: 24,
-                    name: "field_PARKKOEF",
-                    options: [{
-                      text: "Не ограничено",
-                      value: "Не ограничено"
-                    }, {
-                      text: "Неизвестно",
-                      value: "Неизвестно",
-                      selected: true
-
-                    }, {
-                      text: "1:50",
-                      value: "1:50"
-                    }, {
-                      text: "1:100",
-                      value: "1:100"
-                    }, {
-                      text: "1:150",
-                      value: "1:150"
-                    }, {
-                      text: "1:200",
-                      value: "1:200"
-                    }]
-                  },
-
-                    {
-                      type: "MultyCian",
-                      name: "field_VentilationType",
-                      label: 'Вентиляция:',
-                      // inputWidth: 440,
-                      labelWidth: 90,
-                      multi: false,
-                      options: [{
-                        text: "Приточная",
-                        value: "forced"
-                      }, {
-                        text: "Естественная",
-                        value: "natural"
-                      }, {
-                        text: "Нет",
-                        value: "no"
-                      }]
-                    }, {
-                      type: "MultyCian",
-                      name: "field_ConditioningType",
-                      label: 'Кондиционирование:',
-                      // inputWidth: 440,
-                      labelWidth: 90,
-                      multi: false,
-                      options: [{
-                        text: "Центральное",
-                        value: "central"
-                      }, {
-                        text: "Местное",
-                        value: "local"
-                      }, {
-                        text: "Нет",
-                        value: "no"
-                      }]
-                    }, {
-                      type: "MultyCian",
-                      name: "field_ExtinguishingSystemType",
-                      label: 'Система<br>пожаротушения:',
-                      // inputWidth: 440,
-                      labelWidth: 90,
-                      multi: false,
-                      options: [{
-                        text: "Сигнализация",
-                        value: "alarm"
-                      }, {
-                        text: "Газовая",
-                        value: "gas"
-                      }, {
-                        text: "Гидрантная",
-                        value: "hydrant"
-                      }, {
-                        text: "Нет",
-                        value: "no"
-                      }, {
-                        text: "П��рошковая",
-                        value: "powder"
-                      }, {
-                        text: "Спринклерная",
-                        value: "sprinkler"
-                      }]
-                    }, {
-                      type: "MultyCian",
-                      name: "field_StatusType",
-                      label: 'Категория:',
-                      // inputWidth: 440,
-                      labelWidth: 90,
-                      multi: false,
-                      options: [{
-                        text: "Действующее",
-                        value: "operational"
-                      }, {
-                        text: "Проект",
-                        value: "project"
-                      }, {
-                        text: "Строящееся",
-                        value: "underConstruction"
-                      }]
-                    }, {
-                      type: "MultyCian",
-                      name: "field_AccessType",
-                      label: 'Вход:',
-                      // inputWidth: 440,
-                      labelWidth: 90,
-                      multi: false,
-                      options: [{
-                        text: "Свободный",
-                        value: "free"
-                      }, {
-                        text: "Пропускная система",
-                        value: "passSystem"
-                      }]
-                    }, {
-                      type: "MultyCian",
-                      name: "field_Infrastructure",
-                      label: 'Инфраструктура:',
-                      // inputWidth: 440,
-                      inputHeight: 12,
-                      labelWidth: 90,
-                      options: [{
-                        text: "Автомойка",
-                        value: "HasCarWash"
-                      }, {
-                        text: "Буфет",
-                        value: "HasBuffet"
-                      }, {
-                        text: "Автосервис",
-                        value: "HasCarService"
-                      }, {
-                        text: "Столовая",
-                        value: "HasCanteen"
-                      }, {
-                        text: "Центральная рецепция",
-                        value: "HasCentralReception"
-                      }, {
-                        text: "Гостиница",
-                        value: "HasHotel"
-                      }, {
-                        text: "Банкомат",
-                        value: "HasAtm"
-                      }, {
-                        text: "Выставочно-складской комплекс",
-                        value: "HasExhibitionAndWarehouseComplex"
-                      }, {
-                        text: "Аптека",
-                        value: "HasPharmacy"
-                      }, {
-                        text: "Отделение банка",
-                        value: "HasBankDepartment"
-                      }, {
-                        text: "Кинотеатр",
-                        value: "HasCinema"
-                      }, {
-                        text: "Кафе",
-                        value: "HasCafe"
-                      }, {
-                        text: "Медицинский центр",
-                        value: "HasMedicalCenter"
-                      }, {
-                        text: "Салон красоты",
-                        value: "HasBeautyShop"
-                      }, {
-                        text: "Фотосалон",
-                        value: "HasStudio"
-                      }, {
-                        text: "Нотариальная контора",
-                        value: "HasNotaryOffice"
-                      }, {
-                        text: "Бассейн",
-                        value: "HasPool"
-                      }, {
-                        text: "Ателье одежды",
-                        value: "HasClothesStudio"
-                      }, {
-                        text: "Складские помещения",
-                        value: "HasWarehouse"
-                      }, {
-                        text: "Парк",
-                        value: "HasPark"
-                      }, {
-                        text: "Ресторан",
-                        value: "HasRestaurant"
-                      }, {
-                        text: "Фитнес-центр",
-                        value: "HasFitnessCentre"
-                      }, {
-                        text: "Супермаркет",
-                        value: "HasSupermarket"
-                      }, {
-                        text: "Минимаркет",
-                        value: "HasMinimarket"
-                      }, {
-                        text: "Торговая зона",
-                        value: "HasShoppingArea"
-                      }, {
-                        text: "Конференц-зал",
-                        value: "HasConferenceRoom"
-                      }]
-                    }
-
-                    , {
-                      type: "block",
-                      className: 'flex',
-                      list: [{
-                        type: "combo",
-                        position: "label-left",
-                        label: "Паркинг наземный",
-                        name: "field_PARKNAZ",
-                        inputWidth: 120,
-                        labelWidth: 140,
-                        options: [{
-                          text: "Стихийный",
-                          value: "Стихийный"
-                        }, {
-                          text: "Нет",
-                          value: "Нет",
-                          selected: true
-
-                        }, {
-                          text: "Охраняемый",
-                          value: "Охраняемый"
-                        }]
-                      }, {
-                        type: "newcolumn"
-                      }, {
-                        type: 'input',
-                        position: "label-left",
-                        label: "Цена",
-                        value: "",
-                        labelWidth: 50,
-                        inputWidth: 40,
-                        name: "field_PARKNAZCENA",
-
-                      }
-
-                      ]
-                    }, {
-                      type: "block",
-                      className: 'flex',
-                      list: [{
-                        type: "combo",
-                        position: "label-left",
-                        label: "Паркинг крытый",
-                        name: "field_PARKKR",
-                        inputWidth: 120,
-                        labelWidth: 140,
-                        options: [{
-                          text: "Нет",
-                          value: "Нет",
-                          selected: true
-
-                        }, {
-                          text: "Подземный",
-                          value: "Подземный"
-                        }, {
-                          text: "Наземный",
-                          value: "Наземный"
-                        }, {
-                          text: "Наземный многоярусный",
-                          value: "Наземный многоярусный"
-                        }, {
-                          text: "Типа бокс",
-                          value: "Типа бокс"
-                        }]
-                      }, {
-                        type: "newcolumn"
-                      }, {
-                        type: 'input',
-                        position: "label-left",
-                        label: "Цена",
-                        value: "",
-                        labelWidth: 50,
-                        inputWidth: 40,
-                        name: "field_PARKKRCENA",
-                      }]
-                    }
-
-
-                  ]
-                }, {
-                  type: "container",
-                  inputHeight: 52
-                }
-              ])
-              this.addressForm.attachEvent("onChange", this.onChange);
-              this.addressForm.setItemValue('adres', item.data.row.address)
-              for (let key in item.data.row.building) {
-                if (this.addressForm.isItem('field_' + key)) {
-                  this.addressForm.setItemValue('field_' + key, item.data.row.building[key]);
-                }
-              }
-              this.edit =  ''
-            })
-
-          }
-          this.edit =  ''
-          this.$store.dispatch('main/globalMessage',null)
-          disableForms(this.disableItems, false)
-          this.$store.dispatch('main/save_component', null)
         }
       }
-
     }
   },
   mounted () {
@@ -3128,7 +3143,7 @@ export default {
 
     },
     getExport(val){
-      if(this.item && this.item.ob21.find(el => el.UID === val).exports){
+      if(this.item && this.item.ob21.find(el => el.UID === val) && this.item.ob21.find(el => el.UID === val).exports){
         const xOb = this.item.ob21.find(el => el.UID === val).exports
         if(!xOb.avito){
           xOb.avito = {
