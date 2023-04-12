@@ -28,7 +28,7 @@
     </div>
     <div class="footer">
       <button type="button" @click="save" class="btn btn-pill btn-primary btn-air-primary btn-sm">Сохранить</button>
-      <button type="button" @click="close" class="btn btn-pill btn-secondary btn-air-secondary btn-sm">Отменить</button>
+      <button type="button" @click="close" class="btn btn-pill btn-secondary btn-air-secondary btn-sm">Закрыть</button>
     </div>
   </div>
 </template>
@@ -550,13 +550,35 @@ export default {
       console.log(name, value,state, this.activeTab,this.value.exportOb[this.activeTab])
     },
     save(){
-      console.log(this.value.exportOb)
+      console.log(this.value.exportOb, this.avitoCh)
+      if(this.avitoCh)
+        this.value.exportOb.avito.Publ = '1'
+      else
+        this.value.exportOb.avito.Publ = '0'
+      if(this.cianCh)
+        this.value.exportOb.cian.Publ = '1'
+      else
+        this.value.exportOb.cian.Publ = '0'
+      if(this.cian1Ch)
+        this.value.exportOb.cian1.Publ = '1'
+      else
+        this.value.exportOb.cian1.Publ = '0'
+      if(this.rent21Ch)
+        this.value.exportOb.rent21.Publ = '1'
+      else
+        this.value.exportOb.rent21.Publ = '0'
+      if(this.YandexCh)
+        this.value.exportOb.Yandex.Publ = '1'
+      else
+        this.value.exportOb.Yandex.Publ = '0'
+
       const ob ={
         export:{
           uid: this.combofieldp,
           value: this.value.exportOb
         }
       }
+
       this.$axios.put('/api/rent21/ob',ob).then(item=>{
         console.log(item)
       })
@@ -575,6 +597,7 @@ export default {
         field: null,
         spr: null
       })
+
     }
   }
 }
