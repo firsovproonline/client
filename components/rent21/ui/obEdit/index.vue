@@ -182,7 +182,8 @@ export default {
     uidOb: '',
     edit: '',
     floors: [],
-    owners: []
+    owners: [],
+    addOb21: null
   }),
   computed:{
     activeExport(){
@@ -226,6 +227,9 @@ export default {
         }
       }
     },
+    editOwner(){
+      return this.$store.getters['main/item']
+    },
     activeOwner(){
       if(this.item.ob21&&this.item.ob21.find && this.uidOb != ''
         && this.item.ob21.find(el => el.UID === this.uidOb)){
@@ -261,20 +265,55 @@ export default {
           case 'addOb21':
             console.log('Добавление помещения')
             this.edit = 'ob21'
-            let ob21 = {
-              ARHIV: '0',
-              ETAG: 1,
-              OPP: 'Аренда',
-              TIP: 'Офис',
-              exports: {}
+            const uid = this.$api.generateUID()
+            this.addOb21 = { fields: {
+                UID: uid,
+                ARHIV: '0',
+                ETAG: 1,
+                OPP: 'Аренда',
+                TIP: 'Офис',
+                SOBST: this.editOwner.UID
+              },
+              exports: {
+                avito:{
+                  Publ: 0,
+                  UID: uid,
+                  PHOTO: []
+                },
+                cian:{
+                  Publ: 0,
+                  UID: uid,
+                  PHOTO: []
+                },
+                cian1:{
+                  Publ: 0,
+                  UID: uid,
+                  PHOTO: []
+                },
+                rent21:{
+                  Publ: 0,
+                  UID: uid,
+                  PHOTO: []
+                },
+                Yandex:{
+                  Publ: 0,
+                  UID: uid,
+                  PHOTO: []
+                }
+              },
+              build: this.item.building.UID,
+              owner: this.editOwner.UID
             }
-            this.ob21Form.setItemValue('obfields',{pchange:this.onChange,data:ob21});
+            this.ob21Form.setItemValue('obfields',{pchange:this.onChange,data:this.addOb21.fields});
 
             break
           case 'save':
             const ob = {}
             if(this.edit === 'ob21'){
-              ob.ob21 = this.item.ob21[this.item.ob21.findIndex(el => el.UID === this.uidOb)]
+              if(this.addOb21)
+                ob.ob21 = this.addOb21
+              else
+                ob.ob21 = this.item.ob21[this.item.ob21.findIndex(el => el.UID === this.uidOb)]
             }else{
               ob.address = this.item.address
               ob.building = this.item.building
@@ -287,6 +326,7 @@ export default {
                 this.$axios.get('/api/rent21/ob/'+this.uidOb).then(item=>{
                   this.ob21Form.setItemValue('obfields',{pchange:this.onChange,data:item.data.row[0].fields});
                   this.edit =  ''
+                  this.addOb21 = null
                 })
               }else{
                 this.$axios.get('/api/rent21/building/'+this.item.building.UID).then(item=>{
@@ -812,6 +852,7 @@ export default {
             if(this.edit === 'ob21'){
               this.$axios.get('/api/rent21/ob/'+this.uidOb).then(item=>{
                 this.ob21Form.setItemValue('obfields',{pchange:this.onChange,data:item.data.row[0].fields});
+                this.addOb21 = null
               })
             }else{
               this.$axios.get('/api/rent21/building/'+this.item.building.UID).then(item=>{
@@ -3283,7 +3324,10 @@ export default {
           let ob = null
           ob = this.ob21Form.getFormData().obfields
           delete ob.form
-          this.item.ob21[this.item.ob21.findIndex(el => el.UID === this.uidOb)] = ob
+            if(this.addOb21)
+              this.addOb21.fields = ob
+            else
+              this.item.ob21[this.item.ob21.findIndex(el => el.UID === this.uidOb)] = ob
           this.$store.dispatch('main/save_component', () => import('@/components/rent21/ui/r21save'))
           break
         case 'address':
