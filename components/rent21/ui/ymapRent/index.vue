@@ -1,6 +1,11 @@
 <template>
-  <div ref="map" class="main">
-    <YmapFind ref="YmapFind" />
+  <div>
+    <div v-show="!newAddress" ref="map" class="main">
+      <YmapFind ref="YmapFind" />
+    </div>
+    <div v-show="newAddress">
+      Новое здание
+    </div>
   </div>
 </template>
 
@@ -12,12 +17,32 @@ export default {
   components: { YmapFind },
   data: () => ({
     myMap: {},
-    newCord: []
+    newCord: [],
+    newAddress: null
   }),
   props:{
     Mapready: null
   },
-
+  computed:{
+    globalMessage(){
+      return this.$store.getters['main/globalMessage'];
+    }
+  },
+  watch:{
+    globalMessage(val){
+      if(val){
+        console.log(val)
+        this.$store.dispatch('main/globalMessage',null)
+        this.$store.dispatch('main/save_component', null)
+        this.newAddress = null
+      }
+    },
+    newAddress(val){
+      if(val){
+        this.$store.dispatch('main/save_component', () => import('@/components/rent21/ui/r21save'))
+      }
+    }
+  },
   mounted() {
     this.resize();
     window.ymaps.ready(()=> {
@@ -50,6 +75,9 @@ export default {
                   expire: 0
                 });
               }else{
+                this.newAddress = {
+                  address : outOb
+                }
                 console.log(item.data.row[0].length)
               }
             })
