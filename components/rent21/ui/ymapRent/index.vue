@@ -36,11 +36,19 @@ export default {
             outOb[item.kind] = item.name
           })
           if(!outOb.house){
-            window.alert('Вы не выбрали на карте здание')
+            window.dhtmlx.message({
+              type: "error",
+              text: "Вы не выбрали на карте здание",
+              expire: 0
+            });
           }else{
             this.$axios.post('/api/rent21/building/find',outOb).then(item=>{
               if(item.data.row[0].length !== 0){
-                window.alert('На данном адресе есть уже записи')
+                window.dhtmlx.message({
+                  type: "error",
+                  text: "На данном адресе есть уже записи",
+                  expire: 0
+                });
               }else{
                 console.log(item.data.row[0].length)
               }
