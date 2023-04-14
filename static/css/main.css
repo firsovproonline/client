@@ -1,3 +1,21 @@
+.dropdowny {
+  position: absolute;
+}
+.dropdown-menu {
+  display: block;
+
+}
+
+.dropdown-menu>li>a {
+  display: block;
+  padding: 3px 20px;
+  clear: both;
+  font-weight: normal;
+  line-height: 20px;
+  color: #333;
+  white-space: nowrap;
+}
+
 .page-wrapper .page-main-header111 {
   background: -webkit-linear-gradient(#e2efff, #d3e7ff);
 }

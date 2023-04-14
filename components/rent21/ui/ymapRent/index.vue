@@ -11,7 +11,8 @@ export default {
   name: "ymapRent",
   components: { YmapFind },
   data: () => ({
-    myMap: {}
+    myMap: {},
+    newCord: []
   }),
   props:{
     Mapready: null
@@ -25,6 +26,31 @@ export default {
         zoom: 13,
         // controls: []
       });
+      this.myMap.events.add('contextmenu',  (e)=> {
+        this.newCord = e.get('coords')
+      });
+      let myContextMenu = new ContextMenu(this.myMap,(e)=>{
+        const myGeocoder = window.ymaps.geocode(this.newCord).then((res)=>{
+          const outOb = {}
+          res.geoObjects.get(0).properties.get('metaDataProperty').GeocoderMetaData.Address.Components.forEach(item=>{
+            outOb[item.kind] = item.name
+          })
+          if(!outOb.house){
+            window.alert('Вы не выбрали на карте здание')
+          }else{
+            this.$axios.post('/api/rent21/building/find',outOb).then(item=>{
+              if(item.data.row[0].length !== 0){
+                window.alert('На данном адресе есть уже записи')
+              }else{
+                console.log(item.data.row[0].length)
+              }
+            })
+          }
+        })
+      });
+
+
+
       this.myMap.controls.getContainer().appendChild(this.$refs.YmapFind.$el)
       if(this.Mapready)this.Mapready(this.myMap)
       this.$axios.post('/api/rent21/map').then(items=>{
