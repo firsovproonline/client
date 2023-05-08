@@ -1,5 +1,5 @@
 <template>
-  <div class="ownerList">
+  <div class="ownerList formWidth" style="border-right: 1px solid">
     <modal
       v-show="flagModal"
       :show="flagModal"
@@ -32,8 +32,16 @@
         </div>
       </template>
     </modal>
+    <div v-if="edit === false" class="modalDivLocal formWidth" ></div>
+    <div style="display: flex;border-bottom: 1px solid #ffffff;" class="formWidth">
+      <div style="padding: 0px;padding-bottom: 0px;padding-left:8px;flex: 1 auto">Собственики</div>
+      <div style="cursor: pointer;padding-right: 12px" title="Новый собственник" @click="addOwner">
+        <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-copy"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+      </div>
 
-    <div class="main" v-for="(item,key) in items" :key="key">
+    </div>
+    <div ref="main" class="overflow" style="padding-top: 8px">
+      <div class="main" v-for="(item,key) in items" :key="key">
       <div style="flex: auto;">
         <div class="labelDiv">
           <div class="label">Имя</div>
@@ -80,6 +88,7 @@
       </div>
 
     </div>
+    </div>
   </div>
 </template>
 
@@ -95,14 +104,49 @@ export default {
     flagModal: false,
     titleModal: 'Собственик',
     form: null,
-    item: {}
+    item: {},
+    edit: true
   }),
+  computed:{
+    globalMessage(){
+      return this.$store.getters['main/globalMessage'];
+    },
+    innerWidth(){
+      return window.innerWidth
+    }
+  },
   watch:{
+    globalMessage(val){
+      switch (val) {
+        case 'ownersHide':
+        case 'saveItem|address':
+          this.edit = false
+          break
+        case 'ownersShow':
+          this.edit = true
+          break
+      }
+    },
     items(val){
-      console.log('owner', val)
+
     }
   },
   methods:{
+    addOwner(){
+      const UID = this.$api.generateUID();
+      this.items.push({
+        EMAIL: '',
+        KOMIS: 50,
+        KOMISREM: '',
+        KOMISREMSALE: '',
+        KOMISSALE: '',
+        SITE: '',
+        NAME: '',
+        UID: UID,
+        contacts: []
+      })
+      this.showBig(this.items.findIndex(item => item.UID == UID))
+    },
     addOb(item){
       this.$store.dispatch('main/setitem',item)
       this.$store.dispatch('main/globalMessage','addOb21')
@@ -134,5 +178,44 @@ export default {
         width: 70px;
       }
     }
+  }
+
+  .mainDiv{
+    border-right: 1px solid;
+  }
+
+  .formWidth{
+    min-width: 310px;
+    max-width: 310px;
+
+  }
+
+  .overflow{
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  .overflow::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  .overflow::-webkit-scrollbar-track {
+    -webkit-box-shadow: 5px 5px 5px -5px rgba(34, 60, 80, 0.2) inset;
+    background-color: #f9f9fd;
+  }
+
+  .overflow::-webkit-scrollbar-thumb {
+    background-color: #356184;
+    background-image: -webkit-gradient(linear, 0 0, 0 100%,
+      color-stop(.5, rgba(255, 255, 255, .25)),
+      color-stop(.5, transparent), to(transparent));
+  }
+  .modalDivLocal {
+    position: absolute;
+    width: inherit;
+    opacity: 0.3;
+    z-index: 4000;
+    background-color: black;
+    height: -webkit-fill-available;
   }
 </style>

@@ -915,23 +915,23 @@ dhtmlXForm.prototype.items.adRes21 = {
         $('.bAddrEdit').data('form', item.form21);
         $('.bAddrEdit').click(function() {
             $(this).data('form').enableItem('mapBlock');
+            if(!window['editWin']) window['editWin'] = {}
             var win = window['editWin'];
+            if(!win.saveAr) win.saveAr = [];
             if (win.saveAr.indexOf('formBuild') == -1)
                 win.saveAr.push('formBuild');
-            win.glBut.show();
-            if (win.flagNew) {
-                disableForms([win.dhxTabbar.layout.cells('b').cell, win.dhxTabbar.layout.cells('c').cell, win.dhxTabbar.layout.cells('d').cell], true);
-            } else {
-                disableForms([win.dhxTabbar.layout.cells('c').cell, win.dhxTabbar.layout.cells('d').cell], true);
+            if(win.glBut) win.glBut.show();
 
-            }
+/*
             var grid = win.dhxTabbar.layout.cells('b').myGrid;
             grid.forEachRow(function(id) {
                 var cellObj = grid.cellById(id, 2);
                 var form = $(cellObj.cell).data('form21But');
                 form.disableItem('add');
             });
-
+*/
+          //let event = new Event('Change');
+          $(this).data('form').ponChange('address',1,1)
             flagEdit = true;
 
             return false;
@@ -1049,6 +1049,9 @@ dhtmlXForm.prototype.items.adRes21 = {
     disable: function(item) {
         item.lastChild.style.color = "gray";
         item._enabled = false;
+        item.form21.hideItem('YADRES')
+        item.form21.hideItem('metroR')
+        item.form21.hideItem('metroUD')
     },
 
     setValue: function(item, ob) {

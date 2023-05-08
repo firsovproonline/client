@@ -131,6 +131,7 @@ export default {
   .main{
     display: flex;
     align-items:center;
+    padding: 0px;
     padding-left: 6px;
   }
   i{

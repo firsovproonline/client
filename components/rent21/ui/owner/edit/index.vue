@@ -40,9 +40,6 @@ export default {
   props:{
     item: {}
   },
-  mounted () {
-    console.log('owner edit',this.item)
-  }
 }
 </script>
 

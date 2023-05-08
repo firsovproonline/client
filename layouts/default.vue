@@ -214,7 +214,7 @@ export default {
       this.$store.commit('main/setusers', item.data);
     });
     this.$axios.get('/api/test').then((item) => {
-      console.log(item.data)
+      //console.log(item.data)
     });
 
     this.$store.dispatch('main/load');

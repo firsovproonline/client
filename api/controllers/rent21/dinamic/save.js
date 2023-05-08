@@ -1967,6 +1967,7 @@ if(req.user && (req.user.isAdmin || req.user.isRieltor) && req.user.DOSTUP.index
         break
       case 'address':
         const address = req.body[key]
+        //console.error(req.body[key])
         promiseAR.push(new Promise(function (resolve, reject) {
           db.rent21address.update(
             {
@@ -1979,10 +1980,17 @@ if(req.user && (req.user.isAdmin || req.user.isRieltor) && req.user.DOSTUP.index
             }
           ).then(item => {
             if (item[0] == 0) {
-              reject({ 'error': 405 })
+              db.rent21address.create(
+                {
+                  uid: req.body[key].UID,
+                  fields: req.body[key]
+                }
+              ).then(item=>{
+                resolve({ 'error': 405 })
+              })
             } else {
               const out = []
-              if(1==1){
+              if(1==2){
                 for (const [title, value] of Object.entries(address)) {
                   if(title !=='METRO'){
                     out.push([
@@ -2055,16 +2063,30 @@ if(req.user && (req.user.isAdmin || req.user.isRieltor) && req.user.DOSTUP.index
         const building = req.body[key]
         promiseAR.push(new Promise(function (resolve, reject) {
           db.rent21building.update(
-            { fields: req.body[key] },
+            {
+              fields: building,
+              address: building.address,
+              owners: building.owners
+            },
             {
               where: {
-                uid: req.body[key].UID
+                uid: building.UID
               },
             }
           ).then(item => {
             if (item[0] == 0) {
-              reject({ 'error': 405 })
+              db.rent21building.create(
+                {
+                  uid: building.UID,
+                  fields: building,
+                  address: building.address,
+                  owners: building.owners
+                }
+              ).then(item=>{
+                resolve({'body': req.body })
+              })
             } else {
+              /*
               const out = []
               for (const [title, value] of Object.entries(building)) {
                 out.push([
@@ -2091,6 +2113,8 @@ if(req.user && (req.user.isAdmin || req.user.isRieltor) && req.user.DOSTUP.index
                   resolve({ 'body': req.body })
                 })
               })
+
+               */
             }
           })
         }));
