@@ -54,11 +54,16 @@ export default {
   },
   watch:{
     globalMessage(val){
-      if(val === 'floorsHide'){
-        this.edit = false
-      }
-      if(val === 'floorsShow'){
-        this.edit = true
+      switch (val) {
+        case 'floorsHide':
+        case 'editItem|owners':
+          this.edit = false
+          break
+        case 'floorsShow':
+        case 'reload':
+          this.edit = true
+          break
+
       }
     },
     uidOb(val){

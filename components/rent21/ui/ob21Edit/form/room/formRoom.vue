@@ -42,9 +42,11 @@ export default {
       switch (val) {
         case 'roomHide':
         case 'saveItem|address':
+        case 'editItem|owners':
           this.edit = false
           break
         case 'roomShow':
+        case 'reload':
           this.edit = true
           break
       }

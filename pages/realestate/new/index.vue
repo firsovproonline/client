@@ -49,16 +49,12 @@ export default {
             this.item.owners.forEach(item=>{
               ob.building.owners.push(item.UID)
             })
-
-            console.log('======',ob)
             this.$axios.put('/api/rent21/ob',ob).then(item=>{
-              console.log(item)
+              window.location.href = '/realestate/'+ob.building.UID
             })
             break
-
         }
         this.$store.dispatch('main/globalMessage','')
-        console.log(this.saveItem)
       }
     },
     item(val){
@@ -88,6 +84,7 @@ export default {
         LAT: this.$route.query.lat,
         LNG: this.$route.query.lng,
         METRO: [],
+        UID: this.$api.generateUID()
       },
       building: {
         UID: this.$api.generateUID()

@@ -5,7 +5,7 @@
       :show="flagModal"
       :scrollable="true"
       body-id="modalBody" header-id="modalHeader"
-      @close="showBig"
+      @close="cancelItem"
 
     >
       <template #header>
@@ -18,14 +18,14 @@
         <div style="display: flex;text-align: center;align-items: flex-end;justify-content: flex-end;">
           <div
             class="buttonDiv"
-            @click="flagModal = !flagModal"
+            @click="saveItem"
           >
             Сохранить
           </div>
 
           <div
             class="buttonDiv"
-            @click="flagModal = !flagModal"
+            @click="cancelItem"
           >
             Закрыть
           </div>
@@ -132,6 +132,19 @@ export default {
     }
   },
   methods:{
+    saveItem(){
+      this.$axios.put('/api/rent21/ob',{owner:this.item}).then(items=>{
+        this.flagModal = !this.flagModal
+        this.$store.dispatch('main/globalMessage','saveOwners')
+        console.log(items)
+      })
+//      console.log(this.item)
+    },
+    cancelItem(){
+      console.log('cancel')
+      this.$store.dispatch('main/globalMessage','reload')
+      this.flagModal = !this.flagModal
+    },
     addOwner(){
       const UID = this.$api.generateUID();
       this.items.push({
@@ -146,6 +159,8 @@ export default {
         contacts: []
       })
       this.showBig(this.items.findIndex(item => item.UID == UID))
+      this.$store.dispatch('main/globalMessage','editItem|owners')
+
     },
     addOb(item){
       this.$store.dispatch('main/setitem',item)

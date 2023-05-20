@@ -40,18 +40,21 @@ export default {
   },
   watch:{
     globalMessage(val){
-      console.log('globalMessage', val)
-      if(val === 'addressPhotoHide'){
-        this.showPhoto = false
-      }
-      if(val === 'addressPhotoShow'){
-        this.showPhoto = true
-      }
-      if(val === 'addressHide'){
-        this.edit = false
-      }
-      if(val === 'addressShow'){
-        this.edit = true
+      switch (val) {
+        case 'addressPhotoHide':
+          this.showPhoto = false
+          break
+        case 'addressPhotoShow':
+          this.showPhoto = true
+          break
+        case 'addressHide':
+        case 'editItem|owners':
+          this.edit = false
+          break
+        case 'addressShow':
+        case 'reload':
+          this.edit = true
+          break
       }
     },
     item(val){

@@ -17,7 +17,42 @@ export default {
     stepEdit: 0,
     saveItem: ''
   }),
+  computed: {
+    globalMessage () {
+      return this.$store.getters['main/globalMessage'];
+    },
+  },
   watch:{
+    globalMessage(val){
+      switch (val) {
+        case 'reload':
+          console.log('reload')
+          this.$axios.get('/api/rent21/building/'+this.$route.params.id).then(item=> {
+            if (item.data.error && item.data.error === 401) {
+              window.alert('Вы не авторизованы')
+              return
+            }
+            this.item = item.data.row
+            if(this.item.owners.length === 0){
+              this.stepEdit = 2;
+            }
+          })
+          break
+        case 'saveOwners':
+          // сохраняем uid собствениеков в поле здания
+          const ar = []
+          this.item.owners.forEach(item=>{
+            ar.push(item.UID)
+          })
+          console.log('saveOwners',ar)
+          this.$axios.put('/api/rent21/ob',{owners:{owners:ar, buildUID:this.item.building.UID}}).then(item=>{
+            console.log('=====',item)
+            this.$store.dispatch('main/globalMessage','reload')
+          })
+          break
+      }
+    },
+
     stepEdit(val){
       console.log('stepEdit', val)
       switch (val) {

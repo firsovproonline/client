@@ -304,8 +304,9 @@ var timerIdCian = setInterval(function() {
               }
               Promise.all(promiseAR).then(
                 result => {
+                  fs.writeFileSync(__dirname + '/config/avitoreport.text', JSON.stringify(result));
                   for (var i = 0; i < result.length; i++) {
-                    if(result[i].res.items.length > 0){
+                    if(result[i].res && result[i].res.items && result[i].res.items.length > 0){
                       avitoItens = avitoItens.concat(result[i].res.items)
                     }
                   }

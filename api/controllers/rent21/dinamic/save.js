@@ -2119,12 +2119,59 @@ if(req.user && (req.user.isAdmin || req.user.isRieltor) && req.user.DOSTUP.index
           })
         }));
         break
+      case 'owner':
+        const owner = req.body[key]
+        promiseAR.push(new Promise(function (resolve, reject){
+          db.rent21owner.update(
+            {
+              fields: owner,
+              contacts: owner.contacts
+            },
+            {
+              where: {
+                uid: owner.UID
+              },
+            }
+          ).then(item=>{
+            if (item[0] == 0) {
+              db.rent21owner.create(
+                {
+                  uid: owner.UID,
+                  fields: owner,
+                  contacts: owner.contacts
+                }
+              ).then(item=>{
+                resolve({'body': req.body })
+              })
+            }else{
+              resolve({'body': req.body })
+            }
+          })
+        }))
+        break
+      case 'owners':
+        const owners = req.body[key]
+        promiseAR.push(new Promise(function (resolve, reject){
+          db.rent21building.update(
+            {
+              owners: owners.owners
+            },
+            {
+              where: {
+                uid: owners.buildUID
+              },
+            }
+          ).then(item=>{
+            resolve({ status: req.body })
+          })
+        }))
+        break
       default:
     }
   }
   Promise.all(promiseAR).then(
     result => {
-      res.json({ status: true })
+      res.json({ status: true,body: result })
     },
     error => res.json({ status: false })
   )

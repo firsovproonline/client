@@ -51,6 +51,7 @@ export default {
 
     },
     globalMessage(val){
+      console.log('ob21Edit|globalMessage',val)
       switch (val.split('|')[0]) {
         case 'selectRoom':
           this.room = this.item.ob21.find(el => el.UID === val.split('|')[1])
