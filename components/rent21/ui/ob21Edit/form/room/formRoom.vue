@@ -41,8 +41,6 @@ export default {
     globalMessage(val){
       switch (val) {
         case 'roomHide':
-        case 'saveItem|address':
-        case 'editItem|owners':
           this.edit = false
           break
         case 'roomShow':
@@ -71,6 +69,22 @@ export default {
       }
     },
     onChange(name, value, state){
+      let ob = null
+      ob = this.form.getFormData().obfields
+      console.log(ob)
+//      delete ob.form
+//      if(this.addOb21)
+//        this.addOb21.fields = ob
+//      else
+//        this.item.ob21[this.item.ob21.findIndex(el => el.UID === this.uidOb)] = ob
+      this.$store.dispatch('main/save_component', () => import('@/components/rent21/ui/r21save')).then(()=>{
+        this.$nextTick(()=>{
+          this.$store.dispatch('main/globalMessage',null)
+          this.$nextTick(()=>{
+            this.$store.dispatch('main/globalMessage','saveItem|ob21|'+ob.UID)
+          })
+        })
+      })
 
     }
   },

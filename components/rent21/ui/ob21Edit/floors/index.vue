@@ -54,9 +54,9 @@ export default {
   },
   watch:{
     globalMessage(val){
-      switch (val) {
+      if(!val) return
+      switch (val.split('|')[0]) {
         case 'floorsHide':
-        case 'editItem|owners':
           this.edit = false
           break
         case 'floorsShow':

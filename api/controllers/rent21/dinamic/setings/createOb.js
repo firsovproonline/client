@@ -2296,7 +2296,7 @@ db.rent21ob.sync({ force: true }).then(item =>{
   db.rent21owner.sync({ force: true }).then(item =>{
     db.rent21address.sync({ force: true }).then(item =>{
       db.rent21building.sync({ force: true }).then(item =>{
-        if(2==1){
+        if(1==1){
           const connection = mysql.createConnection({
             host: db.config.HOST,
             user: db.config.USER,

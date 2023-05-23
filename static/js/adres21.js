@@ -1062,17 +1062,20 @@ dhtmlXForm.prototype.items.adRes21 = {
 
         }
       let f = 0;
-      ob.METRO.forEach(metroitem=>{
-        metroitem.PUID = generateUID();
-        item.addMetro(metroitem)
-        f++
-      })
-        item.glv = [item.form21.getItemValue('LAT'), item.form21.getItemValue('LNG')];
-        if (f < 1) {
+        if(ob){
+          ob.METRO.forEach(metroitem=>{
+            metroitem.PUID = generateUID();
+            item.addMetro(metroitem)
+            f++
+          })
+          item.glv = [item.form21.getItemValue('LAT'), item.form21.getItemValue('LNG')];
+          if (f < 1) {
             item.timerIdSetV = setInterval($.proxy(this.setmap_, item), 300);
 
-        } else {
+          } else {
             item.timerIdSetV = setInterval($.proxy(this.setmap, item), 300);
+          }
+
         }
         //item.form21.map.setCenter([item.form21.getItemValue('LAT'), item.form21.getItemValue('LNG')])
         item._value = ob;

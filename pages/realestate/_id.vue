@@ -24,9 +24,12 @@ export default {
   },
   watch:{
     globalMessage(val){
-      switch (val) {
+      if(!val) return
+      switch (val.split('|')[0]) {
         case 'reload':
-          console.log('reload')
+          this.item = {
+            ob21:[]
+          }
           this.$axios.get('/api/rent21/building/'+this.$route.params.id).then(item=> {
             if (item.data.error && item.data.error === 401) {
               window.alert('Вы не авторизованы')
@@ -34,7 +37,10 @@ export default {
             }
             this.item = item.data.row
             if(this.item.owners.length === 0){
-              this.stepEdit = 2;
+              // this.stepEdit = 2;
+            }
+            if(val.split('|')[1]&&val.split('|')[1]!==''){
+              this.$store.dispatch('main/globalMessage','selectRoom|'+val.split('|')[1])
             }
           })
           break

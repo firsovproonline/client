@@ -14,9 +14,28 @@
 <script>
 export default {
   name: 'r21save',
+  data: () => ({
+    SaveValue: 'save',
+  }),
+  computed:{
+    globalMessage(){
+      return this.$store.getters['main/globalMessage'];
+    }
+  },
+  watch:{
+    globalMessage(val){
+      if(!val) return
+      if(val.indexOf('saveItem')!==-1){
+        if(val.split('|').length===2)
+          this.SaveValue = 'save|'+val.split('|')[1]
+        if(val.split('|').length===3)
+          this.SaveValue = 'save|'+val.split('|')[1]+'|'+val.split('|')[2]
+      }
+    }
+  },
   methods:{
     save(){
-      this.$store.dispatch('main/globalMessage','save')
+      this.$store.dispatch('main/globalMessage',this.SaveValue)
 
     },
     cancel(){

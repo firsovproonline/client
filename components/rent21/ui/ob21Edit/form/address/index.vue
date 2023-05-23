@@ -578,6 +578,7 @@ export default {
   methods:{
     onChange(name, value, state){
       console.log(name, value, state)
+
       if(name ==='address'){
         const db = this.form.getFormData().adres.data
         console.log('address',db)
@@ -595,8 +596,22 @@ export default {
           this.item.building[name] = value
         }
       }
-      this.$store.dispatch('main/save_component', () => import('@/components/rent21/ui/r21save'))
-      this.$store.dispatch('main/globalMessage','saveItem|address')
+      this.$store.dispatch('main/save_component', () => import('@/components/rent21/ui/r21save')).then(()=>{
+        this.$nextTick(()=>{
+          this.$store.dispatch('main/globalMessage','saveItem|address')
+          this.$nextTick(()=>{
+            this.$store.dispatch('main/globalMessage','ownersHide')
+            this.$nextTick(()=>{
+              this.$store.dispatch('main/globalMessage','roomHide')
+              this.$nextTick(()=>{
+                this.$store.dispatch('main/globalMessage','floorsHide')
+              })
+            })
+          })
+        })
+
+      })
+
     },
     resize(){
       if(this.$refs.main){

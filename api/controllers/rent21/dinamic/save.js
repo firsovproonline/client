@@ -1754,7 +1754,7 @@ if(req.user && (req.user.isAdmin || req.user.isRieltor) && req.user.DOSTUP.index
 
   for (var key in req.body) {
     switch (key) {
-      case 'export':
+      case 'export11':
         // console.log('uid',__dirname)
 //        fs.writeFileSync(__dirname+'../../../config/saveEXPORT.json', JSON.stringify(req.body.export.value))
         promiseAR.push(new Promise(function (resolve, reject) {
@@ -1830,140 +1830,229 @@ if(req.user && (req.user.isAdmin || req.user.isRieltor) && req.user.DOSTUP.index
         break;
       case 'ob21':
         const ob21 = req.body[key]
-        if(ob21.owner){
-          promiseAR.push(new Promise(function (resolve, reject){
-            let category = ''
-
-            if (ob21.fields.OPP === '') {
-              ob21.fields.OPP = 'Аренда'
-            }
-            let cian = null
-            if (ob21.fields.OPP === 'Аренда') {
-              if (ob21.fields.TIP === 'Офис') {
-                category = 'officeRent'
-              }
-              if (ob21.fields.TIP === 'Помещение свободного назначения') {
-                category = 'freeAppointmentObjectRent'
-              }
-              if (ob21.fields.TIP === 'Здание') {
-                category = 'buildingRent'
-              }
-              if (ob21.fields.TIP === 'Квартира') {
-                category = 'flatRent'
-              }
-              if (ob21.fields.TIP === 'Торговая площадь') {
-                category = 'shoppingAreaRent'
-              }
-              if (ob21.fields.TIP === 'Склад') {
-                category = 'warehouseRent'
-              }
-              if (ob21.fields.TIP === 'Производство') {
-                category = 'industryRent'
-              }
-              if (ob21.fields.TIP === 'Гараж') {
-                category = 'garageRent'
-              }
-              if (ob21.fields.TIP === 'Дом/дача') {
-                category = 'houseRent'
-              }
-              cian = cianItems.rent[category]
-            }
-            if (ob21.fields.OPP === 'Продажа') {
-              if (ob21.fields.TIP === 'Офис') {
-                category = 'officeSale'
-              }
-              if (ob21.fields.TIP === 'Помещение свободного назначения') {
-                category = 'freeAppointmentObjectSale'
-              }
-              if (ob21.fields.TIP === 'Здание') {
-                category = 'buildingSale'
-              }
-              if (ob21.fields.TIP === 'Квартира') {
-                category = 'flatSale'
-              }
-              if (ob21.fields.TIP === 'Торговая площадь') {
-                category = 'shoppingAreaSale'
-              }
-              if (ob21.fields.TIP === 'Склад') {
-                category = 'warehouseSale'
-              }
-              if (ob21.fields.TIP === 'Квартира новостройка') {
-                category = 'newBuildingFlatSale'
-              }
-              if (ob21.fields.TIP === 'Готовый бизнес') {
-                category = 'businessSale'
-              }
-              if (ob21.fields.TIP === 'Производство') {
-                category = 'industrySale'
-              }
-              if (ob21.fields.TIP === 'Гараж') {
-                category = 'garageSale'
-              }
-              if (ob21.fields.TIP === 'Дом/дача') {
-                category = 'houseSale'
-              }
-            }
-            db.rent21ob.create({
-              uid: ob21.fields.UID,
-              build: ob21.build,
-              fields: ob21.fields,
-              owner: ob21.owner,
-              category: category,
-              cian: cian,
-              exports: ob21.exports
-            }).then(() => {
-              console.log('добавление итема ob21 в здание')
-              resolve({ 'body': req.body })
-            })
-          }))
-        }
-        else
         promiseAR.push(new Promise(function (resolve, reject) {
-          db.rent21ob.update(
-            {
-              fields: req.body[key]
-            },
-            {
-              where: {
-                uid: req.body[key].UID
-              },
+          let category = ''
+          if (ob21.fields.OPP === '') {
+            ob21.fields.OPP = 'Аренда'
+          }
+          let cian = null
+          if (ob21.fields.OPP === 'Аренда') {
+            if (ob21.fields.TIP === 'Офис') {
+              category = 'officeRent'
             }
-          ).then(item => {
-            if (item[0] == 0) {
-              reject({ 'error': 405 })
-            } else {
-              const out = []
-              if(1 === 2){
-                for (const [title, value] of Object.entries(ob21)) {
-                  out.push([
-                    null,
-                    ob21.UID,
-                    'ob21',
-                    title,
-                    value,
-                    'root'
-                  ])
-                }
-                let sql = "delete from fields WHERE `UID` in ('" + ob21.UID + "') AND `TIP` <> 'linc21'";
-                const connection = mysql.createConnection({
-                  host: db.config.HOST,
-                  user: db.config.USER,
-                  password: db.config.PASSWORD,
-                  database: db.config.DB,
-                  debug: false
-                });
-                connection.query(sql, [], function(err, result) {
-                  sql = "INSERT INTO  `fields` (ID,UID,TIP,TITLE,VAL,PUID) VALUES ?";
-                  connection.query(sql, [out], function(err, result) {
-                    fs.writeFileSync(__dirname+'../../../config/saveOB21.json', JSON.stringify(out))
-                    resolve({ 'body': req.body })
-                  })
-                })
-              }
+            if (ob21.fields.TIP === 'Помещение свободного назначения') {
+              category = 'freeAppointmentObjectRent'
+            }
+            if (ob21.fields.TIP === 'Здание') {
+              category = 'buildingRent'
+            }
+            if (ob21.fields.TIP === 'Квартира') {
+              category = 'flatRent'
+            }
+            if (ob21.fields.TIP === 'Торговая площадь') {
+              category = 'shoppingAreaRent'
+            }
+            if (ob21.fields.TIP === 'Склад') {
+              category = 'warehouseRent'
+            }
+            if (ob21.fields.TIP === 'Производство') {
+              category = 'industryRent'
+            }
+            if (ob21.fields.TIP === 'Гараж') {
+              category = 'garageRent'
+            }
+            if (ob21.fields.TIP === 'Дом/дача') {
+              category = 'houseRent'
+            }
+            cian = cianItems.rent[category]
+          }
+          if (ob21.fields.OPP === 'Продажа') {
+            if (ob21.fields.TIP === 'Офис') {
+              category = 'officeSale'
+            }
+            if (ob21.fields.TIP === 'Помещение свободного назначения') {
+              category = 'freeAppointmentObjectSale'
+            }
+            if (ob21.fields.TIP === 'Здание') {
+              category = 'buildingSale'
+            }
+            if (ob21.fields.TIP === 'Квартира') {
+              category = 'flatSale'
+            }
+            if (ob21.fields.TIP === 'Торговая площадь') {
+              category = 'shoppingAreaSale'
+            }
+            if (ob21.fields.TIP === 'Склад') {
+              category = 'warehouseSale'
+            }
+            if (ob21.fields.TIP === 'Квартира новостройка') {
+              category = 'newBuildingFlatSale'
+            }
+            if (ob21.fields.TIP === 'Готовый бизнес') {
+              category = 'businessSale'
+            }
+            if (ob21.fields.TIP === 'Производство') {
+              category = 'industrySale'
+            }
+            if (ob21.fields.TIP === 'Гараж') {
+              category = 'garageSale'
+            }
+            if (ob21.fields.TIP === 'Дом/дача') {
+              category = 'houseSale'
+            }
+          }
+          resolve({ 'body': req.body })
 
-            }
-          })
-        }));
+          /*
+                    db.rent21ob.update(
+                      {
+                        fields: ob21,
+                        exports: ob21.exports
+                      },
+                      {
+                        where: {
+                          uid: req.body[key].UID
+                        },
+                      }
+                    )
+          */
+        }))
+        if(1==3){
+          if(ob21.owner){
+            promiseAR.push(new Promise(function (resolve, reject){
+              let category = ''
+              if (ob21.fields.OPP === '') {
+                ob21.fields.OPP = 'Аренда'
+              }
+              let cian = null
+              if (ob21.fields.OPP === 'Аренда') {
+                if (ob21.fields.TIP === 'Офис') {
+                  category = 'officeRent'
+                }
+                if (ob21.fields.TIP === 'Помещение свободного назначения') {
+                  category = 'freeAppointmentObjectRent'
+                }
+                if (ob21.fields.TIP === 'Здание') {
+                  category = 'buildingRent'
+                }
+                if (ob21.fields.TIP === 'Квартира') {
+                  category = 'flatRent'
+                }
+                if (ob21.fields.TIP === 'Торговая площадь') {
+                  category = 'shoppingAreaRent'
+                }
+                if (ob21.fields.TIP === 'Склад') {
+                  category = 'warehouseRent'
+                }
+                if (ob21.fields.TIP === 'Производство') {
+                  category = 'industryRent'
+                }
+                if (ob21.fields.TIP === 'Гараж') {
+                  category = 'garageRent'
+                }
+                if (ob21.fields.TIP === 'Дом/дача') {
+                  category = 'houseRent'
+                }
+                cian = cianItems.rent[category]
+              }
+              if (ob21.fields.OPP === 'Продажа') {
+                if (ob21.fields.TIP === 'Офис') {
+                  category = 'officeSale'
+                }
+                if (ob21.fields.TIP === 'Помещение свободного назначения') {
+                  category = 'freeAppointmentObjectSale'
+                }
+                if (ob21.fields.TIP === 'Здание') {
+                  category = 'buildingSale'
+                }
+                if (ob21.fields.TIP === 'Квартира') {
+                  category = 'flatSale'
+                }
+                if (ob21.fields.TIP === 'Торговая площадь') {
+                  category = 'shoppingAreaSale'
+                }
+                if (ob21.fields.TIP === 'Склад') {
+                  category = 'warehouseSale'
+                }
+                if (ob21.fields.TIP === 'Квартира новостройка') {
+                  category = 'newBuildingFlatSale'
+                }
+                if (ob21.fields.TIP === 'Готовый бизнес') {
+                  category = 'businessSale'
+                }
+                if (ob21.fields.TIP === 'Производство') {
+                  category = 'industrySale'
+                }
+                if (ob21.fields.TIP === 'Гараж') {
+                  category = 'garageSale'
+                }
+                if (ob21.fields.TIP === 'Дом/дача') {
+                  category = 'houseSale'
+                }
+              }
+              db.rent21ob.create({
+                uid: ob21.fields.UID,
+                build: ob21.build,
+                fields: ob21.fields,
+                owner: ob21.owner,
+                category: category,
+                cian: cian,
+                exports: ob21.exports
+              }).then(() => {
+                console.log('добавление итема ob21 в здание')
+                resolve({ 'body': req.body })
+              })
+            }))
+          }
+          else
+            promiseAR.push(new Promise(function (resolve, reject) {
+              db.rent21ob.update(
+                {
+                  fields: req.body[key]
+                },
+                {
+                  where: {
+                    uid: req.body[key].UID
+                  },
+                }
+              ).then(item => {
+                if (item[0] == 0) {
+                  reject({ 'error': 405 })
+                } else {
+                  const out = []
+                  if(1 === 2){
+                    for (const [title, value] of Object.entries(ob21)) {
+                      out.push([
+                        null,
+                        ob21.UID,
+                        'ob21',
+                        title,
+                        value,
+                        'root'
+                      ])
+                    }
+                    let sql = "delete from fields WHERE `UID` in ('" + ob21.UID + "') AND `TIP` <> 'linc21'";
+                    const connection = mysql.createConnection({
+                      host: db.config.HOST,
+                      user: db.config.USER,
+                      password: db.config.PASSWORD,
+                      database: db.config.DB,
+                      debug: false
+                    });
+                    connection.query(sql, [], function(err, result) {
+                      sql = "INSERT INTO  `fields` (ID,UID,TIP,TITLE,VAL,PUID) VALUES ?";
+                      connection.query(sql, [out], function(err, result) {
+                        fs.writeFileSync(__dirname+'../../../config/saveOB21.json', JSON.stringify(out))
+                        resolve({ 'body': req.body })
+                      })
+                    })
+                  }
+
+                }
+              })
+            }));
+
+        }
         break
       case 'address':
         const address = req.body[key]
@@ -1990,6 +2079,7 @@ if(req.user && (req.user.isAdmin || req.user.isRieltor) && req.user.DOSTUP.index
               })
             } else {
               const out = []
+              resolve({ 'body': req.body })
               if(1==2){
                 for (const [title, value] of Object.entries(address)) {
                   if(title !=='METRO'){
@@ -2065,7 +2155,6 @@ if(req.user && (req.user.isAdmin || req.user.isRieltor) && req.user.DOSTUP.index
           db.rent21building.update(
             {
               fields: building,
-              address: building.address,
               owners: building.owners
             },
             {
@@ -2086,6 +2175,8 @@ if(req.user && (req.user.isAdmin || req.user.isRieltor) && req.user.DOSTUP.index
                 resolve({'body': req.body })
               })
             } else {
+              resolve({ 'body': req.body })
+
               /*
               const out = []
               for (const [title, value] of Object.entries(building)) {

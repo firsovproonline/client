@@ -119,10 +119,11 @@ export default {
     globalMessage(val){
       switch (val) {
         case 'ownersHide':
-        case 'saveItem|address':
+        //case 'saveItem|address':
           this.edit = false
           break
         case 'ownersShow':
+        case 'reload':
           this.edit = true
           break
       }
