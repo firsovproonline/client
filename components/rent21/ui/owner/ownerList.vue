@@ -164,7 +164,7 @@ export default {
 
     },
     addOb(item){
-      this.$store.dispatch('main/setitem',item)
+      // this.$store.dispatch('main/setitem',item)
       this.$store.dispatch('main/globalMessage','addOb21')
     },
     showBig(id){

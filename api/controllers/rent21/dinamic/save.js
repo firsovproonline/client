@@ -1832,90 +1832,94 @@ if(req.user && (req.user.isAdmin || req.user.isRieltor) && req.user.DOSTUP.index
         const ob21 = req.body[key]
         promiseAR.push(new Promise(function (resolve, reject) {
           let category = ''
-          if (ob21.fields.OPP === '') {
-            ob21.fields.OPP = 'Аренда'
+          if (ob21.OPP === '') {
+            ob21.OPP = 'Аренда'
           }
           let cian = null
-          if (ob21.fields.OPP === 'Аренда') {
-            if (ob21.fields.TIP === 'Офис') {
+          if (ob21.OPP === 'Аренда') {
+            if (ob21.TIP === 'Офис') {
               category = 'officeRent'
             }
-            if (ob21.fields.TIP === 'Помещение свободного назначения') {
+            if (ob21.TIP === 'Помещение свободного назначения') {
               category = 'freeAppointmentObjectRent'
             }
-            if (ob21.fields.TIP === 'Здание') {
+            if (ob21.TIP === 'Здание') {
               category = 'buildingRent'
             }
-            if (ob21.fields.TIP === 'Квартира') {
+            if (ob21.TIP === 'Квартира') {
               category = 'flatRent'
             }
-            if (ob21.fields.TIP === 'Торговая площадь') {
+            if (ob21.TIP === 'Торговая площадь') {
               category = 'shoppingAreaRent'
             }
-            if (ob21.fields.TIP === 'Склад') {
+            if (ob21.TIP === 'Склад') {
               category = 'warehouseRent'
             }
-            if (ob21.fields.TIP === 'Производство') {
+            if (ob21.TIP === 'Производство') {
               category = 'industryRent'
             }
-            if (ob21.fields.TIP === 'Гараж') {
+            if (ob21.TIP === 'Гараж') {
               category = 'garageRent'
             }
-            if (ob21.fields.TIP === 'Дом/дача') {
+            if (ob21.TIP === 'Дом/дача') {
               category = 'houseRent'
             }
             cian = cianItems.rent[category]
           }
-          if (ob21.fields.OPP === 'Продажа') {
-            if (ob21.fields.TIP === 'Офис') {
+          if (ob21.OPP === 'Продажа') {
+            if (ob21.TIP === 'Офис') {
               category = 'officeSale'
             }
-            if (ob21.fields.TIP === 'Помещение свободного назначения') {
+            if (ob21.TIP === 'Помещение свободного назначения') {
               category = 'freeAppointmentObjectSale'
             }
-            if (ob21.fields.TIP === 'Здание') {
+            if (ob21.TIP === 'Здание') {
               category = 'buildingSale'
             }
-            if (ob21.fields.TIP === 'Квартира') {
+            if (ob21.TIP === 'Квартира') {
               category = 'flatSale'
             }
-            if (ob21.fields.TIP === 'Торговая площадь') {
+            if (ob21.TIP === 'Торговая площадь') {
               category = 'shoppingAreaSale'
             }
-            if (ob21.fields.TIP === 'Склад') {
+            if (ob21.TIP === 'Склад') {
               category = 'warehouseSale'
             }
-            if (ob21.fields.TIP === 'Квартира новостройка') {
+            if (ob21.TIP === 'Квартира новостройка') {
               category = 'newBuildingFlatSale'
             }
-            if (ob21.fields.TIP === 'Готовый бизнес') {
+            if (ob21.TIP === 'Готовый бизнес') {
               category = 'businessSale'
             }
-            if (ob21.fields.TIP === 'Производство') {
+            if (ob21.TIP === 'Производство') {
               category = 'industrySale'
             }
-            if (ob21.fields.TIP === 'Гараж') {
+            if (ob21.TIP === 'Гараж') {
               category = 'garageSale'
             }
-            if (ob21.fields.TIP === 'Дом/дача') {
+            if (ob21.TIP === 'Дом/дача') {
               category = 'houseSale'
             }
           }
-          resolve({ 'body': req.body })
-
-          /*
-                    db.rent21ob.update(
-                      {
-                        fields: ob21,
-                        exports: ob21.exports
-                      },
-                      {
-                        where: {
-                          uid: req.body[key].UID
-                        },
-                      }
-                    )
-          */
+          db.rent21ob.update(
+          {
+            fields: ob21,
+            exports: ob21.exports,
+            build: ob21.buildingUID,
+            category: category,
+            owner: ob21.SOBST
+          },
+          {
+            where: {
+              uid: ob21.UID
+            },
+          }).then(row =>{
+            if(row[0]===0){
+              reject()
+            }else{
+              resolve({ 'body': req.body })
+            }
+          })
         }))
         if(1==3){
           if(ob21.owner){

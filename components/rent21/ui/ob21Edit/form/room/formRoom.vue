@@ -4,12 +4,12 @@
     <div style="display: flex;border-bottom: 1px solid #ffffff;" class="formWidth">
       <div :class="active == 'main' ? 'tabBt active':'tabBt'"
            @click="active = 'main'">Основные поля</div>
-      <div :class="active == 'photo' ? 'tabBt active':'tabBt'"
+      <div v-if="showPhoto" :class="active == 'photo' ? 'tabBt active':'tabBt'"
            @click="active = 'photo'" >Фото</div>
     </div>
     <div ref="main" class="overflow" >
       <div v-show="active==='main'" ref="form" ></div>
-      <div v-show="active==='photo'" >
+      <div v-show="showPhoto && active==='photo'" >
         <ListPhoto v-if="item && item.UID" :uid="item.UID"/>
       </div>
     </div>
@@ -27,7 +27,8 @@ export default {
   data: () => ({
     form: null,
     edit: true,
-    active: 'main'
+    active: 'main',
+    showPhoto: true
   }),
   computed:{
     globalMessage(){
@@ -40,6 +41,12 @@ export default {
   watch:{
     globalMessage(val){
       switch (val) {
+        case 'roomPhotoHide':
+          this.showPhoto = false
+          break
+        case 'roomPhotoShow':
+          this.showPhoto = true
+          break
         case 'roomHide':
           this.edit = false
           break
@@ -71,7 +78,10 @@ export default {
     onChange(name, value, state){
       let ob = null
       ob = this.form.getFormData().obfields
-      console.log(ob)
+      for(let key in ob){
+        this.item[key] = ob[key]
+      }
+      //console.log(ob,this.item)
 //      delete ob.form
 //      if(this.addOb21)
 //        this.addOb21.fields = ob
