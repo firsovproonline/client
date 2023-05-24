@@ -10,7 +10,7 @@
       <input type="text" v-model="item.LASTNAME" >
     </div>
     <div v-if="item.PHONE.length > 0">
-      <editPhone v-for="(phone, index) in item.PHONE" :item="phone" :key="index" />
+      <editPhone v-for="(phone, index) in item.PHONE" :item="phone" :items="item.PHONE" :index="index" :key="index" />
     </div>
     <div v-if="item.EMAIL.length > 0">
       <editEmail v-for="(email, index) in item.EMAIL" :item="email" :items="item.EMAIL" :index="index" :key="index"/>

@@ -25,7 +25,7 @@
       <input type="text" v-model="item.KOMISREMSALE" style="margin-left: 5px" >
     </div>
     <div style="float: right;">
-      <div class="buttonDiv">Добавить контакт</div>
+      <div class="buttonDiv" @click="addCont">Добавить контакт</div>
     </div>
     <div style="margin-top: 60px"></div>
     <EditContact v-for="(contact, index) in item.contacts" :key="index" :item="contact"  />
@@ -40,6 +40,19 @@ export default {
   props:{
     item: {}
   },
+  methods:{
+    addCont(){
+      this.item.contacts.push({
+        UID: this.$api.generateUID(),
+        FIRSTNAME: '',
+        LASTNAME: '',
+        PHONE: [],
+        EMAIL: [],
+        MESSENGER: [],
+        WEBSITE: []
+      })
+    }
+  }
 }
 </script>
 
