@@ -45,10 +45,10 @@ export default {
           this.showPhoto = false
           break
         case 'addressPhotoShow':
+        case 'reload':
           this.showPhoto = true
           break
         case 'addressHide':
-        case 'editItem|owners':
           this.edit = false
           break
         case 'addressShow':

@@ -6,7 +6,7 @@
            @click="active = 'main'">Основные поля</div>
       <div v-if="showPhoto" :class="active == 'photo' ? 'tabBt active':'tabBt'"
            @click="active = 'photo'" >Фото</div>
-      <div :class="active == 'export' ? 'tabBt active':'tabBt'" @click="showExport" style="margin-left: 8px;display: flex">
+      <div v-if="showPhoto" :class="active == 'export' ? 'tabBt active':'tabBt'" @click="showExport" style="margin-left: 8px;display: flex">
         <div>Экспорт</div>
         <indicator v-if="item" style="margin-top: -4px" :uid="item.UID" :item="getExport" />
       </div>

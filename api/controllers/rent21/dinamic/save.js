@@ -1980,6 +1980,7 @@ function saveAddress(address,fun){
     sql = "INSERT INTO  `"+tableSql+"` (ID,UID,TIP,TITLE,VAL,PUID) VALUES ?";
     connection.query(sql, [out], function(err, result) {
       fs.writeFileSync(__dirname+'../../../config/saveADDRESS.json', JSON.stringify(out))
+      console.error('address')
       fun()
     })
   })
@@ -2035,6 +2036,7 @@ CREATE TABLE IF NOT EXISTS `test_fields` (
           building.UID,
           building.address
         ]]], function(err, result) {
+          console.error('building')
           fun()
         })
       })
@@ -2227,7 +2229,7 @@ if(req.user && (req.user.isAdmin || req.user.isRieltor) && req.user.DOSTUP.index
         break
       case 'address':
         const address = req.body[key]
-        //console.error(req.body[key])
+        // console.error(req.body[key])
         promiseAR.push(new Promise(function (resolve, reject) {
           db.rent21address.update(
             {
