@@ -6,6 +6,10 @@
            @click="active = 'main'">Основные поля</div>
       <div v-if="showPhoto" :class="active == 'photo' ? 'tabBt active':'tabBt'"
            @click="active = 'photo'" >Фото</div>
+      <div :class="active == 'export' ? 'tabBt active':'tabBt'" @click="showExport" style="margin-left: 8px;display: flex">
+        <div>Экспорт</div>
+        <indicator v-if="item" style="margin-top: -4px" :uid="item.UID" :item="getExport" />
+      </div>
     </div>
     <div ref="main" class="overflow" >
       <div v-show="active==='main'" ref="form" ></div>
@@ -18,9 +22,12 @@
 
 <script>
 import ListPhoto from '@/components/rent21/ui/photo/list'
+import Indicator from '@/components/rent21/ui/export/indicator'
+
+
 export default {
   name: 'formRoom',
-  components: { ListPhoto },
+  components: { Indicator, ListPhoto },
   props:{
     item: null,
   },
@@ -67,6 +74,58 @@ export default {
     }
   },
   methods:{
+    getExport(){
+      if(this.item){
+        const xOb = this.item.exports
+        if(!xOb.avito){
+          xOb.avito = {
+            Publ: 0
+          }
+        }
+        if(!xOb.cian){
+          xOb.cian = {
+            Publ: 0
+          }
+        }
+        if(!xOb.cian1){
+          xOb.cian1 = {
+            Publ: 0
+          }
+        }
+        // console.log('===============',xOb)
+        const exportOb = {
+          avitopubl: xOb.avito.Publ,
+          cianpubl: xOb.cian.Publ,
+          cian1publ: xOb.cian1.Publ,
+          fields: xOb,
+          exportOb: xOb,
+          uid: val
+        }
+        return exportOb
+      }else{
+        return {
+          avitopubl: '0',
+          cianpubl: '0',
+          cian1publ: '0',
+          fields: {},
+          exportOb: { },
+          uid: val
+
+        }
+      }
+    },
+
+    showExport(){
+      //console.log(this.item)
+      const p = {
+        comp:() => import('../../../export/formExport'),
+        pfield: this.item.UID,
+        field: this.item.building,
+        value: this.item.exports,
+        spr: ''
+      }
+      this.$store.dispatch('main/setVcomponent', p)
+    },
     resize(){
       if(this.$refs.main){
         const h = window.innerHeight - this.$refs.main.getBoundingClientRect().top;

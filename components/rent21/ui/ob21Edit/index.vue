@@ -41,6 +41,8 @@ export default {
 
       this.floors = []
       val.ob21.forEach(item=>{
+//        console.log(this.item)
+        item.building = this.item.building.UID
         if(!this.floors.find(el => el.ETAG === item.ETAG)){
           item.ETAGSORT = item.ETAG*1
           this.floors.push({ETAG: item.ETAG,ETAGSORT:item.ETAGSORT,ob21:[]})
@@ -63,7 +65,9 @@ export default {
             OPP: 'Аренда',
             OPPTIP: 'Коммерческая',
             ETAG: 1,
+            SOBST: val.split('|')[1]
           })
+          // console.log(this.item.ob21)
           this.$nextTick(()=>{
             this.$store.dispatch('main/globalMessage','ownersHide')
             this.$nextTick(()=>{

@@ -40,9 +40,9 @@
       </div>
 
     </div>
-    <div ref="main" class="overflow" style="padding-top: 8px">
-      <div class="main" v-for="(item,key) in items" :key="key">
-      <div style="flex: auto;">
+    <div ref="main" class="overflow" style="padding-top: 8px;">
+      <div :class="item.UID === selectOwner? 'main ownerItem selectOwner':'main ownerItem'" v-for="(item,key) in items" :key="key">
+      <div @click="clickItem(key)">
         <div class="labelDiv">
           <div class="label">Имя</div>
           <div class="value">{{item.NAME}}</div>
@@ -105,7 +105,8 @@ export default {
     titleModal: 'Собственик',
     form: null,
     item: {},
-    edit: true
+    edit: true,
+    selectOwner: ''
   }),
   computed:{
     globalMessage(){
@@ -117,9 +118,12 @@ export default {
   },
   watch:{
     globalMessage(val){
-      switch (val) {
+      if(!val) return
+      switch (val.split('|')[0]) {
+        case 'selectOwner':
+          this.selectOwner = val.split('|')[1]
+          break
         case 'ownersHide':
-        //case 'saveItem|address':
           this.edit = false
           break
         case 'ownersShow':
@@ -133,6 +137,9 @@ export default {
     }
   },
   methods:{
+    clickItem(index){
+      this.$store.dispatch('main/globalMessage','selectOwner|'+this.items[index].UID)
+    },
     saveItem(){
       this.$axios.put('/api/rent21/ob',{owner:this.item}).then(items=>{
         this.flagModal = !this.flagModal
@@ -165,7 +172,8 @@ export default {
     },
     addOb(item){
       // this.$store.dispatch('main/setitem',item)
-      this.$store.dispatch('main/globalMessage','addOb21')
+      //console.log(item)
+      this.$store.dispatch('main/globalMessage','addOb21|'+item.UID)
     },
     showBig(id){
       this.flagModal = !this.flagModal
@@ -178,7 +186,17 @@ export default {
 </script>
 
 <style lang="scss" >
-
+hr{
+  margin-bottom: 0px;
+  margin-top: 0px;
+}
+  .selectOwner{
+    background-color: #eeebeb;
+  }
+  .ownerItem{
+    flex: auto;
+    cursor: pointer
+  }
   .main{
     display: flex;
     padding: 8px;

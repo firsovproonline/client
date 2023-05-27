@@ -24,7 +24,8 @@
     </div>
     <div class="body" style="padding-right: 18px">
       <div ref="body" style="overflow: auto"> </div>
-      <ExportPhoto v-if="value.exportOb[activeTab]" style="margin-left: 20px" :buildingUid="combofield" :uid="combofieldp" :items="value.exportOb[activeTab].PHOTO" />
+
+      <ExportPhoto v-if="value[activeTab]" style="margin-left: 20px" :buildingUid="combofield" :uid="combofieldp" :items="value[activeTab].PHOTO" />
     </div>
     <div class="footer">
       <button type="button" @click="save" class="btn btn-pill btn-primary btn-air-primary btn-sm">Сохранить</button>
@@ -56,19 +57,19 @@ export default {
     value(){
       return this.$store.getters['main/combovalue'];
     },
-    combofieldp(){
-      return this.$store.getters['main/combofieldp'];
-    },
     combofield(){
       return this.$store.getters['main/combofield'];
+    },
+    combofieldp(){
+      return this.$store.getters['main/combofieldp'];
     }
   },
   watch:{
     activeTab(val,old){
       if(old !== ''){
-        const photo = this.value.fields[old].PHOTO
-        this.value.fields[old] = this.ob21Form.getFormData()
-        this.value.fields[old].PHOTO = photo
+        const photo = this.value[old].PHOTO
+        this.value[old] = this.ob21Form.getFormData()
+        this.value[old].PHOTO = photo
         let Publ = "0"
         switch (old) {
           case 'avito':
@@ -88,38 +89,37 @@ export default {
             break;
             default:
         }
-        this.value.fields[old].Publ = Publ;
+        this.value[old].Publ = Publ;
       }
       this.exportOB = {};
       switch (val) {
         case 'avito':
-          if(this.value && this.value.fields && this.value.fields.avito){
-            this.exportOB = this.value.fields.avito
+          if(this.value && this.value.avito){
+            this.exportOB = this.value.avito
           }
           break
         case 'cian':
-          if(this.value && this.value.fields && this.value.fields.cian){
-            this.exportOB = this.value.fields.cian
+          if(this.value && this.value.cian){
+            this.exportOB = this.value.cian
           }
           break
         case 'cian1':
-          if(this.value && this.value.fields && this.value.fields.cian1){
-            this.exportOB = this.value.fields.cian1
+          if(this.value && this.value.cian1){
+            this.exportOB = this.value.cian1
           }
           break
         case 'rent21':
-          if(this.value && this.value.fields && this.value.fields.rent21){
-            this.exportOB = this.value.fields.rent21
+          if(this.value && this.value.rent21){
+            this.exportOB = this.value.rent21
           }
           break
         case 'Yandex':
-          if(this.value && this.value.fields && this.value.fields.Yandex){
-            this.exportOB = this.value.fields.Yandex
+          if(this.value && this.value.Yandex){
+            this.exportOB = this.value.Yandex
           }
           break
 
       }
-
       Object.keys(this.exportOB).forEach(key=>{
         this.ob21Form.setItemValue(key, this.exportOB[key]);
       })
@@ -152,12 +152,14 @@ export default {
 
     },
     rent21Ch(val){
-      this.value.exportOb.rent21.Publ = val
+      this.value.rent21.Publ = val
     },
     cianCh(val){
-      this.value.exportOb.cian.Publ = val
+      this.value.cian.Publ = val
+    },
+    field(val){
+      console.log('ddddddddddd')
     }
-
   },
   mounted () {
     this.ob21Form = new dhtmlXForm(this.$refs.body, [
@@ -525,63 +527,64 @@ export default {
     this.ob21Form.attachEvent("onChange", this.onChange);
 
     this.activeTab ='rent21'
-    // console.log('export++++++++', this.value)
+    console.log('export++++++++', this.value)
     const ob = this.value;
-    if(this.value.fields.rent21.Publ == 1) this.rent21Ch = true
+    if(this.value.rent21.Publ == 1) this.rent21Ch = true
     else this.rent21Ch = false
-    if(this.value.fields.cian.Publ == 1) this.cianCh = true
+    if(this.value.cian.Publ == 1) this.cianCh = true
     else this.cianCh = false
-    if(this.value.fields.cian1.Publ == 1) this.cian1Ch = true
+    if(this.value.cian1.Publ == 1) this.cian1Ch = true
     else this.cian1Ch = false
-    if(this.value.fields.avito.Publ == 1) this.avitoCh = true
+    if(this.value.avito.Publ == 1) this.avitoCh = true
     else this.avitoCh = false
+
     //console.log(this.value.uid,this.value.fields.cian.Publ,this.value.fields.avito.Publ)
   },
   methods:{
     onChange(name, value, state){
       if(state!== undefined){
         if(state)
-        this.value.exportOb[this.activeTab][name] = 1
+        this.value[this.activeTab][name] = 1
         else
-          this.value.exportOb[this.activeTab][name] = 0
+          this.value[this.activeTab][name] = 0
       }else{
-        this.value.exportOb[this.activeTab][name] = value
+        this.value[this.activeTab][name] = value
       }
-      console.log(name, value,state, this.activeTab,this.value.exportOb[this.activeTab])
+      console.log(name, value,state, this.activeTab,this.value[this.activeTab])
     },
     save(){
-      console.log(this.value.exportOb, this.avitoCh)
+      console.log(this.value, this.avitoCh)
       if(this.avitoCh)
-        this.value.exportOb.avito.Publ = '1'
+        this.value.avito.Publ = '1'
       else
-        this.value.exportOb.avito.Publ = '0'
+        this.value.avito.Publ = '0'
       if(this.cianCh)
-        this.value.exportOb.cian.Publ = '1'
+        this.value.cian.Publ = '1'
       else
-        this.value.exportOb.cian.Publ = '0'
+        this.value.cian.Publ = '0'
       if(this.cian1Ch)
-        this.value.exportOb.cian1.Publ = '1'
+        this.value.cian1.Publ = '1'
       else
-        this.value.exportOb.cian1.Publ = '0'
+        this.value.cian1.Publ = '0'
       if(this.rent21Ch)
-        this.value.exportOb.rent21.Publ = '1'
+        this.value.rent21.Publ = '1'
       else
-        this.value.exportOb.rent21.Publ = '0'
+        this.value.rent21.Publ = '0'
       if(this.YandexCh)
-        this.value.exportOb.Yandex.Publ = '1'
+        this.value.Yandex.Publ = '1'
       else
-        this.value.exportOb.Yandex.Publ = '0'
+        this.value.Yandex.Publ = '0'
 
       const ob ={
         export:{
           uid: this.combofieldp,
-          value: this.value.exportOb
+          value: this.value
         }
       }
-
-      this.$axios.put('/api/rent21/ob',ob).then(item=>{
-        console.log(item)
-      })
+      console.log(ob)
+//      this.$axios.put('/api/rent21/ob',ob).then(item=>{
+//        console.log(item)
+//      })
 /*
       this.$store.dispatch('main/setVcomponent', {
         comp: null,

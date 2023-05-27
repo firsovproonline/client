@@ -1,6 +1,7 @@
 // import fs from 'fs'
 const mysql = require('mysql')
-const tableSql = 'test_fields'
+//const tableSql = 'test_fields'
+const tableSql = 'fields'
 const cianItems = {
   rent: {
     flatRent: {
@@ -1750,8 +1751,34 @@ function generateUID() {
 }
 
 function saveOwners(owners, buildUID, fun){
-  console.error('=====================')
-  fun()
+  // console.error('000000000000', owners)
+  const connection = mysql.createConnection({
+    host: db.config.HOST,
+    user: db.config.USER,
+    password: db.config.PASSWORD,
+    database: db.config.DB,
+    debug: false
+  });
+  const out = []
+  let sql = "";
+  owners.forEach(ownerUID=>{
+    if(sql!=='') sql +=';'
+    sql += "delete from "+tableSql+" WHERE `VAL` in ('" + ownerUID + "') AND `TIP` = 'linc21' AND `PUID` in ('"+buildUID+"')";
+    out.push([
+      null,
+      null,
+      'linc21',
+      'linc21',
+      ownerUID,
+      buildUID
+    ])
+  })
+  connection.query(sql, [], function(err, result) {
+    sql = "INSERT INTO  `"+tableSql+"` (ID,UID,TIP,TITLE,VAL,PUID) VALUES ?";
+    connection.query(sql, [out], function(err, result) {
+      fun()
+    })
+  })
 }
 
 function saveOwner(owner,fun){
@@ -1818,7 +1845,7 @@ function saveOwner(owner,fun){
         out.push([
           null,
           owner.UID,
-          'sobst21',
+          'soBst21',
           field,
           owner[field],
           null
@@ -1975,6 +2002,7 @@ CREATE TABLE IF NOT EXISTS `test_fields` (
  */
   const out = []
   for (const [title, value] of Object.entries(building)) {
+    if(title!=='owners')
     out.push([
       null,
       building.UID,
@@ -1984,6 +2012,7 @@ CREATE TABLE IF NOT EXISTS `test_fields` (
       'root'
     ])
   }
+
   let sql = "delete from "+tableSql+" WHERE `UID` in ('" + building.UID + "') AND `TIP` <> 'linc21'";
   const connection = mysql.createConnection({
     host: db.config.HOST,
@@ -2019,7 +2048,7 @@ if(req.user && (req.user.isAdmin || req.user.isRieltor) && req.user.DOSTUP.index
 
   for (var key in req.body) {
     switch (key) {
-      case 'export11':
+      case 'export':
         // console.log('uid',__dirname)
 //        fs.writeFileSync(__dirname+'../../../config/saveEXPORT.json', JSON.stringify(req.body.export.value))
         promiseAR.push(new Promise(function (resolve, reject) {
@@ -2175,8 +2204,18 @@ if(req.user && (req.user.isAdmin || req.user.isRieltor) && req.user.DOSTUP.index
             },
           }).then(row =>{
             if(row[0]===0){
-              saveOb21(ob21,()=>{
-                resolve({ 'body': req.body })
+              db.rent21ob.create(
+                {
+                  uid: ob21.UID,
+                  fields: ob21,
+                  exports: ob21.exports,
+                  build: ob21.buildingUID,
+                  category: category,
+                  owner: ob21.SOBST
+                }).then(()=>{
+                  saveOb21(ob21,()=>{
+                    resolve({ 'body': req.body })
+                  })
               })
             }else{
               saveOb21(ob21,()=>{

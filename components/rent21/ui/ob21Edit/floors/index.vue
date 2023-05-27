@@ -8,13 +8,15 @@
       <div v-for="(item, index) in items" :key="index" style="padding-left: 11px" >
         <div>Этаж {{item.ETAG}}</div>
         <div v-for="(itemOb, index) in item.ob21" :key="index">
-          <div :class="uidOb === itemOb.UID?'active':''" @click="uidOb=itemOb.UID" style="display: flex;padding-left: 12px;cursor: pointer">
-            <div style="display: flex;align-items: center;max-width: 170px;min-width: 170px">
-              <div style="width: 100px;overflow: hidden;white-space:normal">{{replaceTip(itemOb.TIP)}}</div>
-              <div style="margin-left: 3px">{{itemOb.OPP}}</div>
-              <div style="margin-left: 3px">{{itemOb.PLALL}}</div>
+          <div :class="itemOb.SOBST === selectOwner? 'selectOwner':''">
+            <div :class="uidOb === itemOb.UID?'active':''" @click="uidOb=itemOb.UID" style="display: flex;padding-left: 12px;cursor: pointer">
+              <div style="display: flex;align-items: center;max-width: 170px;min-width: 170px">
+                <div style="width: 100px;overflow: hidden;white-space:normal">{{replaceTip(itemOb.TIP)}}</div>
+                <div style="margin-left: 3px">{{itemOb.OPP}}</div>
+                <div style="margin-left: 3px">{{itemOb.PLALL}}</div>
+              </div>
+              <indicator v-if="1==1" :uid="itemOb.UID" :item="getExport(itemOb.UID)" />
             </div>
-            <indicator v-if="1==1" :uid="itemOb.UID" :item="getExport(itemOb.UID)" />
           </div>
         </div>
       </div>
@@ -38,7 +40,8 @@ export default {
     uidOb: null,
     floors: [],
     edit: true,
-    ob21: null
+    ob21: [],
+    selectOwner: ''
   }),
   computed:{
     globalMessage(){
@@ -56,6 +59,9 @@ export default {
     globalMessage(val){
       if(!val) return
       switch (val.split('|')[0]) {
+        case 'selectOwner':
+          this.selectOwner = val.split('|')[1]
+          break
         case 'floorsHide':
           this.edit = false
           break
@@ -68,6 +74,9 @@ export default {
     },
     uidOb(val){
       this.$store.dispatch('main/globalMessage','selectRoom|'+val)
+      this.$nextTick(()=>{
+        this.$store.dispatch('main/globalMessage','selectOwner|'+this.ob21.find(item => item.UID == val).SOBST)
+      })
     },
     items(val){
       this.ob21 = []
@@ -132,11 +141,16 @@ export default {
         this.$refs.main.style.height = (h- 10) + 'px';
       }
     },
-  }
+  },
+
 }
 </script>
 
 <style scoped>
+.selectOwner{
+  background-color: #eeebeb;
+}
+
 .active{
   border-bottom: 1px dotted #000F1A;
 }

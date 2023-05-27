@@ -61,6 +61,7 @@ export default {
     uid: ''
   },
   mounted () {
+    console.log('this.buildingUid',this.buildingUid)
     this.$axios.get('/api/rent21/photo/list/'+this.buildingUid+'/'+this.uid).then(items=>{
       this.itemsAll = items.data.rows
       //

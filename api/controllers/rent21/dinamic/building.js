@@ -37,7 +37,7 @@ if(req.user && (req.user.isAdmin || req.user.isRieltor) && req.user.DOSTUP.index
           }
           outOb.ob21.push(item.fields)
         })
-
+if(!outOb.owners) outOb.owners = []
         sql =`SELECT *
           FROM rent21_owners
           WHERE rent21_owners.uid in ('` + outOb.owners.join("','") + `')`
