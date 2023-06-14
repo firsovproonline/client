@@ -660,8 +660,8 @@ export default {
   cursor: pointer;
 }
   .formWidth{
-    max-width: 410px;
-    min-width: 410px;
+    max-width: 380px;
+    min-width: 380px;
   }
   .mainForm{
     border-right: 1px solid;
