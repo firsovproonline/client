@@ -200,6 +200,7 @@ require('./routes/rent21/export')(app);
 require('./routes/rent21/building')(app);
 require('./routes/rent21/photo')(app);
 require('./routes/rent21/setings')(app);
+require('./routes/rent21/log')(app);
 
 var timerIdCian = setInterval(function() {
   console.log("get CIAN")

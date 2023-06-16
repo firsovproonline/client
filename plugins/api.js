@@ -1,3 +1,4 @@
+import axios from 'axios';
 export default function ({}, inject) {
   const api = {
     categoriesTitle(val){
@@ -112,6 +113,15 @@ export default function ({}, inject) {
         return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
       }
       return (S4() + S4() + "-" + S4() + "-4" + S4().substr(0, 3) + "-" + S4() + "-" + S4() + S4() + S4()).toLowerCase();
+    },
+    async saveLog(){
+      console.log('log', this)
+      try {
+        const spr = await axios.put("/api/rent21/log")
+        console.log('log save', spr)
+      } catch (err) {
+        console.error('log error')
+      }
     }
   }
   inject('api', api)
