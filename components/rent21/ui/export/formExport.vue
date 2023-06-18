@@ -582,17 +582,17 @@ export default {
         }
       }
       console.log(ob)
-//      this.$axios.put('/api/rent21/ob',ob).then(item=>{
-//        console.log(item)
-//      })
-/*
+      this.$axios.put('/api/rent21/ob',ob).then(item=>{
+        console.log(item)
+      })
+
       this.$store.dispatch('main/setVcomponent', {
         comp: null,
         field: null,
         spr: null
       })
 
- */
+
     },
     close(){
       this.$store.dispatch('main/setVcomponent', {

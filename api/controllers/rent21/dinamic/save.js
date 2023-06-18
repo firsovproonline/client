@@ -2110,6 +2110,8 @@ if(req.user && (req.user.isAdmin || req.user.isRieltor) && req.user.DOSTUP.index
               });
               connection.query(sql, [], function(err, result) {
                 sql = "INSERT INTO  `export` (`UID`,`VAL`,`TITLE`,`PUID`,`TIP`,`STEP`) VALUES ?";
+                //console.error(out)
+
                 connection.query(sql, [out], function(err, result) {
                   //fs.writeFileSync(__dirname+'../../../config/saveEXPORT.json', JSON.stringify(out))
                   resolve({ 'body': req.body })
