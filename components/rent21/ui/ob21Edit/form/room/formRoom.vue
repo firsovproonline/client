@@ -47,7 +47,12 @@ export default {
   },
   watch:{
     globalMessage(val){
-      switch (val) {
+      if(!val) return
+      switch (val.split('|')[0]) {
+        case 'reload':
+          this.showPhoto = true
+          this.edit = true
+          break
         case 'roomPhotoHide':
           this.showPhoto = false
           break
@@ -58,7 +63,6 @@ export default {
           this.edit = false
           break
         case 'roomShow':
-        case 'reload':
           this.edit = true
           break
       }
@@ -116,7 +120,31 @@ export default {
     },
 
     showExport(){
-      //console.log(this.item)
+      console.log('------------------------',this.item)
+      if(!this.item.exports){
+        this.item.exports = {
+          rent21:{
+            UID: this.item.UID,
+            Publ: 0
+          },
+          Yandex:{
+            UID: this.item.UID,
+            Publ: 0
+          },
+          avito:{
+            UID: this.item.UID,
+            Publ: 0
+          },
+          cian:{
+            UID: this.item.UID,
+            Publ: 0
+          },
+          cian1:{
+            UID: this.item.UID,
+            Publ: 0
+          },
+        }
+      }
       const p = {
         comp:() => import('../../../export/formExport'),
         pfield: this.item.UID,

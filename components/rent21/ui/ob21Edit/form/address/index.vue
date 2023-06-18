@@ -40,19 +40,23 @@ export default {
   },
   watch:{
     globalMessage(val){
-      switch (val) {
+      if(!val) return
+
+      switch (val.split('|')[0]) {
+        case 'reload':
+          this.showPhoto = true
+          this.edit = true
+          break
         case 'addressPhotoHide':
           this.showPhoto = false
           break
         case 'addressPhotoShow':
-        case 'reload':
           this.showPhoto = true
           break
         case 'addressHide':
           this.edit = false
           break
         case 'addressShow':
-        case 'reload':
           this.edit = true
           break
       }

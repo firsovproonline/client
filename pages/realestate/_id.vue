@@ -10,7 +10,7 @@ import ObEdit from '@/components/rent21/ui/obEdit'
 import Ob21Edit from '@/components/rent21/ui/ob21Edit'
 export default {
   name: 'realEstateEdit',
-  layout: 'small',
+  layout: 'default',
   components: { Ob21Edit, ObEdit },
   data: () => ({
     item: null,
@@ -35,9 +35,13 @@ export default {
               window.alert('Вы не авторизованы')
               return
             }
+            console.log('relod id page')
+            //window.location.reload()
             this.item = item.data.row
             if(this.item.owners.length === 0){
-              // this.stepEdit = 2;
+              this.stepEdit = 2;
+            }else{
+              this.stepEdit = 4;
             }
             if(val.split('|')[1]&&val.split('|')[1]!==''){
               this.$store.dispatch('main/globalMessage','selectRoom|'+val.split('|')[1])

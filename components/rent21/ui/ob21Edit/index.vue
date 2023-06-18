@@ -65,9 +65,10 @@ export default {
             OPP: 'Аренда',
             OPPTIP: 'Коммерческая',
             ETAG: 1,
-            SOBST: val.split('|')[1]
+            SOBST: val.split('|')[1],
+            IMPORTANT: this.$store.getters['main/user'].emails[0].value
           })
-          // console.log(this.item.ob21)
+
           this.$nextTick(()=>{
             this.$store.dispatch('main/globalMessage','ownersHide')
             this.$nextTick(()=>{
@@ -101,9 +102,7 @@ export default {
             case 'ob21':
               ob.ob21 =  this.item.ob21.find(el => el.UID === val.split('|')[2])
               ob.ob21.buildingUID =  this.item.building.UID
-              console.log(ob.ob21)
               this.$axios.put('/api/rent21/ob',ob).then(item=>{
-                console.log('body', item.data)
                 this.$store.dispatch('main/save_component',null)
                 this.$store.dispatch('main/globalMessage','reload|'+val.split('|')[2])
               })
