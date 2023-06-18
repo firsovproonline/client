@@ -360,6 +360,8 @@ export default {
                   break
                 case 401:
                   window.alert('Вы не авторизованы')
+                  window.location.href = '/api/auth/yandex'
+
                   break
                 default:
                   window.alert('не обработанная ошибка')

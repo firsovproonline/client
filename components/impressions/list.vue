@@ -169,6 +169,8 @@ export default {
       this.$axios.post('/api/impressions/list',this.filter).then((item) => {
         if(item.data.error && item.data.error === 401){
           window.alert('Вы не авторизованы')
+          window.location.href = '/api/auth/yandex'
+
           return
         }
 

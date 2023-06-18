@@ -177,7 +177,8 @@ app.get('/auth/yandex',
 app.get('/auth/yandex/callback',
   passport.authenticate('yandex', { failureRedirect: '/login' }),
   function(req, res) {
-    res.redirect('/');
+    console.error('=============', req.query)
+    res.redirect('/?oldurl=1');
   });
 // progress
 app.get('/progress', function(req, res){
