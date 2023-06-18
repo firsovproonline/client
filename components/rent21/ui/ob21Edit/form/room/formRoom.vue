@@ -125,23 +125,28 @@ export default {
         this.item.exports = {
           rent21:{
             UID: this.item.UID,
-            Publ: 0
+            Publ: 0,
+            Description: this.item.CIANREM
           },
           Yandex:{
             UID: this.item.UID,
-            Publ: 0
+            Publ: 0,
+            Description: this.item.CIANREM
           },
           avito:{
             UID: this.item.UID,
-            Publ: 0
+            Publ: 0,
+            Description: this.item.CIANREM
           },
           cian:{
             UID: this.item.UID,
-            Publ: 0
+            Publ: 0,
+            Description: this.item.CIANREM
           },
           cian1:{
             UID: this.item.UID,
-            Publ: 0
+            Publ: 0,
+            Description: this.item.CIANREM
           },
         }
       }
