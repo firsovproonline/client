@@ -63,10 +63,10 @@ export default {
       this.$refs.file.click()
     },
     handleFileUpload(){
-      console.log(this.$refs.file.files)
+      //console.log(this.$refs.file.files)
       const promiseAR = [];
       for(let i=0;i<this.$refs.file.files.length;i++){
-        promiseAR.push(new Promise(function(resolve, reject) {
+        promiseAR.push(new Promise((resolve, reject)=>{
           let formData = new FormData()
           formData.append('file',this.$refs.file.files[i])
           this.$axios.post('/api/rent21/photo',
@@ -87,8 +87,9 @@ export default {
             this.items = items.data.rows
           })
         },
-        error => console.log("Ошибка: ", error.message)
+        error => console.log("Ошибка фото: ", error.message)
       );
+
     },
     showBig(){
       this.flagModal = !this.flagModal
@@ -123,6 +124,7 @@ export default {
   mounted () {
     if(this.uid!=''){
       this.$axios.get('/api/rent21/photo/list/'+this.uid).then(items=>{
+        console.log('================================',items.data.rows)
         this.items = items.data.rows
       })
     }

@@ -190,7 +190,6 @@ app.get('/logout', function(req, res){
   res.redirect('/');
 });
 
-
 require('./routes/main')(app);
 require('./routes/impressions')(app);
 require('./routes/recentcalls')(app);

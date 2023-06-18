@@ -1,5 +1,6 @@
 const gm = require('gm')
 const mysql = require('mysql')
+console.error('fffffffffffffffff')
 if(req.user && (req.user.isAdmin || req.user.isRieltor)){
   const gm = require('gm')
   const mysql = require("mysql")
@@ -14,6 +15,7 @@ if(req.user && (req.user.isAdmin || req.user.isRieltor)){
         debug: false
       });
       const sql = "INSERT INTO foto SET ?"
+      console.error('photo')
       const value = {
         PHOTO: PHOTO,
         THUMBNAIL: THUMBNAIL,
