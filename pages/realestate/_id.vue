@@ -10,7 +10,7 @@ import ObEdit from '@/components/rent21/ui/obEdit'
 import Ob21Edit from '@/components/rent21/ui/ob21Edit'
 export default {
   name: 'realEstateEdit',
-  layout: 'default',
+  layout: 'small',
   components: { Ob21Edit, ObEdit },
   data: () => ({
     item: null,

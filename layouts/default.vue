@@ -222,8 +222,10 @@ export default {
       })
       this.$store.commit('main/setusers', item.data);
     });
-    this.$axios.get('/api/test').then((item) => {
-      //console.log(item.data)
+    this.$axios.get('/api/user').then((item) => {
+      this.user = item.data;
+      this.$store.dispatch('main/setuser',item.data)
+      console.log('====',this.user)
     });
 
     this.$store.dispatch('main/load');
