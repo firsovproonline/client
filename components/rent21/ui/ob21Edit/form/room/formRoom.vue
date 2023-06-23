@@ -184,6 +184,20 @@ export default {
           this.$store.dispatch('main/globalMessage',null)
           this.$nextTick(()=>{
             this.$store.dispatch('main/globalMessage','saveItem|ob21|'+ob.UID)
+            // скрываем табы ненужные
+            this.$nextTick(()=>{
+              this.$store.dispatch('main/globalMessage','addressHide')
+              this.$nextTick(()=>{
+                this.$store.dispatch('main/globalMessage','floorsHide')
+                this.$nextTick(()=>{
+                  this.$store.dispatch('main/globalMessage','ownersHide')
+                  this.$nextTick(()=>{
+                    this.$store.dispatch('main/globalMessage','roomPhotoHide')
+                  })
+                })
+
+              })
+            })
           })
         })
       })

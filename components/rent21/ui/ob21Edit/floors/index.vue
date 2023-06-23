@@ -16,6 +16,9 @@
                 <div style="margin-left: 3px">{{itemOb.PLALL}}</div>
               </div>
               <indicator v-if="1==1" :uid="itemOb.UID" :item="getExport(itemOb.UID)" />
+              <div style="margin-left: 7px;margin-top: 6px" @click="copyOb(itemOb.UID)">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-copy"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              </div>
             </div>
           </div>
         </div>
@@ -88,6 +91,9 @@ export default {
     }
   },
   methods:{
+    copyOb(uid){
+      this.$store.dispatch('main/globalMessage','copyRoom|'+uid)
+    },
     getExport(val){
       if(this.ob21 && this.ob21.find(el => el.UID === val) && this.ob21.find(el => el.UID === val).exports){
         const xOb = this.ob21.find(el => el.UID === val).exports

@@ -54,9 +54,31 @@ export default {
 
     },
     globalMessage(val){
-      console.log('ob21Edit|globalMessage',val)
+      // console.log('ob21Edit|globalMessage',val)
       if(!val) return
       switch (val.split('|')[0]) {
+        case 'copyRoom':
+          const newRoom = this.item.ob21.find(el => el.UID === val.split('|')[1])
+          newRoom.UID = this.$api.generateUID()
+          newRoom.exports = null
+          newRoom.IMPORTANT = this.$store.getters['main/user'].emails[0].value
+          this.item.ob21.push(newRoom)
+          this.$nextTick(()=>{
+            this.$store.dispatch('main/globalMessage','ownersHide')
+            this.$nextTick(()=>{
+              this.$store.dispatch('main/globalMessage','floorsHide')
+              this.$nextTick(()=>{
+                this.$store.dispatch('main/globalMessage','addressHide')
+                this.$nextTick(()=>{
+                  this.$store.dispatch('main/globalMessage','roomPhotoHide')
+                })
+              })
+            })
+          })
+          this.roomUID = newRoom.UID
+          this.room = this.item.ob21.find(el => el.UID === newRoom.UID)
+          console.log('copyRoom', newRoom)
+          break
         case 'addOb21':
           const uid = this.$api.generateUID()
           this.item.ob21.push({
