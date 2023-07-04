@@ -3,7 +3,7 @@
     <formAddress :item="address" />
     <OwnerList :items="owners" />
     <floors :items="floors"/>
-    <FormRoom :item="room"/>
+    <FormRoom :item="room" :address="address"/>
   </div>
 </template>
 

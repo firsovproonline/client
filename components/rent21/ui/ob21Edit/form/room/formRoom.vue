@@ -30,6 +30,7 @@ export default {
   components: { Indicator, ListPhoto },
   props:{
     item: null,
+    address: null
   },
   data: () => ({
     form: null,
@@ -155,7 +156,7 @@ export default {
         pfield: this.item.UID,
         field: this.item.building,
         value: this.item.exports,
-        spr: ''
+        spr: this.address
       }
       this.$store.dispatch('main/setVcomponent', p)
     },

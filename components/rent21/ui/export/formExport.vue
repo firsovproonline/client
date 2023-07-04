@@ -54,6 +54,9 @@ export default {
     YandexCh: false
   }),
   computed:{
+    spr(){
+      return this.$store.getters['main/combospr'];
+    },
     value(){
       return this.$store.getters['main/combovalue'];
     },
@@ -156,7 +159,11 @@ export default {
       this.value.rent21.Publ = val
     },
     cianCh(val){
-      this.value.cian.Publ = val
+      console.log('cianCh',val)
+      if(val)
+        this.value.cian.Publ = '1'
+      else
+        this.value.cian.Publ = '0'
     },
     field(val){
       console.log('ddddddddddd')
@@ -528,7 +535,7 @@ export default {
     this.ob21Form.attachEvent("onChange", this.onChange);
 
     this.activeTab ='rent21'
-    console.log('export++++++++', this.value)
+    console.log('export++++++++', this.value, this.spr, this.combofield)
     const ob = this.value;
     if(this.value.rent21.Publ == 1) this.rent21Ch = true
     else this.rent21Ch = false
@@ -543,6 +550,10 @@ export default {
         this.value[key].PHOTO = []
       }
     }
+    this.value.cian.UID = this.value.avito.UID
+    this.value.cian1.UID = this.value.avito.UID
+    this.value.cian1.rent21 = this.value.avito.UID
+    console.log('this.field',this.field)
   },
   methods:{
     onChange(name, value, state){
@@ -578,6 +589,29 @@ export default {
         this.value.Yandex.Publ = '1'
       else
         this.value.Yandex.Publ = '0'
+
+      //if(this.value.cian.LAT == '')
+        this.value.cian.LAT = this.spr.address.LAT
+      //if(this.value.cian.LNG == '')
+        this.value.cian.LNG = this.spr.address.LNG
+      //if(this.value.cian.GOROD == '')
+        this.value.cian.GOROD = this.spr.address.GOROD
+      //if(this.value.cian.ULITCA == '')
+        this.value.cian.ULITCA = this.spr.address.ULITCA
+      //if(this.value.cian.DOM == '')
+        this.value.cian.DOM = this.spr.address.DOM
+
+      //if(this.value.cian.LAT == '')
+      this.value.cian1.LAT = this.spr.address.LAT
+      //if(this.value.cian.LNG == '')
+      this.value.cian1.LNG = this.spr.address.LNG
+      //if(this.value.cian.GOROD == '')
+      this.value.cian1.GOROD = this.spr.address.GOROD
+      //if(this.value.cian.ULITCA == '')
+      this.value.cian1.ULITCA = this.spr.address.ULITCA
+      //if(this.value.cian.DOM == '')
+      this.value.cian1.DOM = this.spr.address.DOM
+
 
       const ob ={
         export:{
