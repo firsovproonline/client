@@ -28,7 +28,7 @@
 
       </div>
     </div>
-    <div v-if="activetab=='all'" style="min-height: 80px;display: flex;flex-wrap: wrap;">
+    <div v-if="activetab=='all' && items" style="min-height: 80px;display: flex;flex-wrap: wrap;">
       <div v-for="(item, index) in itemsAll" :key="index" :style="items.find(el => el.uid === item.UID && el.title === item.TITLE)? 'display: none':''" >
           <div  :step="index" v-if="! items.find(el => el.uid === item.UID && el.title === item.TITLE)" class="MainphotoBox"
                @click="active = item.ID"

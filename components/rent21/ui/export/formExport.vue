@@ -66,6 +66,7 @@ export default {
   },
   watch:{
     activeTab(val,old){
+      //console.log(this.value)
       if(old !== ''){
         const photo = this.value[old].PHOTO
         this.value[old] = this.ob21Form.getFormData()
@@ -537,8 +538,13 @@ export default {
     else this.cian1Ch = false
     if(this.value.avito.Publ == 1) this.avitoCh = true
     else this.avitoCh = false
-
-    //console.log(this.value.uid,this.value.fields.cian.Publ,this.value.fields.avito.Publ)
+//
+    for(let key in this.value){
+      if(!this.value[key].PHOTO){
+        this.value[key].PHOTO = []
+      }
+    }
+    //console.log('=============================',this.value)
   },
   methods:{
     onChange(name, value, state){
