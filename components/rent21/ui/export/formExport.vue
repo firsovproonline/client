@@ -538,13 +538,11 @@ export default {
     else this.cian1Ch = false
     if(this.value.avito.Publ == 1) this.avitoCh = true
     else this.avitoCh = false
-//
     for(let key in this.value){
       if(!this.value[key].PHOTO){
         this.value[key].PHOTO = []
       }
     }
-    //console.log('=============================',this.value)
   },
   methods:{
     onChange(name, value, state){
@@ -554,9 +552,9 @@ export default {
         else
           this.value[this.activeTab][name] = 0
       }else{
+        console.log('onChange', name, value,state, this.activeTab,this.value[this.activeTab])
         this.value[this.activeTab][name] = value
       }
-      console.log(name, value,state, this.activeTab,this.value[this.activeTab])
     },
     save(){
       console.log(this.value, this.avitoCh)
