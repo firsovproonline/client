@@ -54,7 +54,7 @@ export default {
 
     },
     globalMessage(val){
-      // console.log('ob21Edit|globalMessage',val)
+      console.log('ob21Edit|globalMessage',val)
       if(!val) return
       switch (val.split('|')[0]) {
         case 'copyRoom':
