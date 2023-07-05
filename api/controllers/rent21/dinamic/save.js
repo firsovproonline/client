@@ -1979,7 +1979,7 @@ function saveAddress(address,fun){
   connection.query(sql, [], function(err, result) {
     sql = "INSERT INTO  `"+tableSql+"` (ID,UID,TIP,TITLE,VAL,PUID) VALUES ?";
     connection.query(sql, [out], function(err, result) {
-      fs.writeFileSync(__dirname+'../../../config/saveADDRESS.json', JSON.stringify(out))
+      //fs.writeFileSync(__dirname+'../../../config/saveADDRESS.json', JSON.stringify(out))
       console.error('address')
       fun()
     })
