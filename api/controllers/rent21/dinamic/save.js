@@ -2025,7 +2025,7 @@ CREATE TABLE IF NOT EXISTS `test_fields` (
   connection.query(sql, [], function(err, result) {
     sql = "INSERT INTO  `"+tableSql+"` (ID,UID,TIP,TITLE,VAL,PUID) VALUES ?";
     connection.query(sql, [out], function(err, result) {
-      fs.writeFileSync(__dirname+'../../../config/saveBuilding.json', JSON.stringify(out))
+      // fs.writeFileSync(__dirname+'../../../config/saveBuilding.json', JSON.stringify(out))
       // удаляем linc21 на адрес
       sql = "delete from "+tableSql+" WHERE `VAL` in ('" + building.UID + "') AND `TIP` = 'linc21'";
       connection.query(sql, [], function(err, result) {
