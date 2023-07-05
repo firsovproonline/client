@@ -20,7 +20,8 @@ export default {
     floors: null,
     room: null,
     roomUID: '',
-    owners: null
+    owners: null,
+    saveItem: ''
   }),
   props:{
     item:null
@@ -120,7 +121,7 @@ export default {
           break
         case 'save':
           const ob ={}
-          switch (val.split('|')[1]) {
+          switch (this.saveItem) {
             case 'ob21':
               ob.ob21 =  this.item.ob21.find(el => el.UID === val.split('|')[2])
               ob.ob21.buildingUID =  this.item.building.UID
@@ -143,8 +144,6 @@ export default {
                 this.$store.dispatch('main/save_component',null)
                 this.$store.dispatch('main/globalMessage','reload')
               })
-
-
               break
             default:
           }
@@ -153,6 +152,9 @@ export default {
 
           this.$store.dispatch('main/save_component',null)
           this.$store.dispatch('main/globalMessage','reload')
+          break
+        case 'saveItem':
+          this.saveItem = val.split('|')[1]
           break
         default:
       }
