@@ -1,5 +1,5 @@
 <template>
-  <div class="main">
+  <div ref="main" class="main" @dragend="dragEnter" @dragover="ondragover" @drop="ondrop" style="height: 300px;overflow-y: scroll">
     <modal
       v-show="flagModal"
       :show="flagModal"
@@ -17,19 +17,22 @@
       </template>
     </modal>
     <div v-for="(item, index) in items" :key="index" class="MainphotoBox" >
+      <PhotoItem :item="item" draggable="true"  :uid="uid" />
+      <!--
       <div :step="index"
         @click="active = item.ID"
         @dblclick="showBig"
         :class="active === item.ID? 'fotoBox active':'fotoBox'"
-        draggable="true" @dragstart="ondragstart" @drop="ondrop" @dragend="ondragover"
+        draggable="true" @dragstart="ondragstart"
            :style="'background-image: url(/api/rent21/photo/get/'+item.ID+')'"
       >
         <div class="delB" @click="deletePhoto(item.ID)">
           <svg class="feather feather-trash-2 svgColor1" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline data-v-91744b02="" points="3 6 5 6 21 6"></polyline><path data-v-91744b02="" d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line data-v-91744b02="" x1="10" y1="11" x2="10" y2="17"></line><line data-v-91744b02="" x1="14" y1="11" x2="14" y2="17"></line></svg>
         </div>
       </div>
+      -->
     </div>
-    <div style="text-align: center;width: 100%;">
+    <div style="text-align: center;width: 100%;height: fit-content">
       <a href="#" @click="clickFile">Добавить фото</a>
     </div>
     <input type="file" multiple="multiple" id="file" ref="file" v-on:change="handleFileUpload()" style="display: none"/>
@@ -38,8 +41,10 @@
 </template>
 
 <script>
+import PhotoItem from '@/components/rent21/ui/photo/item'
 export default {
   name: 'listPhoto',
+  components: { PhotoItem },
   props:{
     uid: '',
     upload: false
@@ -50,7 +55,21 @@ export default {
     flagModal: false,
     titleModal: ''
   }),
+  computed:{
+    globalMessage(){
+      return this.$store.getters['main/globalMessage'];
+    },
+  },
   methods:{
+    resize(){
+      if(this.$refs.main){
+        const h = window.innerHeight - this.$refs.main.getBoundingClientRect().top;
+        const w = window.innerWidth - this.$refs.main.getBoundingClientRect().left;
+        this.$refs.main.style.height = (h- 10) + 'px';
+
+      }
+    },
+
     deletePhoto(id){
       this.$axios.delete('/api/rent21/photo/'+id).then(item=>{
         this.$axios.get('/api/rent21/photo/list/'+this.uid).then(items=>{
@@ -94,17 +113,50 @@ export default {
     showBig(){
       this.flagModal = !this.flagModal
     },
+    dragEnter(ev){
+      console.log('dragEnter',ev)
+      ev.preventDefault();
+      return true;
+    },
     ondragstart(ev){
       console.log(ev)
     },
     ondragover(ev){
-      console.log(ev)
+      // console.log(ev)
+      ev.preventDefault();
     },
     ondrop(ev){
-      console.log(ev)
+      console.log('ondrop',ev.dataTransfer.files)
+      ev.preventDefault();
+      if (ev.dataTransfer.files[0]) {
+        for (let i = 0; i < ev.dataTransfer.files.length; i++) {
+          const file = ev.dataTransfer.files[i];
+          this.items.push({
+            file:file
+          })
+        }
+      }
+      return false;
     }
   },
   watch:{
+    globalMessage (val) {
+      if (!val) return
+      switch (val.split('|')[0]) {
+        case 'deletePhoto':
+          console.log(this.uid, val.split('|')[1])
+          if(this.uid === val.split('|')[1])
+          this.$axios.delete('/api/rent21/photo/'+val.split('|')[2]).then(item=>{
+            this.$axios.get('/api/rent21/photo/list/'+this.uid).then(items=>{
+              this.items = items.data.rows
+            })
+          })
+          break
+        default:
+          break
+      }
+
+      },
     upload(val){
       console.log('upload')
     },
@@ -122,6 +174,9 @@ export default {
     }
   },
   mounted () {
+    this.resize()
+    window.addEventListener('resize', this.resize);
+
     if(this.uid!=''){
       this.$axios.get('/api/rent21/photo/list/'+this.uid).then(items=>{
         console.log('================================',items.data.rows)
@@ -145,6 +200,8 @@ export default {
   .main{
     display: flex;
     flex-wrap: wrap;
+    align-items: flex-start;
+    align-content: flex-start;
   }
   .MainphotoBox{
     width: 130px;
