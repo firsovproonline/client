@@ -6,7 +6,7 @@ if(req.user && (req.user.isAdmin || req.user.isRieltor)){
   const mysql = require("mysql")
   req.files.file.mv('./temp/' + req.files.file.md5);
   const extFile = req.files.file.name.split('.')[req.files.file.name.split('.').length-1].toUpperCase()
-  console.error('===============================', extFile)
+  //console.error('===============================', extFile)
   gm('./temp/'+req.files.file.md5).resize(1024, 600).toBuffer(extFile, function(err, PHOTO) {
     gm('./temp/'+req.files.file.md5).resize(170, 80).toBuffer(extFile, function(err, THUMBNAIL) {
       const connectionFOTO = mysql.createConnection({

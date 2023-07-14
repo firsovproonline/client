@@ -230,12 +230,15 @@ export default {
 
     this.$store.dispatch('main/load');
     this.$store.dispatch('export/load');
+/*
     let old = window.localStorage.getItem('oldurl')
     if(window.location.search === '?oldurl=1'){
       if(old)
         window.location.href = old.replace('?oldurl=1','')
     }
     window.localStorage.setItem('oldurl', window.location.href);
+
+ */
     /*
     window.onload = function () {
       document.body.classList.add('loaded_hiding');

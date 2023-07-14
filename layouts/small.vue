@@ -221,8 +221,8 @@ export default {
 
     this.$store.dispatch('main/load');
     this.$store.dispatch('export/load');
-    console.log('oldurl', window.localStorage.getItem('oldurl'))
-    window.localStorage.setItem('oldurl', window.location.href);
+//    console.log('oldurl', window.localStorage.getItem('oldurl'))
+//    window.localStorage.setItem('oldurl', window.location.href);
     // console.log(window.location.href)
 
     /*
