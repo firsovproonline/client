@@ -369,6 +369,15 @@ exports.progress1111 = (req, res) => {
   res.json(db.progress)
 }
 
+exports.logout = (req, res) => {
+  let users =JSON.parse(fs.readFileSync('users.json', "utf8"))
+  req.logout(function(err) {
+    if (err) { return next(err); }
+    res.redirect('/');
+  });
+
+}
+
 exports.user = (req, res) => {
   res.json(req.user)
 }

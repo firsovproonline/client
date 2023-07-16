@@ -4,4 +4,5 @@ module.exports = function(app) {
   app.get("/test", controller.test);
   app.get("/user", controller.user);
   app.get("/spr", controller.spr);
+  app.get("/logout", controller.logout);
 }

@@ -134,14 +134,16 @@ app.use(passport.session());
 
 app.use((req, res, next)=> {
   if(!app.users) app.users= {}
+
   if(req.cookies  && req.cookies['connect.sid']) {
     if (req.user) {
       app.users[req.cookies['connect.sid']] = req.user
       fs.writeFileSync('users.json', JSON.stringify(app.users), "utf8")
     }else{
       let users =JSON.parse(fs.readFileSync('users.json', "utf8"))
-      if(users[req.cookies['connect.sid']])
+      if(users[req.cookies['connect.sid']]){
         req.user = users[req.cookies['connect.sid']]
+      }
     }
   }
   next();
@@ -165,8 +167,9 @@ app.get('/auth/yandex/callback',
 app.get('/progress', function(req, res){
   res.json(db.progress)
 });
-
-app.get('/logout', function(req, res){
+// ddddddddddddddddddddddddddddd
+app.get('/logout111', function(req, res){
+  console.log(req.cookies)
   req.logout();
   res.redirect('/');
 });

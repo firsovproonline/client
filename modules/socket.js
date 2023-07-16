@@ -9,7 +9,23 @@ export default function () {
   this.nuxt.hook('listen', server => {
     console.log('+++++++++++++++++++++++++++++++++++++++')
     const io = new websocket.Server({ server });
-    io.on("connection", (ws, request, client) => {
+
+    io.on("connection", function (ws, request, client) {
+      ws.on("message", function (msg,client){
+        if(msg==='logout'){
+          console.log(this.sid)
+          let users =JSON.parse(fs.readFileSync('users.json', "utf8"))
+          const newUsers = {}
+          for(let key in users){
+            if(this.sid !== key){
+              newUsers[key] = users[key]
+              console.log('++++++++++++++++++++++++++++')
+            }
+          }
+          fs.writeFileSync('users.json', JSON.stringify(newUsers), "utf8")
+          this.send('reload')
+        }
+      })
       function headerToJson(header){
         const json1 = {}
         header.split(';').forEach(item=>{
@@ -20,8 +36,13 @@ export default function () {
       if(request.headers.cookie){
         let users =JSON.parse(fs.readFileSync('users.json', "utf8"))
         const user = users[headerToJson(request.headers.cookie)['connect.sid']]
-        if(user)
-          console.log('user', user.username)
+        if(user){
+          ws.user =user
+          ws.sid = headerToJson(request.headers.cookie)['connect.sid']
+          console.log('user', ws.sid)
+        }else{
+          console.log('not user')
+        }
       }
     });
 /*
