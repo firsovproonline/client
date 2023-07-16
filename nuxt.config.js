@@ -30,6 +30,9 @@ export default {
       { src: '/js/jquery.min.js',
       },
       {
+        src: '/js/socket.io.esm.min.js'
+      },
+      {
         src: 'https://api-maps.yandex.ru/2.1/?apikey=fdb945b0-aaa5-4b5d-a837-383abb24dfc4&lang=ru_RU',
       },
       {
@@ -90,12 +93,12 @@ export default {
   plugins: [
     {src: '~/plugins/v-mask', mode: 'client'},
     {src: '~/plugins/v-calendar', mode: 'client'},
+    //{src: '~/plugins/websocket', mode: 'client'},
     { src: '@/plugins/api', mode: 'client' }
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
-
   // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
   buildModules: [
   ],
@@ -104,13 +107,14 @@ export default {
   modules: [
     // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
+    '~/modules/socket',
   ],
-
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
     // Workaround to avoid enforcing hard-coded localhost:3000: https://github.com/nuxt-community/axios-module/issues/308
     baseURL: '/',
   },
+
   styleResources: {
     sass: [],
     scss: [

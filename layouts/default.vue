@@ -39,7 +39,7 @@
       <div class="page-body-wrapper null">
         <header v-if="width>=1000 && showNav" class="main-nav">
           <usercard/>
-          <nav>
+          <nav v-if="user.isAdmin || user.isRieltor">
             <div class="main-navbar">
               <div class="left-arrow disabled" id="left-arrow"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg></div>
               <div id="mainnav">
@@ -95,7 +95,7 @@
                       <li><router-link to="/report/cian">Cian</router-link></li>
                     </ul>
                   </li>
-                  <li class="dropdown">
+                  <li class="dropdown" v-if="user.isAdmin">
                     <router-link class="nav-link menu-title" to="/setings">
                       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-home"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
                       <span>Настройки</span>
@@ -132,7 +132,7 @@
           </nav>
         </header>
         <div class="page-body" :style="width<1001 || !showNav ? 'margin-left:0px;overflow-x:hidden':'overflow-x:hidden'">
-          <div class="custom-container">
+          <div v-if="(user.isAdmin || user.isRieltor)" class="custom-container">
             <div class="container-fluid">
               <div v-if="vComponent" class="modalDiv"></div>
               <Nuxt />
@@ -147,6 +147,7 @@
 <script>
 import headerDiv from '~/components/headerDiv'
 import usercard from '~/components/usercard'
+
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
   name: 'Default',
@@ -155,7 +156,8 @@ export default {
     showLeftPanel: false,
     showRightPanel: true,
     showNav: true,
-    width: 1100
+    width: 1100,
+    socket: null
   }),
   methods:{
     resize(){
@@ -176,6 +178,9 @@ export default {
     }
   },
   computed:{
+    user(){
+      return this.$store.getters['main/user']
+    },
     globalMessage(){
       return this.$store.getters['main/globalMessage'];
     },
@@ -205,6 +210,16 @@ export default {
     },
   },
   mounted() {
+    console.log(window)
+    let socketEVENT = new window.WebSocket("ws://95.174.126.120:3022");
+    socketEVENT.onclose = function(event) {
+        console.error('отвалился интернет')
+      window.alert('Пропал интернет - страница будет обновлена')
+      window.location.reload();
+    };
+    socketEVENT.onmessage = (msg)=>{
+      console.log('msg', msg)
+    }
     document.body.classList.add('landing-wrraper');
     this.resize();
     window.addEventListener('resize', this.resize);

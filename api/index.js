@@ -1,5 +1,6 @@
 import ss from "sequelize";
 import MD5 from 'crypto-js/md5'
+import * as Console from 'console'
 const express = require('express')
 const mysql = require("mysql")
 const cors = require("cors")
@@ -21,6 +22,15 @@ const ejs = require('ejs');
 const corsOptions = {
   origin: "*"
 }
+
+function headerToJson(header){
+  const json1 = {}
+  header.split(';').forEach(item=>{
+    json1[item.split('=')[0].trim()] = item.split('=')[1]
+  })
+  return json1
+}
+
 function S4() {
   return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
 }
@@ -28,11 +38,20 @@ function S4() {
 function generateUID() {
   return (S4() + S4() + "-" + S4() + "-4" + S4().substr(0, 3) + "-" + S4() + "-" + S4() + S4() + S4()).toLowerCase();
 }
-passport.serializeUser(function(user, done) {
+passport.serializeUser((user, done)=> {
+  // console.error(user)
   const sql = "select * from users WHERE login = '" + user.username + "'"
   db.sequelizePg.query(sql, {
     raw: true,
   }).then((items) => {
+    if(items[0].length === 0){
+      user.isAdmin = false;
+      user.MZ = '';
+      user.DOSTUP = '';
+      user.isRieltor = false;
+      done(null, user);
+      return
+    };
     var isAdmin = false;
     var isRieltor = false;
     if (items[0][0].tip == 'Администратор') {
@@ -49,56 +68,6 @@ passport.serializeUser(function(user, done) {
     user.isRieltor = isRieltor;
     done(null, user);
   })
-
-  // done(null, user);
-
-/*
-    db.sequelize.query("select * from `users` WHERE `LOGIN` = '" + user.username + "'", [], function(err, result) {
-      if (result) {
-        if (result.length == 0) {
-          var query = "INSERT INTO users SET ?",
-            values = {
-              LOGIN: user.username,
-              EMAIL: user._json.default_email,
-              TIP: 'Гость'
-            };
-          db.sequelize.query(query, values, function(err, result) {
-            if (result) {
-              user.isAdmin = false;
-              user.isRieltor = false;
-              user.MZ = -1;
-              user.DOSTUP = '';
-              done(null, user);
-            }
-            else {
-              console.log(err)
-            }
-          })
-        }
-        else {
-          var isAdmin = false;
-          var isRieltor = false;
-          if (result[0].TIP == 'Администратор') {
-            isAdmin = true;
-          }
-          if (result[0].TIP == 'Риэлтор') {
-            isAdmin = false;
-            isRieltor = true;
-
-          }
-          user.isAdmin = isAdmin;
-          user.MZ = result[0].MZ;
-          user.DOSTUP = result[0].DOSTUP;
-          user.isRieltor = isRieltor;
-          done(null, user);
-        }
-      }
-      else {
-        done(null, user);
-      }
-    })
-*/
-
 });
 
 passport.deserializeUser(function(obj, done) {
@@ -123,7 +92,7 @@ passport.use(new YandexStrategy({
   }
 ));
 
-
+let papp = this
 const app = express()
 // require('./routes/main')(app);
 /*
@@ -160,11 +129,23 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-
 //app.use(express.bodyParser());
 //app.use(methodOverride());
 
-
+app.use((req, res, next)=> {
+  if(!app.users) app.users= {}
+  if(req.cookies  && req.cookies['connect.sid']) {
+    if (req.user) {
+      app.users[req.cookies['connect.sid']] = req.user
+      fs.writeFileSync('users.json', JSON.stringify(app.users), "utf8")
+    }else{
+      let users =JSON.parse(fs.readFileSync('users.json', "utf8"))
+      if(users[req.cookies['connect.sid']])
+        req.user = users[req.cookies['connect.sid']]
+    }
+  }
+  next();
+});
 
 app.get('/auth/yandex',
   passport.authenticate('yandex'),
@@ -189,6 +170,7 @@ app.get('/logout', function(req, res){
   req.logout();
   res.redirect('/');
 });
+
 
 require('./routes/main')(app);
 require('./routes/impressions')(app);
