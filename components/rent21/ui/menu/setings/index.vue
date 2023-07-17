@@ -7,8 +7,8 @@
         <i class="fa fa-angle-right"></i>
       </div>
     </router-link>
-    <ul v-if="flagOpen" class="nav-submenu menu-content nav-submenuShow" style="">
-      <li><router-link to="/setings/db">База</router-link></li>
+    <ul v-if="user && (user.isAdmin)" class="nav-submenu menu-content nav-submenuShow" style="">
+      <li v-if=""><router-link to="/setings/db">База</router-link></li>
     </ul>
   </li>
 </template>

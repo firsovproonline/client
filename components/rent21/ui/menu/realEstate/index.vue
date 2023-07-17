@@ -9,8 +9,8 @@
     </router-link>
     <ul v-if="flagOpen" class="nav-submenu menu-content nav-submenuShow" style="">
       <li><router-link to="/realestate">Коммерческая</router-link></li>
-      <li><router-link to="/realestate">Жилая</router-link></li>
-      <li><router-link to="/realestate">Загородная</router-link></li>
+      <li><router-link to="/realestate/residential">Жилая</router-link></li>
+      <li><router-link to="/realestate/suburban">Загородная</router-link></li>
     </ul>
   </li>
 </template>

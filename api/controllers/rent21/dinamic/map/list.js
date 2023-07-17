@@ -1,4 +1,4 @@
-const sql = `SELECT rent21_buildings.address AS address,
+let sql = `SELECT rent21_buildings.address AS address,
     rent21_buildings.fields as fields,
     rent21_obs.fields as ob21,
     json_extract_path(rent21_obs.fields,'TIP') as typeOb21,
@@ -10,8 +10,14 @@ const sql = `SELECT rent21_buildings.address AS address,
  FROM rent21_buildings
  LEFT JOIN rent21_addresses ON rent21_addresses.uid = rent21_buildings.address
  LEFT JOIN rent21_obs ON rent21_obs.build = rent21_buildings.uid
-
  `
+
+if(req.body && req.body.tipReal === 'suburban'){
+  sql += ` WHERE rent21_obs.fields ->> 'TIP' in ('Дом/дача','Коттедж','Танхаус','Часть дома')`
+}
+if(req.body && req.body.tipReal === 'residential'){
+  sql += ` WHERE rent21_obs.fields ->> 'TIP' in ('Квартира','Квартира новостройка','Комната','Доля в квартире')`
+}
 db.sequelizePg.query(sql, {
   raw: true
 }).then((items) => {

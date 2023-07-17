@@ -33,7 +33,8 @@ export default {
     addressForm: null
   }),
   props:{
-    Mapready: null
+    Mapready: null,
+    realTip: ''
   },
   computed:{
     globalMessage(){
@@ -566,6 +567,7 @@ export default {
     }
   },
   mounted() {
+    console.log('mounted Ymap', this.$router.currentRoute.path)
     this.resize();
     window.ymaps.ready(()=> {
       this.myMap = new window.ymaps.Map(this.$refs.map, {
@@ -611,7 +613,7 @@ export default {
 
       this.myMap.controls.getContainer().appendChild(this.$refs.YmapFind.$el)
       if(this.Mapready)this.Mapready(this.myMap)
-      this.$axios.post('/api/rent21/map').then(items=>{
+      this.$axios.post('/api/rent21/map',{tipReal:this.realTip}).then(items=>{
         // console.log(items)
         const clusterer = new window.ymaps.Clusterer();
         items.data.rows.forEach(item=>{
