@@ -49,58 +49,11 @@
                       <h6>General             </h6>
                     </div>
                   </li>
-                  <li class="dropdown">
-                    <router-link class="nav-link menu-title" to="/impressions">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-home"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
-                      <span>Клиенты</span>
-                      <div class="according-menu">
-                        <i class="fa fa-angle-right"></i>
-                      </div>
-                    </router-link>
-                    <ul class="nav-submenu menu-content" style="display: none;">
-                      <li><a href="index.html">Default</a></li>
-                      <li><a href="dashboard-02.html">Ecommerce</a></li>
-                    </ul>
-                  </li>
-                  <li class="dropdown">
-                    <router-link class="nav-link menu-title" to="/calls">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-home"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
-                      <span>Звонки</span>
-                      <div class="according-menu">
-                        <i class="fa fa-angle-right"></i>
-                      </div>
-                    </router-link>
-                    <ul class="nav-submenu menu-content" style="display: none;">
-                      <li><a href="index.html">Default</a></li>
-                      <li><a href="dashboard-02.html">Ecommerce</a></li>
-                    </ul>
-                  </li>
+                  <MenuImpressions />
+                  <MenuCalls />
                   <MenuRealEstate />
-                  <li class="dropdown">
-                    <router-link class="nav-link menu-title" to="/report" v-if="user && user.isAdmin">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-home"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
-                      <span>Экспорт</span>
-                      <div class="according-menu">
-                        <i class="fa fa-angle-right"></i>
-                      </div>
-                    </router-link>
-                    <ul v-if="user && user.isAdmin" class="nav-submenu menu-content nav-submenuShow" style="">
-                      <li><router-link to="/report/avito">Avito</router-link></li>
-                      <li><router-link to="/report/cian">Cian</router-link></li>
-                    </ul>
-                  </li>
-                  <li class="dropdown" v-if="user && user.isAdmin">
-                    <router-link class="nav-link menu-title" to="/setings">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-home"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
-                      <span>Настройки</span>
-                      <div class="according-menu">
-                        <i class="fa fa-angle-right"></i>
-                      </div>
-                    </router-link>
-                    <ul class="nav-submenu menu-content nav-submenuShow" >
-                      <li><router-link to="/setings/db">База</router-link></li>
-                    </ul>
-                  </li>
+                  <MenuReport />
+                  <MenuSetings />
                   <li class="dropdown">
                     <a class="nav-link menu-title" href="https://firsovpro.bitrix24.ru" target="_blank" style="color: red">
                       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-home"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
@@ -109,15 +62,6 @@
                         <i class="fa fa-angle-right"></i>
                       </div>
                     </a>
-                  </li>
-                  <li class="dropdown" v-if="user && user.isAdmin">
-                    <router-link class="nav-link menu-title" to="/setings/log">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-home"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
-                      <span>Работа с логом</span>
-                      <div class="according-menu">
-                        <i class="fa fa-angle-right"></i>
-                      </div>
-                    </router-link>
                   </li>
                 </ul>
               </div>
@@ -142,11 +86,15 @@
 import headerDiv from '~/components/headerDiv'
 import usercard from '~/components/usercard'
 import MenuRealEstate from '@/components/rent21/ui/menu/realEstate'
+import MenuImpressions from '@/components/rent21/ui/menu/impressions'
+import MenuCalls from '@/components/rent21/ui/menu/calls'
+import MenuReport from '@/components/rent21/ui/menu/report'
+import MenuSetings from '@/components/rent21/ui/menu/setings'
 
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
   name: 'Default',
-  components: { MenuRealEstate },
+  components: { MenuSetings, MenuReport, MenuCalls, MenuImpressions, MenuRealEstate },
   comments:{headerDiv, usercard},
   data: () => ({
     showLeftPanel: false,
@@ -243,9 +191,7 @@ export default {
       this.$store.commit('main/setusers', item.data);
     });
     this.$axios.get('/api/user').then((item) => {
-      this.user = item.data;
       this.$store.dispatch('main/setuser',item.data)
-      console.log('====',this.user)
     });
 
     this.$store.dispatch('main/load');
