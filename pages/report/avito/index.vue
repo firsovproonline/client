@@ -4,7 +4,9 @@
       <div class="hdiv"></div>
       <div class="itemRow" style="max-width: 120px;min-width: 120px">{{item.avito_date_end.split('+')[0]}}</div>
       <div class="hdiv"></div>
-      <div class="itemRow" style="max-width: 240px;min-width: 240px">{{item.ad_id}}</div>
+      <div class="itemRow" style="max-width: 240px;min-width: 240px">
+        <router-link :to="'/report/avito/'+item.ad_id">Редактировать</router-link>
+      </div>
       <div class="hdiv"></div>
       <div class="itemRow" style="max-width: 240px;min-width: 240px">{{item.section.title}}</div>
       <div class="hdiv"></div>
