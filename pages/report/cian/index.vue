@@ -4,7 +4,9 @@
       <div class="hdiv"></div>
       <div class="itemRow" style="max-width: 100px;min-width: 100px">{{item.status}}</div>
       <div class="hdiv"></div>
-      <div class="itemRow" style="max-width: 240px;min-width: 240px">{{item.externalId}}</div>
+      <div class="itemRow" style="max-width: 140px;min-width: 140px">
+        <router-link :to="'/report/cian/'+item.externalId">Редактировать</router-link>
+      </div>
       <div class="hdiv"></div>
       <div v-if="item.errors.length === 0" class="itemRow" style="width: 99%"><a :href="item.url" target="_blank">{{item.url}}</a></div>
       <div v-else class="itemRow" style="width: 99%">{{item.errors[0]}}</div>
