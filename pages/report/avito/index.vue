@@ -10,8 +10,6 @@
       <div class="hdiv"></div>
       <div class="itemRow" style="width: 99%"><a :href="item.url" target="_blank">{{item.url}}</a></div>
       <div class="hdiv"></div>
-
-
     </div>
   </div>
 </template>
