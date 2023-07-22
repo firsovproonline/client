@@ -87,6 +87,12 @@ export default {
     }
   },
   mounted () {
+    this.$store.dispatch('main/globalMessage','null').then(
+      this.$nextTick(()=>{
+        this.$store.dispatch('main/globalMessage','showBack|true')
+      })
+    )
+
     this.$axios.get('/api/rent21/buildingOb/'+this.$route.params.id).then(item=> {
       if (item.data.error && item.data.error === 401) {
         window.alert('Вы не авторизованы')

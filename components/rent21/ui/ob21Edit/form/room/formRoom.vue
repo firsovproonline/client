@@ -156,9 +156,18 @@ export default {
         pfield: this.item.UID,
         field: this.item.building,
         value: this.item.exports,
-        spr: this.address
+        spr: this.address,
+        height: '600px'
       }
       this.$store.dispatch('main/setVcomponent', p)
+      this.$nextTick(()=>{
+        this.$store.dispatch('main/globalMessage','widthRform|300px')
+        this.$nextTick(()=>{
+          this.$store.dispatch('main/globalMessage','widthRform|600px')
+        })
+      })
+
+
     },
     resize(){
       if(this.$refs.main){

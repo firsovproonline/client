@@ -19,19 +19,14 @@
         </svg>
       </div>
     </div>
-    <div v-if="vComponent" :class="ifmetro ? 'rpanel-big' : ifInfo ?'lpanel':'rpanel'">
+    <div v-if="vComponent" ref="rpanel" :class="ifmetro ? 'rpanel-big' : ifInfo ?'lpanel':'rpanel'">
       <component :is="vComponent" v-if="vComponent" />
     </div>
     <div class="page-wrapper compact-wrapper">
 
       <div class="page-main-header">
         <div class="main-header-right row m-0" style="width: auto">
-          <div class="main-header-left">
-            <div @click="showNav = ! showNav" class="toggle-sidebar"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-align-center status_toggle middle" id="sidebar-toggle" checked="true"><line x1="18" y1="10" x2="6" y2="10"></line><line x1="21" y1="6" x2="3" y2="6"></line><line x1="21" y1="14" x2="3" y2="14"></line><line x1="18" y1="18" x2="6" y2="18"></line></svg></div>
-            <a href="/api/auth/yandex">Login with Yandex</a>
-            <div class="logo-wrapper"><a href="index.html"><img class="img-fluid" src="" alt=""></a></div>
-            <div class="dark-logo-wrapper"><a href="index.html"><img class="img-fluid" src="" alt=""></a></div>
-          </div>
+          <headerLeft />
         </div>
         <component :is="save_component" v-if="save_component" style="margin-left: 12px" />
       </div>
@@ -122,7 +117,7 @@
             </div>
           </nav>
         </header>
-        <div class="page-body" :style="width<1001 || !showNav ? 'margin-left:0px;overflow-x:hidden':'overflow-x:hidden'">
+        <div class="page-body" ref="rdiv" :style="width<1001 || !showNav ? 'margin-left:0px;overflow-x:hidden':'overflow-x:hidden'">
           <div class="custom-container">
             <div class="container-fluid">
               <div v-if="vComponent" class="modalDiv"></div>
@@ -138,15 +133,17 @@
 <script>
 import headerDiv from '~/components/headerDiv'
 import usercard from '~/components/usercard'
+import HeaderLeft from '@/components/rent21/ui/header/left'
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
   name: 'small',
+  components: { HeaderLeft },
   comments:{headerDiv, usercard},
   data: () => ({
     showLeftPanel: false,
     showRightPanel: true,
     showNav: false,
-    width: 1100
+    width: 1100,
   }),
   methods:{
     resize(){
@@ -158,6 +155,12 @@ export default {
   },
   watch:{
     globalMessage(val){
+      if(!val) return
+      if(val.split('|')[0] === 'widthRform'){
+        this.$refs.rpanel.style.width = val.split('|')[1]
+        this.$refs.rpanel.style.left =  'calc(100% - '+val.split('|')[1]+')'
+      }
+      console.log('globalMessage----',val)
       if(val==='hideMenu'){
         this.showNav = false
       }

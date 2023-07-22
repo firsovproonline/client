@@ -5,7 +5,9 @@
   display: block;
 
 }
-
+.mainDiv{
+  border-right: none !important;
+}
 .dropdown-menu>li>a {
   display: block;
   padding: 3px 20px;
@@ -46,9 +48,11 @@
   opacity: 0.999 !important;
 }
 .dhxform_obj_dhx_skyblue {
-  width: 100%;
+  width: 100% !important;
 }
-
+.dhxform_obj_dhx_skyblue div.dhxform_item_label_top {
+ margin-right: 10px;
+}
 .dhxform_obj_dhx_skyblue div.dhxform_base {
   width: 100%;
 }

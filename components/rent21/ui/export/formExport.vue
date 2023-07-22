@@ -29,7 +29,7 @@
     </div>
     <div class="footer">
       <button type="button" @click="save" class="btn btn-pill btn-primary btn-air-primary btn-sm">Сохранить</button>
-      <button type="button" @click="close" class="btn btn-pill btn-secondary btn-air-secondary btn-sm">Закрыть</button>
+      <button type="button" @click="close" class="btn btn-pill btn-primary btn-air-primary btn-sm">Закрыть</button>
     </div>
   </div>
 </template>
@@ -68,6 +68,10 @@ export default {
     }
   },
   watch:{
+    globalMessage(val){
+      console.log('exportForm globalMessage')
+    },
+
     activeTab(val,old){
       //console.log(this.value)
       if(old !== ''){
@@ -170,6 +174,7 @@ export default {
     }
   },
   mounted () {
+    console.log('exportForm height',this.height)
     this.ob21Form = new dhtmlXForm(this.$refs.body, [
       {
         type: "block",

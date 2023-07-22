@@ -313,8 +313,11 @@ var timerIdCian = setInterval(function() {
         request(options, callback);
       }
       else {
-        fs.writeFileSync(__dirname + '/config/avito_error.text', JSON.stringify(response));
-        //res.json({rows : 0,temp:1})
+        try {
+          fs.writeFileSync(__dirname + '/config/avito_error.text', response);
+        }catch (err) {
+          console.log('Ошибка с avito',response)
+        }
       }
     });
 
