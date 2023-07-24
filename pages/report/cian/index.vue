@@ -50,10 +50,22 @@ export default {
       feed: 'cian'
     }
   }),
+  watch:{
+    filterFid(val){
+      this.$axios.get('/api/rent21/log/cian?feed='+val).then(item=>{
+        this.items = Object.values(item.data)
+      })
+    }
+  },
+  computed:{
+    filterFid(){
+      return this.filter.feed
+    }
+  },
   mounted () {
     window.addEventListener('resize', this.resize);
     this.resize()
-    this.$axios.get('/api/rent21/log/cian?feed='+this.filter.feed).then(item=>{
+    this.$axios.get('/api/rent21/log/cian?feed='+this.filterFid).then(item=>{
       this.items = Object.values(item.data)
     })
   },

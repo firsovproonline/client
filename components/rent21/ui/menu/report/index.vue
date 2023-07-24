@@ -8,8 +8,8 @@
       </div>
     </router-link>
     <ul v-if="flagOpen" class="nav-submenu menu-content nav-submenuShow" style="">
-      <li><router-link to="/report/avito">Avito</router-link></li>
-      <li><router-link to="/report/cian">Cian</router-link></li>
+      <li><router-link to="/report/avito" :class="avito?'activeLink':''">Avito</router-link></li>
+      <li><router-link to="/report/cian" :class="cian?'activeLink':''">Cian</router-link></li>
     </ul>
   </li>
 </template>
@@ -19,7 +19,9 @@ export default {
   name: 'menuReport',
   data:() => ({
     flagOpen: false,
-    active: false
+    active: false,
+    avito: false,
+    cian: false
   }),
   watch: {
     $route(to, from) {
@@ -31,6 +33,14 @@ export default {
         this.active = false
         this.flagOpen = false
       }
+      if(to.path.indexOf('report/avito')!==-1)
+        this.avito = true
+      else
+        this.avito = false
+      if(to.path.indexOf('report/cian')!==-1)
+        this.cian = true
+      else
+        this.cian = false
     }
   },
   computed: {
@@ -43,6 +53,15 @@ export default {
       this.active = true
       this.flagOpen = true
     }
+    if(this.$router.currentRoute.path.indexOf('report/avito')!==-1)
+      this.avito = true
+    else
+      this.avito = false
+    if(this.$router.currentRoute.path.indexOf('report/cian')!==-1)
+      this.cian = true
+    else
+      this.cian = false
+
   }
 }
 </script>
@@ -51,4 +70,5 @@ export default {
 .active{
   background-color: #0d67e9;
 }
+
 </style>

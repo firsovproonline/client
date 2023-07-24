@@ -160,7 +160,6 @@ export default {
         this.$refs.rpanel.style.width = val.split('|')[1]
         this.$refs.rpanel.style.left =  'calc(100% - '+val.split('|')[1]+')'
       }
-      console.log('globalMessage----',val)
       if(val==='hideMenu'){
         this.showNav = false
       }
