@@ -93,17 +93,4 @@ export default {
   padding-left: 3px;
   padding-right: 3px;
 }
-.hdiv{
-  border-left: 1px solid;
-  width: 1px;
-}
-.gridHeader{
-  padding: 6px;
-  background: -webkit-linear-gradient(top, rgb(226, 239, 255), rgb(211, 231, 255));
-  border-top: 1px solid rgb(164, 190, 212);
-  border-left: 1px solid rgb(164, 190, 212);
-  border-right: 1px solid rgb(164, 190, 212);
-  border-bottom: 1px solid black;
-  display: flex;
-}
 </style>

@@ -51,9 +51,13 @@ export default {
     rent21Ch: false,
     cianCh: false,
     cian1Ch: false,
-    YandexCh: false
+    YandexCh: false,
+    oldValue: {}
   }),
   computed:{
+    globalMessage(){
+      return this.$store.getters['main/globalMessage'];
+    },
     spr(){
       return this.$store.getters['main/combospr'];
     },
@@ -69,9 +73,17 @@ export default {
   },
   watch:{
     globalMessage(val){
-      console.log('exportForm globalMessage')
+      if (!val) return
+      switch (val.split('|')[0]) {
+        case 'deleteExportPhoto':
+          this.$nextTick(()=>{
+              this.value[this.activeTab].PHOTO.splice(this.value[this.activeTab].PHOTO.findIndex(item => (item.uid == val.split('|')[1] && item.title == val.split('|')[2])), 1)
+          })
+          break
+        default:
+          break
+      }
     },
-
     activeTab(val,old){
       //console.log(this.value)
       if(old !== ''){
@@ -174,7 +186,6 @@ export default {
     }
   },
   mounted () {
-    console.log('exportForm height',this.height)
     this.ob21Form = new dhtmlXForm(this.$refs.body, [
       {
         type: "block",
@@ -540,8 +551,9 @@ export default {
     this.ob21Form.attachEvent("onChange", this.onChange);
 
     this.activeTab ='rent21'
-    console.log('export++++++++', this.value, this.spr, this.combofield)
-    const ob = this.value;
+    console.log('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
+    this.oldValue = JSON.parse(JSON.stringify(this.value))
+
     if(this.value.rent21.Publ == 1) this.rent21Ch = true
     else this.rent21Ch = false
     if(this.value.cian.Publ == 1) this.cianCh = true
@@ -558,7 +570,6 @@ export default {
     this.value.cian.UID = this.value.avito.UID
     this.value.cian1.UID = this.value.avito.UID
     this.value.cian1.rent21 = this.value.avito.UID
-    console.log('this.field',this.field)
   },
   methods:{
     onChange(name, value, state){
@@ -638,6 +649,11 @@ export default {
 
     },
     close(){
+      console.log('Value', this.value)
+      console.log('oldValue', this.oldValue)
+      for(let key in this.oldValue){
+        this.value[key] = this.oldValue[key]
+      }
       this.$store.dispatch('main/setVcomponent', {
         comp: null,
         field: null,

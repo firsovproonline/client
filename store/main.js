@@ -59,7 +59,9 @@ export const actions = {
   setmultiItems ({ commit }, comp) {
     commit('setmultiItems', comp)
   },
-
+  setCombovalue ({ commit }, val) {
+    commit('setCombovalue', val)
+  },
 }
 
 export const mutations = {
@@ -105,6 +107,9 @@ export const mutations = {
   },
   setmultiItems (state, vcomponent) {
     state.multiItems = vcomponent
+  },
+  setCombovalue (state, vcomponent) {
+    state.combovalue = vcomponent
   },
 
 }

@@ -7,8 +7,10 @@
         <i class="fa fa-angle-right"></i>
       </div>
     </router-link>
-    <ul v-if="user && (user.isAdmin)" class="nav-submenu menu-content nav-submenuShow" style="">
-      <li v-if=""><router-link to="/setings/db">База</router-link></li>
+    <ul v-if="(user && (user.isAdmin || user.isRieltor)) && flagOpen" class="nav-submenu menu-content nav-submenuShow" style="">
+      <li v-if="user.isAdmin"><router-link to="/setings/db" :class="db?'activeLink':''">База</router-link></li>
+      <li v-if="user.isAdmin"><router-link to="/setings/feeds" :class="feeds?'activeLink':''">Фиды</router-link></li>
+      <li v-if="user.isAdmin"><router-link to="/setings/users" :class="users?'activeLink':''">Пользователи</router-link></li>
     </ul>
   </li>
 </template>
@@ -18,13 +20,28 @@ export default {
   name: 'menuSetings',
   data:() => ({
     flagOpen: false,
-    active: false
+    active: false,
+    db: false,
+    feeds: false,
+    users: false
   }),
   watch: {
     $route(to, from) {
       if(to.path.indexOf('setings')!==-1){
         this.active = true
         this.flagOpen = true
+        if(to.path.indexOf('/db')!==-1)
+          this.db = true
+        else
+          this.db = false
+        if(to.path.indexOf('/feeds')!==-1)
+          this.feeds = true
+        else
+          this.feeds = false
+        if(to.path.indexOf('/users')!==-1)
+          this.users = true
+        else
+          this.users = false
       }
       else{
         this.active = false
@@ -41,6 +58,19 @@ export default {
     if(this.$router.currentRoute.path.indexOf('setings')!==-1){
       this.active = true
       this.flagOpen = true
+      if(this.$router.currentRoute.path.indexOf('/db')!==-1)
+        this.db = true
+      else
+        this.db = false
+      if(this.$router.currentRoute.path.indexOf('/feeds')!==-1)
+        this.feeds = true
+      else
+        this.feeds = false
+      if(this.$router.currentRoute.path.indexOf('/users')!==-1)
+        this.users = true
+      else
+        this.users = false
+
     }
   }
 }

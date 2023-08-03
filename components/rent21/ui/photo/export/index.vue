@@ -8,32 +8,32 @@
           <!--
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-camera"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
           -->
-          Выбранные
+          Выбранные в экспорт
         </div>
         <div :class="activetab == 'all' ? 'tabBt active':'tabBt'" style="margin-left: 8px;cursor: pointer" @click="activetab = 'all'">Все</div>
       </div>
     </div>
     <div v-if="activetab=='main'" style="min-height: 80px;display: flex;flex-wrap: wrap;">
-      <div v-for="(item, index) in items" :key="index" class="MainphotoBox" >
+        <PhotoExportItem  v-for="(item, index) in items" :key="index" :item="item"/>
+        <!--
         <div :step="index"
-             @click="active = item.ID"
-             :class="active === item.ID? 'fotoBox active':'fotoBox'"
+             @click="active = item.uid"
+             :class="active === item.uid? 'fotoBox active':'fotoBox'"
              :style="'background-image: url(/api/rent21/photo/get/'+item.uid+'/'+encodef(item.title) +')'"
         >
-          <div class="delB" @click="delit(index)">
+          <div class="delB" @click="delit(item)">
             <svg class="feather feather-trash-2 svgColor1" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline data-v-91744b02="" points="3 6 5 6 21 6"></polyline><path data-v-91744b02="" d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line data-v-91744b02="" x1="10" y1="11" x2="10" y2="17"></line><line data-v-91744b02="" x1="14" y1="11" x2="14" y2="17"></line></svg>
           </div>
 
         </div>
-
-      </div>
+/-->
     </div>
     <div v-if="activetab=='all' && items" style="min-height: 80px;display: flex;flex-wrap: wrap;">
       <div v-for="(item, index) in itemsAll" :key="index" :style="items.find(el => el.uid === item.UID && el.title === item.TITLE)? 'display: none':''" >
           <div  :step="index" v-if="! items.find(el => el.uid === item.UID && el.title === item.TITLE)" class="MainphotoBox"
-               @click="active = item.ID"
+               @click="active = item.uid"
                 @dblclick="insert(item)"
-               :class="active === item.ID? 'fotoBox active':'fotoBox'"
+               :class="active === item.uid? 'fotoBox active':'fotoBox'"
                :style="'background-image: url(/api/rent21/photo/get/'+item.UID+'/'+encodef(item.TITLE)+')'"
           >
           </div>
@@ -47,34 +47,42 @@
 
 <script>
 import {Base64} from 'js-base64';
+import PhotoExportItem from '@/components/rent21/ui/photo/photoExportItem'
 
 export default {
   name: 'exportPhoto',
+  components: { PhotoExportItem },
   data: () => ({
     active: 0,
     activetab: 'main',
-    itemsAll: []
+    itemsAll: [],
+    itemsExport: []
   }),
   props:{
     items:  [],
     buildingUid:'',
     uid: ''
   },
+  computed:{
+    globalMessage(){
+      return this.$store.getters['main/globalMessage'];
+    },
+  },
   mounted () {
-    console.log('this.buildingUid',this.buildingUid)
+    console.log('this.items',this.items)
     this.$axios.get('/api/rent21/photo/list/'+this.buildingUid+'/'+this.uid).then(items=>{
       this.itemsAll = items.data.rows
       //
     })
-
   },
   methods:{
     encodef(val){
       return Base64.encode(val)
     },
-    delit(id){
-      console.log(id)
-      this.items.splice(id, 1)
+    delit(item){
+      const id = item.uid
+      this.items.splice(this.items.findIndex(item => item.uid == id), 1)
+      console.log('delit from export', id, this.items)
     },
     insert(item){
       console.log(item, this.items)
