@@ -27,15 +27,9 @@ export default {
     ],
     script: [
 
-      { src: '/js/jquery.min.js',
-      },
-      {
-        src: '/js/three.js'
-      },
-      {
-        src: '/js/three.module.js'
-      },
-
+      { src: '/js/jquery.min.js'},
+      //{src: '/js/three.js'},
+      //{src: '/js/es-module-shims.js'},
       {
         src: 'https://api-maps.yandex.ru/2.1/?apikey=fdb945b0-aaa5-4b5d-a837-383abb24dfc4&lang=ru_RU',
       },

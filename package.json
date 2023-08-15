@@ -53,6 +53,7 @@
     "request": "^2.88.2",
     "sequelize": "^6.21.0",
     "socket.io": "^4.5.1",
+    "three": "^0.155.0",
     "tinymce-vue": "^1.0.0",
     "tinymce-vue-2": "^0.0.5",
     "ts-node": "^10.9.1",

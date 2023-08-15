@@ -1,6 +1,6 @@
 <template>
   <div ref="divScene" class="divScene" >
-    <div style="position: absolute">
+      <div style="position: absolute">
       <br/>
       <button style="margin-left: 12px;width: 180px;height: 48px" class="btn btn-pill btn-secondary btn-air-secondary btn-sm" type="button">Загрузить пакет</button>
       <br/>
@@ -10,7 +10,11 @@
 </template>
 
 <script>
+import * as THREE from "three"
+import { OrbitControls } from '@/node_modules/three/examples/jsm/controls/OrbitControls.js'
+
 export default {
+
   name: "threeScene",
   data () {
     return {
@@ -90,14 +94,10 @@ export default {
     this.camera = new THREE.PerspectiveCamera( 75, width / height, 0.1, 1000 );
     this.renderer = new THREE.WebGLRenderer({ alpha: true });
     this.renderer.setSize( width, height )
-/*
-    const controls = new THREE.OrbitControls(this.camera, this.renderer.domElement) // Create a control object
+    const controls = new OrbitControls(this.camera, this.renderer.domElement) // Create a control object
     controls.addEventListener('change', () => {
       this.render()
     })
-
-
- */
     this.$refs.divScene.addEventListener('mousemove', this.onPointerMove)
     this.$refs.divScene.appendChild( this.renderer.domElement );
     const geometry = new THREE.BoxGeometry( 3, 3, 3 );
