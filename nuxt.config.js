@@ -30,8 +30,12 @@ export default {
       { src: '/js/jquery.min.js',
       },
       {
-        src: '/js/socket.io.esm.min.js'
+        src: '/js/three.js'
       },
+      {
+        src: '/js/three.module.js'
+      },
+
       {
         src: 'https://api-maps.yandex.ru/2.1/?apikey=fdb945b0-aaa5-4b5d-a837-383abb24dfc4&lang=ru_RU',
       },
@@ -107,7 +111,7 @@ export default {
   modules: [
     // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
-    '~/modules/socket',
+    //'~/modules/socket',
   ],
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {

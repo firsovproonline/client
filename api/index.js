@@ -1,6 +1,8 @@
 import ss from "sequelize";
 import MD5 from 'crypto-js/md5'
 import * as Console from 'console'
+import sqlite3 from 'sqlite3'
+import crypto from 'crypto'
 const express = require('express')
 const mysql = require("mysql")
 const cors = require("cors")
@@ -19,6 +21,36 @@ const {Base64} = require('js-base64');
 const db = require("./models");
 const config = require("./config/db.config.js");
 const ejs = require('ejs');
+const SQLiteStore = require('connect-sqlite3')(session);
+//require('https').globalAgent.options.rejectUnauthorized = false;
+var db3 = new sqlite3.Database('todos.db');
+db3.serialize(()=> {
+  // create the database schema for the todos app
+  db3.run("CREATE TABLE IF NOT EXISTS users ( \
+    id INTEGER PRIMARY KEY, \
+    username TEXT UNIQUE, \
+    hashed_password BLOB, \
+    salt BLOB \
+  )");
+
+  db3.run("CREATE TABLE IF NOT EXISTS todos ( \
+    id INTEGER PRIMARY KEY, \
+    owner_id INTEGER NOT NULL, \
+    title TEXT NOT NULL, \
+    completed INTEGER \
+  )");
+
+  // create an initial user (username: alice, password: letmein)
+  var salt = crypto.randomBytes(16);
+  db3.run('INSERT OR IGNORE INTO users (username, hashed_password, salt) VALUES (?, ?, ?)', [
+    'alice',
+    crypto.pbkdf2Sync('letmein', salt, 310000, 32, 'sha256'),
+    salt
+  ]);
+});
+
+
+
 const corsOptions = {
   origin: "*"
 }
@@ -39,7 +71,7 @@ function generateUID() {
   return (S4() + S4() + "-" + S4() + "-4" + S4().substr(0, 3) + "-" + S4() + "-" + S4() + S4() + S4()).toLowerCase();
 }
 passport.serializeUser((user, done)=> {
-  // console.error(user)
+  console.error('serializeUser', user)
   const sql = "select * from users WHERE login = '" + user.username + "'"
   db.sequelizePg.query(sql, {
     raw: true,
@@ -60,7 +92,6 @@ passport.serializeUser((user, done)=> {
     if (items[0][0].tip == 'Риэлтор') {
       isAdmin = false;
       isRieltor = true;
-
     }
     user.isAdmin = isAdmin;
     user.MZ = items[0][0].mz;
@@ -92,7 +123,6 @@ passport.use(new YandexStrategy({
   }
 ));
 
-let papp = this
 const app = express()
 // require('./routes/main')(app);
 /*
@@ -121,11 +151,16 @@ app.use(cors(corsOptions));
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 //require('./routes/yandex')(app);
+
+
 app.use(session({
   resave: true,
-  saveUninitialized: false,
+  saveUninitialized: true,
   secret: 'uwotm8'
 }));
+
+
+
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -133,8 +168,10 @@ app.use(passport.session());
 //app.use(methodOverride());
 
 app.use((req, res, next)=> {
+  console.error('app.use',req.cookies)
+  next();
+/*
   if(!app.users) app.users= {}
-
   if(req.cookies  && req.cookies['connect.sid']) {
     if (req.user) {
       app.users[req.cookies['connect.sid']] = req.user
@@ -143,10 +180,13 @@ app.use((req, res, next)=> {
       let users =JSON.parse(fs.readFileSync('users.json', "utf8"))
       if(users[req.cookies['connect.sid']]){
         req.user = users[req.cookies['connect.sid']]
+      }else{
+//        console.error('not user')
       }
     }
   }
   next();
+ */
 });
 
 app.get('/auth/yandex',
@@ -160,7 +200,7 @@ app.get('/auth/yandex',
 app.get('/auth/yandex/callback',
   passport.authenticate('yandex', { failureRedirect: '/login' }),
   function(req, res) {
-    console.error('=============', req.query)
+    console.error('/auth/yandex/callback', req.query)
     res.redirect('/?oldurl=1');
   });
 // progress

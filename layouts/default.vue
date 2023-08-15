@@ -64,7 +64,7 @@
           </nav>
         </header>
         <div class="page-body" :style="width<1001 || !showNav ? 'margin-left:0px;overflow-x:hidden':'overflow-x:hidden'">
-          <div v-if="user && (user.isAdmin || user.isRieltor)" class="custom-container">
+          <div v-if="(user && (user.isAdmin || user.isRieltor)) || currentPatch==='login' || currentPatch==='treejs'" class="custom-container">
             <div class="container-fluid">
               <div v-if="vComponent" class="modalDiv"></div>
               <Nuxt />
@@ -129,6 +129,9 @@ export default {
     }
   },
   computed:{
+    currentPatch(){
+      return this.$router.currentRoute.name
+    },
     user(){
       return this.$store.getters['main/user']
     },
@@ -161,6 +164,7 @@ export default {
     },
   },
   mounted() {
+    console.log(this.$router.currentRoute.name)
     //console.log(window)
     /*
     this.socket = new window.WebSocket("ws://95.174.126.120:3022");

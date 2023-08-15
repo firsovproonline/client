@@ -1,17 +1,18 @@
 <template>
   <transition :name="modalClass">
-    <div :class="modalClass">
+    <div :class="modalClass" ref="modalDiv">
       <div
         :class="`${modalClass}-backdrop`"
         @click="closeModal"
       >
-        <div :class="[{'simple-modal-scrollable': scrollable}, `${modalClass}-container`]">
+        <div :class="[{'simple-modal-scrollable': scrollable}, `${modalClass}-container`]"  >
           <div
             :class="`${modalClass}-content`"
             role="dialog"
             :aria-labelledby="headerId"
             :aria-describedby="bodyId"
             @click.stop
+            ref="windiv"
           >
             <header
               :id="headerId"
@@ -66,6 +67,11 @@ export default {
       default: 'simple-modal',
     },
   },
+  data: () => ({
+    proto : {left:0,top:0,left2:0,top2:0},
+    isClicked : false
+  }),
+
   mounted() {
     window.addEventListener('keydown', this.escCloseModal);
   },
