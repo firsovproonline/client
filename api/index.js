@@ -71,7 +71,7 @@ function generateUID() {
   return (S4() + S4() + "-" + S4() + "-4" + S4().substr(0, 3) + "-" + S4() + "-" + S4() + S4() + S4()).toLowerCase();
 }
 passport.serializeUser((user, done)=> {
-  console.error('serializeUser', user)
+  //console.error('serializeUser', user)
   const sql = "select * from users WHERE login = '" + user.username + "'"
   db.sequelizePg.query(sql, {
     raw: true,
@@ -168,7 +168,7 @@ app.use(passport.session());
 //app.use(methodOverride());
 
 app.use((req, res, next)=> {
-  console.error('app.use',req.cookies)
+  //console.error('app.use',req.cookies)
   next();
 /*
   if(!app.users) app.users= {}
@@ -200,7 +200,7 @@ app.get('/auth/yandex',
 app.get('/auth/yandex/callback',
   passport.authenticate('yandex', { failureRedirect: '/login' }),
   function(req, res) {
-    console.error('/auth/yandex/callback', req.query)
+    //console.error('/auth/yandex/callback', req.query)
     res.redirect('/?oldurl=1');
   });
 // progress
@@ -209,7 +209,7 @@ app.get('/progress', function(req, res){
 });
 // ddddddddddddddddddddddddddddd
 app.get('/logout111', function(req, res){
-  console.log(req.cookies)
+  //console.log(req.cookies)
   req.logout();
   res.redirect('/');
 });
@@ -226,6 +226,7 @@ require('./routes/rent21/building')(app);
 require('./routes/rent21/photo')(app);
 require('./routes/rent21/setings')(app);
 require('./routes/rent21/log')(app);
+require('./routes/rent21/owner')(app);
 
 var timerIdCian = setInterval(function() {
   console.log("get CIAN")
@@ -363,6 +364,117 @@ var timerIdCian = setInterval(function() {
 
 
 }, 300000);
+
+function GetLastZvon(ob, func) {
+  console.log('получаем мои звонки');
+  var request = require('request');
+  request({
+    method: 'post',
+    url: 'https://rent1.moizvonki.ru/api/v1',
+    body: ob,
+    headers: {
+      "content-type": "application/json"
+    },
+    json: true,
+  }, function(error, response, body) {
+    if (ob.out == undefined) {
+      ob.out = {};
+      ob.uids = [];
+    }
+    if (body) {
+      for (var i = 0; i < body.results.length; i++) {
+        ob.out[body.results[i].db_call_id] = body.results[i];
+        ob.uids.push(body.results[i].db_call_id)
+      }
+      console.log(body.results_next_offset)
+      if (body.results_next_offset != 0) {
+        ob.from_offset = body.results_next_offset;
+        setTimeout(GetLastZvon, 30000, ob, func);
+      }
+      else {
+        try {
+          fs.writeFileSync(__dirname + '/config/moizvonki.json', JSON.stringify(ob.out));
+          for (let key in ob.out){
+            //console.log(ob.out[key])
+          }
+        }catch (err) {
+          console.log('Ошибка с звонками',response)
+        }
+
+
+        /*
+                connection.query("select `db_call_id` from  `callzvon` WHERE `db_call_id` in ('" + ob.uids.join("','") + "')", [], function(err, result) {
+                  for (var i = 0; i < result.length; i++) {
+                    delete(ob.out[result[i].db_call_id]);
+                  }
+                  var values = [];
+                  var query = "INSERT INTO `callzvon` (`direction`,`user_account`,`client_number`,`src_number`,`duration`," +
+                    "`user_id`,`answer_time`,`src_id`,`client_name`,`recording`,`answered`,`db_call_id`,`start_time`,`end_time`" +
+                    ")  VALUES ?";
+                  var flag = false;
+                  for (var key in ob.out) {
+                    flag = true;
+                    values.push([
+                      ob.out[key].direction,
+                      ob.out[key].user_account,
+                      ob.out[key].client_number,
+                      ob.out[key].src_number,
+                      ob.out[key].duration,
+                      ob.out[key].user_id,
+                      ob.out[key].answer_time,
+                      ob.out[key].src_id,
+                      ob.out[key].client_name,
+                      ob.out[key].recording,
+                      ob.out[key].answered,
+                      ob.out[key].db_call_id,
+                      ob.out[key].start_time,
+                      ob.out[key].end_time,
+                    ]);
+
+                  }
+                  if (flag) {
+                    connection.query(query, [values], function(err, result) {
+                      if (result) {
+                        func(ob.out)
+                      }
+                      else {
+                        func(err);
+                      }
+                    });
+
+                  }
+                  else {
+                    func(ob.out)
+                  }
+                });
+
+         */
+      }
+
+    }
+    else {
+      console.log(error)
+      func(null)
+    }
+  });
+
+}
+
+let newDate = Date.now() + -3 * 24 * 3600 * 1000;
+let outOb = {
+  "action": "calls.list",
+  "from_date": new Date(newDate).getTime() / 1000,
+  "max_results": 100,
+  "from_offset": 0,
+  "supervised": 1,
+  "do_sort": 1,
+  "user_name": 'roman@rent21.ru',
+  "api_key": "53j0vmmrccrk842svakb33icayo3qe0t"
+};
+//GetLastZvon(outOb, function(data) {
+//  console.log('new звонки ', new Date(), data);
+//})
+
 
 
 export default {

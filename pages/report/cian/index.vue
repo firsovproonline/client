@@ -66,6 +66,7 @@ export default {
     window.addEventListener('resize', this.resize);
     this.resize()
     this.$axios.get('/api/rent21/log/cian?feed='+this.filterFid).then(item=>{
+      console.log(item.data)
       this.items = Object.values(item.data)
     })
   },

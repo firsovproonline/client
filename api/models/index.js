@@ -40,6 +40,7 @@ db.rent21building = require("../models/rent21.building.model.js")(sequelize, Seq
 db.rent21owner = require("../models/rent21.owner.model.js")(sequelize, Sequelize);
 db.rent21export = require("../models/rent21.export.model.js")(sequelize, Sequelize);
 db.rent21log = require("../models/rent21.log.model.js")(sequelize, Sequelize);
+db.rent21moiZvonki = require("../models/rent21.callzvon.model.js")(sequelize, Sequelize);
 
 db.sequelizePg.sync({force: false})
 module.exports = db;

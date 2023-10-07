@@ -1,6 +1,38 @@
 <template>
   <div class="col-xl-6 box-col-12 des-xl-100 top-dealer-sec" style="min-width: 100%;" >
-    <div class="card" style="height: 600px">
+    <modal
+      v-show="flagModal"
+      :show="flagModal"
+      :scrollable="true"
+      body-id="modalBody" header-id="modalHeader"
+      @close="cancelItem"
+
+    >
+      <template #header>
+        {{titleModal}}
+      </template>
+      <template #body>
+        <ownerEdit :item="item" />
+      </template>
+      <template #footer>
+        <div style="display: flex;text-align: center;align-items: flex-end;justify-content: flex-end;">
+          <div
+            class="buttonDiv"
+            @click="saveItem"
+          >
+            Сохранить
+          </div>
+
+          <div
+            class="buttonDiv"
+            @click="cancelItem"
+          >
+            Закрыть
+          </div>
+        </div>
+      </template>
+    </modal>
+    <div class="card" ref="card" >
       <div class="card-header pb-0" style="display: flex;padding-right: 15px;">
         <div class="header-top d-sm-flex justify-content-between align-items-center" style="width: 100%;
         padding: 6px;background: -webkit-linear-gradient(#e2efff, #d3e7ff);
@@ -23,7 +55,7 @@
           </div>
         </div>
       </div>
-      <div class="gridHeader card-body" style="padding-bottom: 0px;padding-top: 0px;max-height: 80px;height: 80px;padding-right: 16px;">
+      <div class="gridHeader card-body" style="padding-left: 0; padding-bottom: 0px;padding-top: 0px;max-height: 80px;height: 80px;padding-right: 16px;">
         <div class="vdiv"></div>
         <div class="tddiv tdHeader" style="width: 70px;min-width: 70px">
           <div>ID</div>
@@ -72,7 +104,7 @@
             </div>
             <div v-else class="gridCol" style="width: 50%;white-space: nowrap;overflow: hidden">Создать клиена</div>
             <div class="gridCol" style="width: 50%;white-space: nowrap;overflow: hidden">{{item.client_name}}</div>
-            <div class="gridCol" style="width:118px;min-width: 118px" >{{item.title}}</div>
+            <div class="gridCol" style="width:118px;min-width: 118px" >{{item.usertitle}}</div>
           </div>
         </div>
 
@@ -85,11 +117,19 @@
 
 <script>
 import Item from '~/components/recentcalls/item'
+import OwnerEdit from '@/components/rent21/ui/owner/edit'
+
 export default {
   name: 'recentcalls',
   components: { Item },
   data: () => ({
     flagscroll : true,
+    flagModal: false,
+    titleModal: 'Собственик',
+    form: null,
+    item: {},
+    edit: true,
+    selectOwner: '',
     count: 0,
     filter: {
       phone: '',
@@ -104,21 +144,30 @@ export default {
     },
   },
   mounted () {
+    window.addEventListener('resize', this.resize);
+    this.resize()
     if(this.items.length===0){
-      this.$axios.post('/api/recentcalls/list',this.filter).then((item) => {
+      this.$axios.post('/api/recentcalls/listCall',this.filter).then((item) => {
         if(item.data.error && item.data.error === 401){
           window.alert('Вы не авторизованы')
           window.location.href = '/api/auth/yandex'
 
           return
         }
-        window.console.log(item.data);
+        window.console.log('звонки', item.data.rows);
         this.$store.dispatch('main/items', item.data.rows)
         this.count = item.data.count;
       });
     }
   },
   methods:{
+    resize(){
+      const h = window.innerHeight - this.$refs.card.getBoundingClientRect().top;
+      const w = window.innerWidth - this.$refs.card.getBoundingClientRect().left;
+      console.log('dddd')
+      this.$refs.card.style.height = (h- 20) + 'px';
+    },
+
     getCALLDATE(val){
       return new Date(new Date(val*1000)
         .getTime() + (3*60*60*1000)).toISOString()
@@ -126,7 +175,7 @@ export default {
     },
 
     reload(){
-      this.$axios.post('/api/recentcalls/list',this.filter).then((item) => {
+      this.$axios.post('/api/recentcalls/listCall',this.filter).then((item) => {
         this.$store.dispatch('main/items', item.data.rows)
         window.console.log(item.data);
       });
@@ -134,7 +183,7 @@ export default {
     scroll({ target: { scrollTop, clientHeight, scrollHeight }}) {
         if (this.flagscroll && scrollHeight - scrollTop <= 1000) {
           this.flagscroll = false
-          this.$axios.post('/api/recentcalls/list',this.filter).then((item) => {
+          this.$axios.post('/api/recentcalls/listCall',this.filter).then((item) => {
             this.filter.offset = this.items.length
             item.data.rows.forEach( l =>{
               this.items.push(l)
@@ -169,7 +218,8 @@ svg{
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-right: 15px;
+  margin-right: 30px;
+  margin-left: 30px;
   align-items: stretch;
   height: 190px;
   .vdiv{
