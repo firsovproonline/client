@@ -166,7 +166,7 @@ export default {
     this.$refs.cardGrid.style.height = (window.innerHeight - 100) +'px';
     console.log(this.$refs.cardGrid.offsetParent.offsetTop)
     if(this.items.length===0){
-      this.$axios.post('/api/impressions/list',this.filter).then((item) => {
+      this.$axios.post('/api/rent21/impressions/list',this.filter).then((item) => {
         if(item.data.error && item.data.error === 401){
           window.alert('Вы не авторизованы')
           window.location.href = '/api/auth/yandex'

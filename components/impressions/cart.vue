@@ -245,7 +245,9 @@ export default {
     callItems: []
   }),
   mounted () {
-    this.$axios.get('/api/impressions/'+this.$route.params.id).then(item=>{
+    console.log('=======================',this.$route.params.id)
+    this.$axios.get('/api/rent21/impressions/'+this.$route.params.id).then(item=>{
+      console.log(item)
       if(!item.data.fields.GOROD)item.data.fields.GOROD = '';
       if(!item.data.fields.WLOG)item.data.fields.WLOG = [];
       if(item.data.fields.KLEMAIL =='')item.data.fields.KLEMAIL = [];

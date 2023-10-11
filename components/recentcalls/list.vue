@@ -100,7 +100,7 @@
             <div class="gridCol" style="width:106px;min-width: 106px">{{getCALLDATE(item.start_time)}}</div>
             <div class="gridCol" style="width:110px;min-width: 110px" >{{item.client_number}}</div>
             <div v-if="item.impression" class="gridCol" style="width: 50%;white-space: nowrap;overflow: hidden">
-              <router-link :to="'/impressions/'+item.impression_id" >{{item.impression}}</router-link>
+              <router-link :to="'/impressions/'+item.impression_uid" >{{item.impression}}</router-link>
             </div>
             <div v-else class="gridCol" style="width: 50%;white-space: nowrap;overflow: hidden">Создать клиена</div>
             <div class="gridCol" style="width: 50%;white-space: nowrap;overflow: hidden">{{item.client_name}}</div>
@@ -121,7 +121,7 @@ import OwnerEdit from '@/components/rent21/ui/owner/edit'
 
 export default {
   name: 'recentcalls',
-  components: { Item },
+  components: { OwnerEdit, Item },
   data: () => ({
     flagscroll : true,
     flagModal: false,
@@ -161,6 +161,15 @@ export default {
     }
   },
   methods:{
+    saveItem(){
+      this.flagModal = !this.flagModal
+//      console.log(this.item)
+    },
+    cancelItem(){
+      console.log('cancel')
+      this.$store.dispatch('main/globalMessage','reload')
+      this.flagModal = !this.flagModal
+    },
     resize(){
       const h = window.innerHeight - this.$refs.card.getBoundingClientRect().top;
       const w = window.innerWidth - this.$refs.card.getBoundingClientRect().left;

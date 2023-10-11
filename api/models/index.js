@@ -23,12 +23,17 @@ const db = {};
 db.progress = {total: 0,current:0}
 db.config = config
 db.Op = Op
+const { Transaction } = require('sequelize');
 db.sequelizePg = new Sequelize(config.postgress.db,
   config.postgress.user,
   config.postgress.password, {
+  isolationLevel: Transaction.ISOLATION_LEVELS.SERIALIZABLE,
   dialect: "postgres",
   host: config.postgress.host,
-  logging: 0
+  logging: 0,
+    dialectOptions: {
+      connectTimeout: 60000,
+    },
 });
 const sequelize = db.sequelizePg;
 db.sequelizeMysql =sequelizeMysql;

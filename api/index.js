@@ -216,7 +216,6 @@ app.get('/logout111', function(req, res){
 
 
 require('./routes/main')(app);
-require('./routes/impressions')(app);
 require('./routes/recentcalls')(app);
 require('./routes/rent21/ob')(app);
 require('./routes/rent21/map')(app);
@@ -227,6 +226,9 @@ require('./routes/rent21/photo')(app);
 require('./routes/rent21/setings')(app);
 require('./routes/rent21/log')(app);
 require('./routes/rent21/owner')(app);
+require('./routes/rent21/impressions')(app);
+
+console.error('wwwwwwwwwwwwwwwwwww')
 
 var timerIdCian = setInterval(function() {
   console.log("get CIAN")

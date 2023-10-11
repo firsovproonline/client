@@ -1,68 +1,38 @@
-const db = require("../models");
-exports.save = (req, res) => {
-  if(!req.user || (!req.user.isAdmin && !req.user.isRieltor)){
-    res.json({'error':401})
-  }else{
-    const e = req.originalUrl.split('/');
-    const id = e[e.length - 1]
-    delete req.body.createdAt
-    delete req.body.updatedAt
-    delete req.body.id
-    if(req.user.isAdmin){
-      db.impressins.update(
-        req.body,
-        {
-          where: {
-            id: id
-          },
-        }
-      ).then(item=>{
-        if(item[0]==0){
-          res.json({'error':405})
-        }else{
-          res.json({'body':req.body,user:req.user,row:item})
-        }
-      })
+let d = new Date()
+console.error('start', d)
+if(!req.user || (!req.user.isAdmin && !req.user.isRieltor)){
+  res.json({'error':401})
+}else{
+  db.impressins.findAll({
 
-    }else{
-      db.impressins.update(
-        req.body,
-        {
-          where: {
-            id: id,
-            user:req.user.emails[0].value
-          },
+  }).then( (items) =>{
+    const promiseAR = [];
+    items.forEach(item=>{
+      promiseAR.push(new Promise(function(resolve, reject) {
+        if(item.dataValues.fields && item.dataValues.fields.TEL && item.dataValues.fields.TEL.length > 0){
+          //console.error(item.dataValues.fields.TEL[0].val)
         }
-      ).then(item=>{
-        if(item[0]==0){
-          res.json({'error':405})
-        }else{
-          res.json({'body':req.body,user:req.user,row:item})
-        }
-      })
+        console.error(1)
+        try {
+          db.rent21moiZvonki.findOne({
+            limit: 1
+          }).then(itemZ=>{
+            console.error('gggggggggggggggggggggggg')
+            resolve()
+          })
 
-    }
-  }
-}
-exports.cart = (req, res) => {
-  if(!req.user || (!req.user.isAdmin && !req.user.isRieltor)){
-    res.json({'error':401})
-    return
-  }
-  const e = req.originalUrl.split('/');
-  const id = e[e.length - 1]
-  db.sequelizePg.query(`SELECT * FROM impressions WHERE id = ` + id, {
-    raw: true,
-  }).then((items) => {
-    res.json(items[0][0])
+        }catch (err) {
+          console.error('gggggggggggggggggggggggg')
+          resolve()
+        }
+      }))
+    })
+    Promise.all(promiseAR).then(
+      result => {
+        console.error('stop', (new Date() - d)/1000)
+      }
+    )
   })
-}
-
-exports.list = (req, res) => {
-  if(!req.user || (!req.user.isAdmin && !req.user.isRieltor)){
-    res.json({'error':401})
-    return
-  }
   let where = '';
   if(req.body){
     for (const key in req.body) {
@@ -188,6 +158,7 @@ exports.list = (req, res) => {
   if(req.body.order == 'createdAt'){
     order = ` ORDER BY "createdAt" DESC `
   }
+  console.error(order)
   const sql =`SELECT * FROM impressions `+where+order+` OFFSET `+req.body.offset+` LIMIT `+req.body.limit
   db.sequelizePg.query(`SELECT COUNT(id) as  count FROM impressions `+where, {
     raw: true
@@ -199,4 +170,5 @@ exports.list = (req, res) => {
       res.json({count:count, rows : items[0],sql:sql, body:req.body})
     })
   })
+
 }

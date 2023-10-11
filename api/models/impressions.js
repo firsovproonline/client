@@ -63,6 +63,9 @@ module.exports = (sequelize, Sequelize) => {
       wlog: {
         type: Sequelize.JSON
       },
+      phone: {
+        type: Sequelize.JSON
+      },
       fields: {
         type: Sequelize.JSON
       }
