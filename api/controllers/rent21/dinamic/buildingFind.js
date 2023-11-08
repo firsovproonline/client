@@ -2,7 +2,7 @@ if(req.user && (req.user.isAdmin || req.user.isRieltor) && req.user.DOSTUP.index
   //house
   let sql = `select * from rent21_addresses WHERE rent21_addresses.fields ->> 'ULITCA' = '`+ req.body.street+`' `
   sql += ` AND rent21_addresses.fields ->> 'DOM' = '`+ req.body.house+`' `
-  db.sequelizePg.query(sql, {
+  res.db.sequelizePg.query(sql, {
     raw: true
   }).then(rows=>{
     res.json({row : rows})

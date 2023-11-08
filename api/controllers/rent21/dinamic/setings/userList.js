@@ -1,6 +1,6 @@
 if(req.user && req.user.isAdmin){
   const sql = "select * from users"
-  db.sequelizePg.query(sql, {
+  res.db.sequelizePg.query(sql, {
     raw: true,
   }).then(items=>{
     res.json(items[0])

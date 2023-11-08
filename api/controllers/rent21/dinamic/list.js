@@ -33,11 +33,11 @@ let sqlCount = `SELECT COUNT(rent21_obs.id) as  count
     LEFT JOIN rent21_addresses ON rent21_addresses.uid = rent21_buildings.address
 `+where
 
-db.sequelizePg.query(sqlCount, {
+res.db.sequelizePg.query(sqlCount, {
   raw: true
 }).then((items) => {
   const count = items[0][0].count
-  db.sequelizePg.query(sql, {
+  res.sequelizePg.query(sql, {
     raw: true
   }).then((items) => {
     res.json({count:count, rows : items[0],sql:sql, body:req.body})

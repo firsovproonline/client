@@ -1,4 +1,3 @@
-const db = require("../../models");
 const fs = require('fs')
 exports.avito = (req, res) => {
   const fileContent = fs.readFileSync(__dirname +'/dinamic/log/avito.js', "utf8");

@@ -18,7 +18,7 @@ if(req.body && req.body.tipReal === 'suburban'){
 if(req.body && req.body.tipReal === 'residential'){
   sql += ` WHERE rent21_obs.fields ->> 'TIP' in ('Квартира','Квартира новостройка','Комната','Доля в квартире')`
 }
-db.sequelizePg.query(sql, {
+res.db.sequelizePg.query(sql, {
   raw: true
 }).then((items) => {
   const outOb = {}

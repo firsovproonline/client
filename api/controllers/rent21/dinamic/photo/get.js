@@ -8,7 +8,7 @@ if(e.length > 6){
   sql = `SELECT THUMBNAIL FROM foto WHERE UID='`+e[e.length - 2]+`' AND TITLE='`+e[e.length - 1]+`'`
   //console.error('========',sql)
 }
-db.sequelizeMysql.query(sql).then(items=>{
+res.db.sequelizeMysql.query(sql).then(items=>{
   if(items[0] && items[0][0] && items[0][0].THUMBNAIL){
     res.status(200).send(items[0][0].THUMBNAIL)
   }else{

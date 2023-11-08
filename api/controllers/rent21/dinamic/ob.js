@@ -8,7 +8,7 @@ if(req.user && (req.user.isAdmin || req.user.isRieltor) && req.user.DOSTUP.index
     LEFT JOIN rent21_buildings ON rent21_buildings.uid = rent21_obs.build
     LEFT JOIN rent21_addresses ON rent21_addresses.uid = rent21_buildings.address
     WHERE rent21_obs.uid='`+id+`'`
-  db.sequelizePg.query(sql, {
+  res.db.sequelizePg.query(sql, {
     raw: true
   }).then((items) => {
     res.json({row : items[0]})

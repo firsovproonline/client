@@ -1,4 +1,3 @@
-const db = require("../models");
 const passport = require('passport');
 
 exports.auth = (req, res) => {

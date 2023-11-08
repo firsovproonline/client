@@ -1,4 +1,3 @@
-const db = require("../../models");
 const fs = require('fs')
 const request = require('request');
 const ejs = require('ejs');

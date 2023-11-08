@@ -1,4 +1,3 @@
-const db = require("../../models");
 const fs = require('fs')
 exports.buildingOb = (req, res) => {
   const fileContent = fs.readFileSync(__dirname +'/dinamic/buildingOb.js', "utf8");

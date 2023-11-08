@@ -1,3 +1,4 @@
+const db = res.db
 // import fs from 'fs'
 const mysql = require('mysql')
 //const tableSql = 'test_fields'
@@ -1753,10 +1754,10 @@ function generateUID() {
 function saveOwners(owners, buildUID, fun){
   // console.error('000000000000', owners)
   const connection = mysql.createConnection({
-    host: db.config.HOST,
-    user: db.config.USER,
-    password: db.config.PASSWORD,
-    database: db.config.DB,
+    host: res.db.config.HOST,
+    user: res.db.config.USER,
+    password: res.db.config.PASSWORD,
+    database: res.db.config.DB,
     debug: false
   });
   const out = []
@@ -1854,10 +1855,10 @@ function saveOwner(owner,fun){
   }
 
   const connection = mysql.createConnection({
-    host: db.config.HOST,
-    user: db.config.USER,
-    password: db.config.PASSWORD,
-    database: db.config.DB,
+    host: res.db.config.HOST,
+    user: res.db.config.USER,
+    password: res.db.config.PASSWORD,
+    database: res.db.config.DB,
     debug: false
   });
   let sql = ""
@@ -1891,10 +1892,10 @@ function saveOb21(ob21,fun){
   }
   let sql = "delete from "+tableSql+" WHERE `UID` in ('" + ob21.UID + "') AND `TIP` <> 'linc21'";
   const connection = mysql.createConnection({
-    host: db.config.HOST,
-    user: db.config.USER,
-    password: db.config.PASSWORD,
-    database: db.config.DB,
+    host: res.db.config.HOST,
+    user: res.db.config.USER,
+    password: res.db.config.PASSWORD,
+    database: res.db.config.DB,
     debug: false
   });
   connection.query(sql, [], function(err, result) {
@@ -1970,10 +1971,10 @@ function saveAddress(address,fun){
   }
   let sql = "delete from "+tableSql+" WHERE `UID` in ('" + address.UID + "') AND `TIP` <> 'linc21'";
   const connection = mysql.createConnection({
-    host: db.config.HOST,
-    user: db.config.USER,
-    password: db.config.PASSWORD,
-    database: db.config.DB,
+    host: res.db.config.HOST,
+    user: res.db.config.USER,
+    password: res.db.config.PASSWORD,
+    database: res.db.config.DB,
     debug: false
   });
   connection.query(sql, [], function(err, result) {
@@ -2016,10 +2017,10 @@ CREATE TABLE IF NOT EXISTS `test_fields` (
 
   let sql = "delete from "+tableSql+" WHERE `UID` in ('" + building.UID + "') AND `TIP` <> 'linc21'";
   const connection = mysql.createConnection({
-    host: db.config.HOST,
-    user: db.config.USER,
-    password: db.config.PASSWORD,
-    database: db.config.DB,
+    host: res.db.config.HOST,
+    user: res.db.config.USER,
+    password: res.db.config.PASSWORD,
+    database: res.db.config.DB,
     debug: false
   });
   connection.query(sql, [], function(err, result) {
@@ -2054,7 +2055,7 @@ if(req.user && (req.user.isAdmin || req.user.isRieltor) && req.user.DOSTUP.index
         // console.log('uid',__dirname)
 //        fs.writeFileSync(__dirname+'../../../config/saveEXPORT.json', JSON.stringify(req.body.export.value))
         promiseAR.push(new Promise(function (resolve, reject) {
-          db.rent21ob.update(
+          res.db.rent21ob.update(
             {
               exports: req.body.export.value
             },
@@ -2102,10 +2103,10 @@ if(req.user && (req.user.isAdmin || req.user.isRieltor) && req.user.DOSTUP.index
               }
               let sql = "delete from export WHERE `UID` in ('" + req.body.export.uid + "') AND `TIP` <> 'linc21'";
               const connection = mysql.createConnection({
-                host: db.config.HOST,
-                user: db.config.USER,
-                password: db.config.PASSWORD,
-                database: db.config.DB,
+                host: res.db.config.HOST,
+                user: res.db.config.USER,
+                password: res.db.config.PASSWORD,
+                database: res.db.config.DB,
                 debug: false
               });
               connection.query(sql, [], function(err, result) {
@@ -2194,7 +2195,7 @@ if(req.user && (req.user.isAdmin || req.user.isRieltor) && req.user.DOSTUP.index
               category = 'houseSale'
             }
           }
-          db.rent21ob.update(
+          res.db.rent21ob.update(
           {
             fields: ob21,
             exports: ob21.exports,
@@ -2208,7 +2209,7 @@ if(req.user && (req.user.isAdmin || req.user.isRieltor) && req.user.DOSTUP.index
             },
           }).then(row =>{
             if(row[0]===0){
-              db.rent21ob.create(
+              res.db.rent21ob.create(
                 {
                   uid: ob21.UID,
                   fields: ob21,
@@ -2233,7 +2234,7 @@ if(req.user && (req.user.isAdmin || req.user.isRieltor) && req.user.DOSTUP.index
         const address = req.body[key]
         // console.error(req.body[key])
         promiseAR.push(new Promise(function (resolve, reject) {
-          db.rent21address.update(
+          res.db.rent21address.update(
             {
               fields: req.body[key]
             },
@@ -2244,7 +2245,7 @@ if(req.user && (req.user.isAdmin || req.user.isRieltor) && req.user.DOSTUP.index
             }
           ).then(item => {
             if (item[0] == 0) {
-              db.rent21address.create(
+              res.db.rent21address.create(
                 {
                   uid: req.body[key].UID,
                   fields: req.body[key]
@@ -2265,7 +2266,7 @@ if(req.user && (req.user.isAdmin || req.user.isRieltor) && req.user.DOSTUP.index
       case 'building':
         const building = req.body[key]
         promiseAR.push(new Promise(function (resolve, reject) {
-          db.rent21building.update(
+          res.db.rent21building.update(
             {
               fields: building,
               owners: building.owners
@@ -2277,7 +2278,7 @@ if(req.user && (req.user.isAdmin || req.user.isRieltor) && req.user.DOSTUP.index
             }
           ).then(item => {
             if (item[0] == 0) {
-              db.rent21building.create(
+              res.db.rent21building.create(
                 {
                   uid: building.UID,
                   fields: building,
@@ -2301,7 +2302,7 @@ if(req.user && (req.user.isAdmin || req.user.isRieltor) && req.user.DOSTUP.index
       case 'owner':
         const owner = req.body[key]
         promiseAR.push(new Promise(function (resolve, reject){
-          db.rent21owner.update(
+          res.db.rent21owner.update(
             {
               fields: owner,
               contacts: owner.contacts
@@ -2313,7 +2314,7 @@ if(req.user && (req.user.isAdmin || req.user.isRieltor) && req.user.DOSTUP.index
             }
           ).then(item=>{
             if (item[0] == 0) {
-              db.rent21owner.create(
+              res.db.rent21owner.create(
                 {
                   uid: owner.UID,
                   fields: owner,
@@ -2335,7 +2336,7 @@ if(req.user && (req.user.isAdmin || req.user.isRieltor) && req.user.DOSTUP.index
       case 'owners':
         const owners = req.body[key]
         promiseAR.push(new Promise(function (resolve, reject){
-          db.rent21building.update(
+          res.db.rent21building.update(
             {
               owners: owners.owners
             },

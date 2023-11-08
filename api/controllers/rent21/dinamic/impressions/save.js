@@ -7,7 +7,7 @@ if(!req.user || (!req.user.isAdmin && !req.user.isRieltor)){
   delete req.body.updatedAt
   delete req.body.id
   if(req.user.isAdmin){
-    db.impressins.update(
+    res.db.impressins.update(
       req.body,
       {
         where: {
@@ -23,7 +23,7 @@ if(!req.user || (!req.user.isAdmin && !req.user.isRieltor)){
     })
 
   }else{
-    db.impressins.update(
+    res.db.impressins.update(
       req.body,
       {
         where: {

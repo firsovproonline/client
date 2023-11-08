@@ -1,7 +1,6 @@
 const fs = require('fs')
 const MD5 = require("crypto-js/md5");
 const Sequelize = require('sequelize')
-const db = require("../models");
 
 exports.spr = (req, res) => {
   const outOb ={}
@@ -366,7 +365,7 @@ exports.spr = (req, res) => {
 }
 
 exports.progress1111 = (req, res) => {
-  res.json(db.progress)
+  res.json(res.db.progress)
 }
 
 exports.logout = (req, res) => {

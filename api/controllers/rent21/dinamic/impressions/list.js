@@ -3,7 +3,8 @@ console.error('start', d)
 if(!req.user || (!req.user.isAdmin && !req.user.isRieltor)){
   res.json({'error':401})
 }else{
-  db.impressins.findAll({
+/*
+  res.db.impressins.findAll({
 
   }).then( (items) =>{
     const promiseAR = [];
@@ -14,7 +15,7 @@ if(!req.user || (!req.user.isAdmin && !req.user.isRieltor)){
         }
         console.error(1)
         try {
-          db.rent21moiZvonki.findOne({
+          res.db.rent21moiZvonki.findOne({
             limit: 1
           }).then(itemZ=>{
             console.error('gggggggggggggggggggggggg')
@@ -33,6 +34,8 @@ if(!req.user || (!req.user.isAdmin && !req.user.isRieltor)){
       }
     )
   })
+
+*/
   let where = '';
   if(req.body){
     for (const key in req.body) {
@@ -160,11 +163,11 @@ if(!req.user || (!req.user.isAdmin && !req.user.isRieltor)){
   }
   console.error(order)
   const sql =`SELECT * FROM impressions `+where+order+` OFFSET `+req.body.offset+` LIMIT `+req.body.limit
-  db.sequelizePg.query(`SELECT COUNT(id) as  count FROM impressions `+where, {
+  res.db.sequelizePg.query(`SELECT COUNT(id) as  count FROM impressions `+where, {
     raw: true
   }).then((items) => {
     const count = items[0][0].count
-    db.sequelizePg.query(`SELECT impressions.*,json_extract_path(impressions.fields,'TEL')::text FROM impressions `+where+order+` OFFSET `+req.body.offset+` LIMIT `+req.body.limit, {
+    res.db.sequelizePg.query(`SELECT impressions.*,json_extract_path(impressions.fields,'TEL')::text FROM impressions `+where+order+` OFFSET `+req.body.offset+` LIMIT `+req.body.limit, {
       raw: true
     }).then((items) => {
       res.json({count:count, rows : items[0],sql:sql, body:req.body})

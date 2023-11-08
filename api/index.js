@@ -169,6 +169,7 @@ app.use(passport.session());
 
 app.use((req, res, next)=> {
   //console.error('app.use',req.cookies)
+  res.db = db
   next();
 /*
   if(!app.users) app.users= {}
@@ -228,8 +229,13 @@ require('./routes/rent21/log')(app);
 require('./routes/rent21/owner')(app);
 require('./routes/rent21/impressions')(app);
 
-console.error('wwwwwwwwwwwwwwwwwww')
+console.error('Старт сервера', __dirname)
 
+const fileContent = fs.readFileSync(__dirname +'/controllers/rent21/dinamic/getcian.js', "utf8");
+eval(fileContent);
+
+
+/*
 var timerIdCian = setInterval(function() {
   console.log("get CIAN")
 
@@ -366,7 +372,7 @@ var timerIdCian = setInterval(function() {
 
 
 }, 300000);
-
+*/
 function GetLastZvon(ob, func) {
   console.log('получаем мои звонки');
   var request = require('request');

@@ -1,3 +1,3 @@
-db.rent21address.sync({ force: true }).then(item =>{
+res.db.rent21address.sync({ force: true }).then(item =>{
   res.json({status:true})
 })

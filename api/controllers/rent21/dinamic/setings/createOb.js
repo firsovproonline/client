@@ -1750,19 +1750,19 @@ const cianItems = {
 }
 
 const connection = mysql.createConnection({
-  host: db.config.HOST,
-  user: db.config.USER,
-  password: db.config.PASSWORD,
-  database: db.config.DB,
+  host: res.db.config.HOST,
+  user: res.db.config.USER,
+  password: res.db.config.PASSWORD,
+  database: res.db.config.DB,
   debug: false
 });
 
 function findOwner(inOb, func){
   inOb.connectionf = mysql.createConnection({
-    host: db.config.HOST,
-    user: db.config.USER,
-    password: db.config.PASSWORD,
-    database: db.config.DB,
+    host: res.db.config.HOST,
+    user: res.db.config.USER,
+    password: res.db.config.PASSWORD,
+    database: res.db.config.DB,
     debug: false
   });
 
@@ -1910,7 +1910,7 @@ function findOwner(inOb, func){
                   delete contacts[keyUID].website
                 }
                 for(let key in inOb.owners){
-                  db.rent21owner.findOne({
+                  res.db.rent21owner.findOne({
                     where: {
                       uid: key,
                     },
@@ -1921,7 +1921,7 @@ function findOwner(inOb, func){
                         sobst.push(contacts[item])
                       })
                       if(inOb.owners[key].fields){
-                        db.rent21owner.create({
+                        res.db.rent21owner.create({
                           uid: key,
                           contacts: sobst,
                           fields: inOb.owners[key].fields
@@ -1975,7 +1975,7 @@ function findOwner(inOb, func){
 }
 
 function findAddress(inUID, func) {
-  db.rent21address.findAll({
+  res.db.rent21address.findAll({
     where: {
       uid: inUID,
     },
@@ -2017,7 +2017,7 @@ function findAddress(inUID, func) {
 
 
         if (ob.UID !== '' && ob.UID !== null) {
-          db.rent21address.create({
+          res.db.rent21address.create({
             uid: ob.UID,
             metro: ob.METRO,
             fields: ob
@@ -2040,7 +2040,7 @@ function findAddress(inUID, func) {
 }
 
 function findBuild(inUID, func) {
-  db.rent21building.findAll({
+  res.db.rent21building.findAll({
     where: {
       uid: inUID,
     },
@@ -2062,7 +2062,7 @@ function findBuild(inUID, func) {
             if (result) {
               if(result.length > 0 && result[0].PUID){
                 const addrUid = result[0].PUID
-                db.rent21building.update({
+                res.db.rent21building.update({
                   uid: ob.UID,
                   address: addrUid,
                   fields: ob
@@ -2075,7 +2075,7 @@ function findBuild(inUID, func) {
                   if (items[0] === 0) {
                     // пытаемся найти собственников
                     findOwner({ob: ob, address:addrUid}, (item)=>{
-                      db.rent21building.create({
+                      res.db.rent21building.create({
                         uid: item.ob.UID,
                         address: item.address,
                         fields: item.ob
@@ -2248,7 +2248,7 @@ function findObfromBuild(inUID, func) {
             }
             // console.log(exports)
             ownersUID.push(ob.SOBST)
-            db.rent21ob.create({
+            res.db.rent21ob.create({
               uid: ob.UID,
               build: inUID,
               fields: ob,
@@ -2281,27 +2281,27 @@ function mergeAll(i, result, func){
   findBuild(result[i].UID,()=>{
     findObfromBuild(result[i].UID,()=>{
       i--
-      db.progress.current--
+      res.db.progress.current--
       if(i!==0){
         mergeAll(i, result,func)
       }else{
-        db.progress.status = ''
+        res.db.progress.status = ''
         func()
       }
     })
   })
 }
 
-db.rent21ob.sync({ force: true }).then(item =>{
-  db.rent21owner.sync({ force: true }).then(item =>{
-    db.rent21address.sync({ force: true }).then(item =>{
-      db.rent21building.sync({ force: true }).then(item =>{
+res.db.rent21ob.sync({ force: true }).then(item =>{
+  res.db.rent21owner.sync({ force: true }).then(item =>{
+    res.db.rent21address.sync({ force: true }).then(item =>{
+      res.db.rent21building.sync({ force: true }).then(item =>{
         if(1==1){
           const connection = mysql.createConnection({
-            host: db.config.HOST,
-            user: db.config.USER,
-            password: db.config.PASSWORD,
-            database: db.config.DB,
+            host: res.db.config.HOST,
+            user: res.db.config.USER,
+            password: res.db.config.PASSWORD,
+            database: res.db.config.DB,
             debug: false
           });
           // Выбираем все здания из базы mysql
@@ -2451,7 +2451,7 @@ db.rent21ob.sync({ force: true }).then(item =>{
                       })
                     }
                     delete dbAddress[uid].metro
-                    db.rent21address.create({
+                    res.db.rent21address.create({
                       uid: uid,
                       metro: dbAddress[uid]['METRO'],
                       fields: dbAddress[uid]
@@ -2485,7 +2485,7 @@ db.rent21ob.sync({ force: true }).then(item =>{
                           }
                         })
                         if(building){
-                          db.rent21building.create({
+                          res.db.rent21building.create({
                             uid: building.UID,
                             address: uid,
                             fields: building,
@@ -2502,7 +2502,7 @@ db.rent21ob.sync({ force: true }).then(item =>{
                             arrContacts.push(dbContacts[childrenUID])
                           }
                         })
-                        db.rent21owner.create({
+                        res.db.rent21owner.create({
                           uid: uid,
                           contacts: arrContacts,
                           fields: dbOwners[uid]
@@ -2622,7 +2622,7 @@ db.rent21ob.sync({ force: true }).then(item =>{
                                   category = dbOb[childrenUID].Category
                                 }
 
-                                db.rent21ob.create({
+                                res.db.rent21ob.create({
                                   uid: childrenUID,
                                   build: uid,
                                   fields: dbOb[childrenUID],
@@ -2642,7 +2642,7 @@ db.rent21ob.sync({ force: true }).then(item =>{
                         }
 
 
-                        res.json(db.progress)
+                        res.json(res.db.progress)
                       })
 
 
@@ -2656,17 +2656,17 @@ db.rent21ob.sync({ force: true }).then(item =>{
           })
 
         }else{
-          res.json(db.progress)
+          res.json(res.db.progress)
         }
 
 /*
         sql = `SELECT DISTINCT UID FROM fields WHERE TIP = 'buid21' `
         connection.query(sql, [], function(err, result) {
-          db.progress.total = result.length -1
-          db.progress.current = result.length -1
-          db.progress.status = 'Импорт помещений'
-          mergeAll(db.progress.current, result,()=>{
-            res.json(db.progress)
+          res.db.progress.total = result.length -1
+          res.db.progress.current = result.length -1
+          res.db.progress.status = 'Импорт помещений'
+          mergeAll(res.db.progress.current, result,()=>{
+            res.json(res.db.progress)
           });
         })
 */

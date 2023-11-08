@@ -5,7 +5,7 @@ if(req.user && (req.user.isAdmin || req.user.isRieltor) && req.user.DOSTUP.index
   let sql =`SELECT *
     FROM rent21_buildings
     WHERE rent21_buildings.uid='`+id+`'`
-  db.sequelizePg.query(sql, {
+  res.db.sequelizePg.query(sql, {
     raw: true
   }).then((items) => {
     outOb.building = items[0][0].fields
@@ -13,7 +13,7 @@ if(req.user && (req.user.isAdmin || req.user.isRieltor) && req.user.DOSTUP.index
     sql =`SELECT *
     FROM rent21_addresses
     WHERE rent21_addresses.uid='`+items[0][0].address+`'`
-    db.sequelizePg.query(sql, {
+    res.db.sequelizePg.query(sql, {
       raw: true
     }).then((items) => {
       outOb.address = items[0][0].fields
@@ -25,7 +25,7 @@ if(req.user && (req.user.isAdmin || req.user.isRieltor) && req.user.DOSTUP.index
           LEFT JOIN rent21_owners ON rent21_owners.uid = rent21_obs.owner
 
       WHERE rent21_obs.build='`+outOb.building.UID+`'`
-      db.sequelizePg.query(sql, {
+      res.db.sequelizePg.query(sql, {
         raw: true
       }).then((items) => {
         outOb.ob21 = []
@@ -41,7 +41,7 @@ if(!outOb.owners) outOb.owners = []
         sql =`SELECT *
           FROM rent21_owners
           WHERE rent21_owners.uid in ('` + outOb.owners.join("','") + `')`
-        db.sequelizePg.query(sql, {
+        res.db.sequelizePg.query(sql, {
           raw: true
         }).then(items=>{
           outOb.owners = []
@@ -61,7 +61,7 @@ if(!outOb.owners) outOb.owners = []
 
         /*
         sql = "select * from rent21_exports where uid in ('" + uids.join("','") + "')"
-        db.sequelizePg.query(sql, {
+        res.db.sequelizePg.query(sql, {
           raw: true
         }).then(items=>{
           outOb.export = items[0]

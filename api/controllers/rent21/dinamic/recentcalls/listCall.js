@@ -43,7 +43,7 @@ console.error('where',where)
 
 
 
-db.sequelizePg.query(`SELECT COUNT(id) as  count FROM callzvons `+where, {
+res.db.sequelizePg.query(`SELECT COUNT(id) as  count FROM callzvons `+where, {
   raw: true
 }).then((items) => {
   const count = items[0][0].count
@@ -77,7 +77,7 @@ LEFT JOIN rent21_owners ON rent21_owners.contacts::text LIKE concat_ws('%',regex
 */
 
 
-  db.sequelizePg.query(sql, {
+  res.db.sequelizePg.query(sql, {
     raw: true
   }).then((items) => {
     res.json({count:count, rows : items[0]})

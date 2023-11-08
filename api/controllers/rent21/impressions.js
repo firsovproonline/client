@@ -1,4 +1,3 @@
-const db = require("../../models");
 const fs = require('fs')
 exports.save = (req, res) => {
   const fileContent = fs.readFileSync(__dirname +'/dinamic/impressions/save.js', "utf8");

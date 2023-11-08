@@ -4,7 +4,7 @@ let sql = `SELECT rent21_owners.*
 //WHERE json_extract_path(rent21_owners.contacts,'contacts')::text LIKE '%(909) 693-07-04%'
 //res.json({1:2})
 
-db.sequelizePg.query(sql, {
+res.db.sequelizePg.query(sql, {
   raw: true
 }).then((items) => {
   res.json({rows : items[0]})

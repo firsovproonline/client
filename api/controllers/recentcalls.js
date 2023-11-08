@@ -1,4 +1,3 @@
-const db = require("../models");
 const fs = require('fs')
 
 exports.listCall = (req, res) => {
